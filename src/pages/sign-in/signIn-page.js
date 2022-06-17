@@ -13,12 +13,18 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
-import { Copyright } from '../../utils/copyright-util';
+import { Copyright } from '../../components/copyright-component';
 import { useTranslation } from 'react-i18next';
+import { Alert } from '@mui/material';
 
 const theme = createTheme();
 
 export default function SignInSide() {
+
+  const { t, i18n } = useTranslation();
+  const [isPassword, setIsPassword] = useState(true);
+  const [isEmail, setIsEmail] = useState(true);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -26,9 +32,11 @@ export default function SignInSide() {
       email: data.get('email'),
       password: data.get('password'),
     });
+    
+    setIsPassword((data.get("password")));
+    setIsEmail ((data.get("email"))); 
   };
 
-  const { t, i18n } = useTranslation();
 
 
   return (
@@ -86,6 +94,9 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
               />
+              {!isEmail ? <Alert severity="error">{t("emailmissing")}</Alert>: " "}
+              {!isPassword ? <Alert severity="error">{t("passwordmissing")}</Alert>: " "}
+
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
                 label={t("rememberMe")}

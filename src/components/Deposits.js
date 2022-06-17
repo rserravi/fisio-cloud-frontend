@@ -3,7 +3,7 @@ import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
 import Title from './Title';
 import { useTranslation } from 'react-i18next';
-import { formatDate } from '../../utils/date-utils';
+import { formatDate } from '../utils/date-utils';
 
 
 function preventDefault(event) {

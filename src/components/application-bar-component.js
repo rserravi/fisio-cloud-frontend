@@ -11,8 +11,10 @@ import Badge from '@mui/material/Badge';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
-
+import Avatar from '@mui/material/Avatar';
+import avatarPicture from "../img/RubenSerra.jpg";
 
 const drawerWidth = 240;
 
@@ -70,6 +72,14 @@ function ApplicationBar(openedMenu) {
             >
              {t("dashboard")}
             </Typography>
+            
+            <Avatar alt="Ruben Serra" src={avatarPicture} />
+
+            <IconButton color="inherit">
+             
+                <SettingsIcon />
+            
+            </IconButton>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />

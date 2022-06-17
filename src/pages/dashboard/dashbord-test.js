@@ -6,24 +6,25 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Chart from './Chart';
-import Deposits from './Deposits';
-import Orders from './Orders';
-import { Copyright } from '../../utils/copyright-util';
-import ApplicationBar from '../../utils/application-bar-utils';
-import SideMenu from '../../utils/sideMenu-utils';
+import Chart from '../../components/Chart';
+import Deposits from '../../components/Deposits';
+import Orders from '../../components/Orders';
+import { Copyright } from '../../components/copyright-component';
+import ApplicationBar from '../../components/application-bar-component';
+import SideMenu from '../../components/sideMenu-component';
 
 
 const mdTheme = createTheme();
 
 function DashboardContent() {
   const open = true;
+  const expandedClients = false;
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar open={open} />
+        <ApplicationBar open={open} expandedClients={expandedClients} />
         <SideMenu open={open} />
 
         <Box
