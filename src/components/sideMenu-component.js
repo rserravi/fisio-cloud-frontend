@@ -24,13 +24,13 @@ import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-
 import { useTranslation } from 'react-i18next';
+import { useDispatch } from "react-redux";
 import { Collapse } from '@mui/material';
+import { navigationClientPanel,navigationAppointmentPanel } from '../pages/dashboard/navigation-slice';
 
 
 const drawerWidth = 240;
-
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -60,6 +60,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 
 function SideMenu(openedMenu, expandedClients,expandedCal) {
+
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(openedMenu);
   const [expandClients, setExpandClients] = React.useState(expandedClients);
   const [expandCal, setExpandCal] = React.useState(expandedCal);
@@ -71,10 +73,15 @@ function SideMenu(openedMenu, expandedClients,expandedCal) {
 
   const toggleClients = () =>{
     setExpandClients(!expandClients);
+
+    dispatch(navigationClientPanel(!expandClients));
+
   }
 
   const toggleCal = () =>{
     setExpandCal(!expandCal);
+    dispatch(navigationAppointmentPanel(!expandCal));
+
   }
 
   return (
