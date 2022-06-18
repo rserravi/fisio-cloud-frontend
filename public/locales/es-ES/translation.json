@@ -51,6 +51,13 @@
     "atleastspecial": "Al menos 1 carácter especial (*/-@#$%&=-_)",
     "usercreatedcorrectly": "Usuario creado correctamente.",
     "youwillrecieveemail": "Recibirá un correo electrónico para verificar su cuenta.",
-    "youcanclosethiswindow":"Ya puede cerrar esta ventana"
+    "youcanclosethiswindow":"Ya puede cerrar esta ventana",
+    "profile":"Usuario",
+    "logout":"Log Out",
+    "settings": "Configuraciones",
+    "seeAlerts": "Ver alertas",
+    "openusersettings": "Abrir configuración de usuario",
+    "youareloggingout": "Estás a punto de desconectar",
+    "areyousure": "¿Estás seguro?"
 
 }

@@ -12,20 +12,21 @@ import Orders from '../../components/Orders';
 import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
+import { useSelector } from 'react-redux';
 
 
 const mdTheme = createTheme();
 
 function DashboardContent() {
-  const open = true;
-  const expandedClients = false;
+
+  const boardState = useSelector((state)=> state.navigator);
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar open={open} expandedClients={expandedClients} />
-        <SideMenu open={open} />
+        <ApplicationBar boardState={boardState} title="dashboard" />
+        <SideMenu boardState={boardState} />
 
         <Box
           component="main"
@@ -40,7 +41,10 @@ function DashboardContent() {
           }}
         >
           <Toolbar />
-          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          
+            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+
+         
             <Grid container spacing={3}>
               {/* Chart */}
               <Grid item xs={12} md={8} lg={9}>
@@ -55,6 +59,7 @@ function DashboardContent() {
                   <Chart />
                 </Paper>
               </Grid>
+          
               {/* Recent Deposits */}
               <Grid item xs={12} md={4} lg={3}>
                 <Paper
@@ -75,8 +80,10 @@ function DashboardContent() {
                 </Paper>
               </Grid>
             </Grid>
-            <Copyright sx={{ pt: 4 }} />
+       
+  
           </Container>
+          <Copyright sx={{ pt: 4 }} />
         </Box>
       </Box>
     </ThemeProvider>

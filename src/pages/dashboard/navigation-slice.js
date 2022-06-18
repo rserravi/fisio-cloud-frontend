@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    screen :"mainDashboard",
+    screen :"Dashboard",
+    drawerOpen: true,
     customerOpen: false,
     appointmentsOpen: false,
     isLoading: false,
@@ -9,7 +10,7 @@ const initialState = {
 }
 
 const navigationSlice = createSlice({
-    name: "dashboard",
+    name: "navigation",
     initialState,
     reducers:{
         navigationLoading:(state)=>{
@@ -28,10 +29,14 @@ const navigationSlice = createSlice({
         },
         navigationAppointmentPanel:(state, action)=>{
             state.appointmentsOpen = action.payload;
+        },
+        navigationDrawer:(state, action) =>{
+            state.drawerOpen = action.payload;
         }
+        
     }
 });
 
 const {reducer, actions} = navigationSlice;
-export const {navigationLoading, navigationSuccess, navigationFail, navigationClientPanel, navigationAppointmentPanel} = actions;
+export const {navigationLoading, navigationSuccess, navigationFail, navigationClientPanel, navigationAppointmentPanel, navigationDrawer} = actions;
 export default reducer;

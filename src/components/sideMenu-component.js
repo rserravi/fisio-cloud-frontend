@@ -26,11 +26,13 @@ import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
 import { Collapse } from '@mui/material';
-import { navigationClientPanel,navigationAppointmentPanel } from '../pages/dashboard/navigation-slice';
+import { navigationClientPanel,navigationAppointmentPanel, navigationDrawer, navigationLoading, navigationSuccess } from '../pages/dashboard/navigation-slice';
 
 
 const drawerWidth = 240;
+
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -59,31 +61,83 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 
-function SideMenu(openedMenu, expandedClients,expandedCal) {
-
+function SideMenu(boardState) {
   const dispatch = useDispatch();
-  const [open, setOpen] = React.useState(openedMenu);
-  const [expandClients, setExpandClients] = React.useState(expandedClients);
-  const [expandCal, setExpandCal] = React.useState(expandedCal);
+  const navigate = useNavigate();
+
+  
+  const {screen, drawerOpen, customerOpen, appointmentsOpen} = boardState.boardState;
+  let actualScreen = screen;
+  let open = drawerOpen;
+  let expandClients = customerOpen;
+  let expandCal  =appointmentsOpen;
+
 
   const { t, i18n } = useTranslation();
   const toggleDrawer = () => {
-    setOpen(!open);
+    open = !open;
+    dispatch(navigationDrawer(open));
+     
   };
 
   const toggleClients = () =>{
-    setExpandClients(!expandClients);
-
-    dispatch(navigationClientPanel(!expandClients));
-
+    expandClients = !expandClients;
+    dispatch(navigationClientPanel(expandClients));
   }
 
   const toggleCal = () =>{
-    setExpandCal(!expandCal);
-    dispatch(navigationAppointmentPanel(!expandCal));
+    expandCal = !expandCal;
+    dispatch(navigationAppointmentPanel(expandCal));
 
   }
 
+  const toggleDashboad = () =>{
+    dispatch(navigationLoading());
+    actualScreen = "Dashboard";
+    navigate("/dashboard",{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const toogleAddCustomer = () =>{
+    actualScreen = "AddCustomer";
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const toogleShoweAllCustomers= () =>{
+    dispatch(navigationLoading());
+    actualScreen = "AllCustomers";
+    navigate("/customers",{replace: true});
+    dispatch(navigationSuccess(actualScreen));
+
+  }
+
+  const toogleAddSchedule= () =>{
+    actualScreen = "AddSchedule";
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const toogleShowSchedule= () =>{
+    actualScreen = "Schedule";
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const toogleShowOrders = () =>{
+    actualScreen = "Orders";
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const toogleShowReports= () =>{
+    actualScreen = "Reports";
+    dispatch(navigationSuccess(actualScreen))
+  }
+  const toogleShowIntegrations= () =>{
+    actualScreen = "Integrations";
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+
+  
+ 
   return (
         <Drawer variant="permanent" open={open}>
           <Toolbar
@@ -101,7 +155,7 @@ function SideMenu(openedMenu, expandedClients,expandedCal) {
           <Divider />
           <List component="nav">
                
-            <ListItemButton>
+            <ListItemButton onClick={toggleDashboad}>
                 <ListItemIcon>
                 <DashboardIcon />
                 </ListItemIcon>
@@ -118,14 +172,14 @@ function SideMenu(openedMenu, expandedClients,expandedCal) {
             </ListItemButton>
 
             <Collapse in={expandClients} timeout="auto" unmountOnExit>
-                <ListItemButton sx={{ pl:4}}>
+                <ListItemButton sx={{ pl:4}} onClick={toogleAddCustomer}>
                   <ListItemIcon>
                     <PersonAddAlt1Icon />
                   </ListItemIcon>
                   <ListItemText primary={t("addnewcustomer")} />
                 </ListItemButton>
 
-                <ListItemButton sx={{ pl:4}}>
+                <ListItemButton sx={{ pl:4}} onClick={toogleShoweAllCustomers}>
                   <ListItemIcon>
                     <PeopleOutlineIcon />
                   </ListItemIcon>
@@ -143,14 +197,14 @@ function SideMenu(openedMenu, expandedClients,expandedCal) {
             </ListItemButton>
 
             <Collapse in={expandCal} timeout="auto" unmountOnExit>
-                <ListItemButton sx={{ pl:4}}>
+                <ListItemButton sx={{ pl:4}} onClick={toogleAddSchedule}>
                   <ListItemIcon>
                     <ScheduleIcon />
                   </ListItemIcon>
                   <ListItemText primary={t("adddate")} />
                 </ListItemButton>
                 
-                <ListItemButton sx={{ pl:4}}>
+                <ListItemButton sx={{ pl:4}} onClick={toogleShowSchedule}>
                   <ListItemIcon>
                     <CalendarViewWeekIcon />
                   </ListItemIcon>
@@ -158,21 +212,21 @@ function SideMenu(openedMenu, expandedClients,expandedCal) {
                 </ListItemButton>
             </Collapse>
 
-            <ListItemButton>
-                <ListItemIcon>
+            <ListItemButton onClick={toogleShowOrders}>
+                <ListItemIcon >
                 <ShoppingCartIcon />
                 </ListItemIcon>
                 <ListItemText primary={t("orders")} />
             </ListItemButton>
             
-            <ListItemButton>
+            <ListItemButton onClick={toogleShowReports}>
                 <ListItemIcon>
                 <BarChartIcon />
                 </ListItemIcon>
                 <ListItemText primary={t("reports")}/>
             </ListItemButton>
 
-            <ListItemButton>
+            <ListItemButton onClick={toogleShowIntegrations}>
                 <ListItemIcon>
                 <LayersIcon />
                 </ListItemIcon>
