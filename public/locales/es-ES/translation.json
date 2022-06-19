@@ -58,6 +58,11 @@
     "seeAlerts": "Ver alertas",
     "openusersettings": "Abrir configuración de usuario",
     "youareloggingout": "Estás a punto de desconectar",
-    "areyousure": "¿Estás seguro?"
+    "areyousure": "¿Estás seguro?",
+    "search": "Buscar...",
+    "print": "Imprimir",
+    "exporttoPDF": "Exportar a PDF",
+    "picture": "Imagen",
+    "add": "añadir"
 
 }
