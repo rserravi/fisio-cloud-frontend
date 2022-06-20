@@ -62,7 +62,9 @@
     "search": "Buscar...",
     "print": "Imprimir",
     "exporttoPDF": "Exportar a PDF",
+    "id": "id",
     "picture": "Imagen",
-    "add": "añadir"
-
+    "add": "añadir",
+    "phoneNumber": "N. Teléfono",
+    "actions": "Acciones"
 }

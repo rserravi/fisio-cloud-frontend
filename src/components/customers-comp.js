@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Link from '@mui/material/Link';
 import Title from './Title';
 import { useTranslation } from 'react-i18next';
 import { Button, IconButton, Toolbar, Typography } from '@mui/material';
@@ -46,6 +45,13 @@ const seeCustomer = (customerId) => {
   console.log("SEE CUSTOMER " + customerId);
 }
 
+const printForm = () =>{
+  console.log("PRINT FORM ");
+}
+
+const pdfForm = () =>{
+  console.log("CREATE PDF");
+}
 
 const RenderAppointmentButton = (props) => {
   const {hasFocus, value } = props;
@@ -98,80 +104,86 @@ const RenderAppointmentButton = (props) => {
 };
 
 
-const columns = [
-  { field: 'id', headerName: 'ID', width: 50 },
-  { field: 'image', headerName:"Imagen", width:60, renderCell: (params)=>
+const Columns = () => {
+  const { t, i18n } = useTranslation();
+
+  return(
+    [
+      { field: 'id', headerName: t("id"), width: 50 },
+      { field: 'image', headerName:"Imagen", width:60, renderCell: (params)=>
+          {
+            return(
+              <>
+                <Avatar src={"./images/" + params.value} />
+              </>
+            )
+          }
+      },
+      { field: 'firstName', headerName: t("name"), width: 130 },
+      { field: 'lastName', headerName: t("lastname"), width: 160 },
       {
-        return(
-          <>
-            <Avatar src={"./images/" + params.value} />
-          </>
-        )
-      }
-  },
-  { field: 'firstName', headerName: 'First name', width: 130 },
-  { field: 'lastName', headerName: 'Last name', width: 160 },
-  {
-    field: 'phoneNumber',
-    headerName: 'PhoneNumber',
-    width: 130,
-  },
-  {
-    field: 'appointments',
-    headerName: 'Appointments',
-    width: 130,
-    renderCell: RenderAppointmentButton,
-  },
-  {
-    field: 'actions',
-    type: 'actions',
-    headerName: 'Actions',
-    width: 200,
-    sortable: false,
-    getActions: (params) => [
-      <GridActionsCellItem
-      icon={<VisibilityIcon />}
-      label="See"
-      onClick={(event) => {
-        seeCustomer(params.id);
-        event.stopPropagation();
-     }}
-    />,
-      <GridActionsCellItem
-        icon={<EditIcon />}
-        label="Edit"
-        onClick={(event) => {
-          editCustomer(params.id);
-          event.stopPropagation();
-       }}
-      />,
-      <GridActionsCellItem
-      icon={<ContentCopyIcon />}
-      label="Duplicate"
-      onClick={(event) => {
-        duplicateCustomer(params.id);
-        event.stopPropagation();
-     }}
-    />,
-     <GridActionsCellItem
-        icon={<DeleteIcon />}
-        label="Delete"
-        onClick={(event) => {
-          deleteCustomer(params.id);
-          event.stopPropagation();
-       }}
-      />,
-      <GridActionsCellItem
-      icon={<LocalPrintshopIcon />}
-      label="Print"
-      onClick={(event) => {
-        printCustomer(params.id);
-        event.stopPropagation();
-     }}
-    />,
-    ],
-  },
-];
+        field: 'phoneNumber',
+        headerName: t("phoneNumber"),
+        width: 130,
+      },
+      {
+        field: 'appointments',
+        headerName: t("calendar"),
+        width: 130,
+        renderCell: RenderAppointmentButton,
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        headerName: t("actions"),
+        width: 200,
+        sortable: false,
+        getActions: (params) => [
+          <GridActionsCellItem
+          icon={<VisibilityIcon />}
+          label="See"
+          onClick={(event) => {
+            seeCustomer(params.id);
+            event.stopPropagation();
+        }}
+        />,
+          <GridActionsCellItem
+            icon={<EditIcon />}
+            label="Edit"
+            onClick={(event) => {
+              editCustomer(params.id);
+              event.stopPropagation();
+          }}
+          />,
+          <GridActionsCellItem
+          icon={<ContentCopyIcon />}
+          label="Duplicate"
+          onClick={(event) => {
+            duplicateCustomer(params.id);
+            event.stopPropagation();
+        }}
+        />,
+        <GridActionsCellItem
+            icon={<DeleteIcon />}
+            label="Delete"
+            onClick={(event) => {
+              deleteCustomer(params.id);
+              event.stopPropagation();
+          }}
+          />,
+          <GridActionsCellItem
+          icon={<LocalPrintshopIcon />}
+          label="Print"
+          onClick={(event) => {
+            printCustomer(params.id);
+            event.stopPropagation();
+        }}
+        />,
+        ],
+      },
+    ]
+  )
+} 
 
 const rows = customerData.map((row) => 
    ({
@@ -242,14 +254,27 @@ export default function CustomersComponent() {
           </Search>
 
           <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant='contained' href="#" startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
+            <Button variant='contained' size="small" href="#" startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
             <Tooltip title={t("print")}>
-              <IconButton color="primary" aria-label="imprimir-formulario" component="span">
+              <IconButton 
+                color="primary" 
+                aria-label="imprimir-formulario" 
+                component="span" 
+                onClick={(event) => {
+                              printForm();
+                              event.stopPropagation();
+                          }}>
                 <PrintIcon />
               </IconButton>
             </Tooltip>
             <Tooltip title={t("exporttoPDF")}>
-              <IconButton color="primary" aria-label="exportar-formulario" component="span">
+              <IconButton 
+                color="primary" 
+                aria-label="exportar-formulario" 
+                component="span" onClick={(event) => {
+                              pdfForm();
+                              event.stopPropagation();
+                          }}>
                 <PictureAsPdfIcon />
               </IconButton>
             </Tooltip>
@@ -263,7 +288,7 @@ export default function CustomersComponent() {
     
       <DataGrid
         rows={rows}
-        columns={columns}
+        columns={Columns()}
         pageSize={5}
         rowsPerPageOptions={[5]}
         checkboxSelection

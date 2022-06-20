@@ -100,6 +100,7 @@ function SideMenu(boardState) {
 
   const toogleAddCustomer = () =>{
     actualScreen = "AddCustomer";
+    navigate("/addcustomer",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 

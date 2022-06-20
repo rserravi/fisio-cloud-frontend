@@ -6,7 +6,8 @@ import PasswordReset from './pages/passwordReset/passwordReset-page';
 import {BrowserRouter as Router, Routes, Switch,  Route, Link} from "react-router-dom";
 import LandingPage from './pages/landing-page/landing-page';
 import SignUp from './pages/sign-up/sign-up';
-import Customers from './pages/dashboard/customers-page';
+import Customers from './pages/customers/customers-page';
+import AddCustomer from './pages/customers/add-customer-page';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
+          <Route path="/addcustomer" element={<AddCustomer />} />
         </Routes>
       </Router>
 

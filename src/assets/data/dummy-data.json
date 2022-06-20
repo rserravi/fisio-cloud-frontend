@@ -5,6 +5,7 @@
         "firstname": "Juanjo",
         "lastname": "Rubio",
         "image": "juanjorubio.jpg",
+        "gender": "male",
         "email":
         [
             {
@@ -95,6 +96,7 @@
         "firstname": "Adel",
         "lastname": "Khader",
         "image": "adelkader.jpg",
+        "gender": "female",
         "email":
         [
             {

@@ -1,7 +1,7 @@
 import React from "react";
 import validator from 'validator';
 
-export const SignUpValidator(frmdata) =>{
+export const SignUpValidator = (frmdata) =>{
     const emailvalidated= validator.isEmail(frmdata.email);
     const machedPass = validator.equals(frmdata.password, frmdata.machedPass);
     var message = "";
@@ -32,6 +32,22 @@ export const SignUpValidator(frmdata) =>{
             "message": "Incorrect email and Passwords dont match"
         }
     }
+}
 
+export const EmailValidation = (email) =>{
+    return validator.isEmail(email);
+}
 
+export const ShortTextValidation = (text, minChars) => {
+    const val = (text.length >= minChars)
+    console.log(val);
+    return val
+}
+
+export const LongTextValidation = (text, maxChars) => {
+    return (text.length <= maxChars)
+}
+
+export const PhoneVerification = (text) => {
+    return (true)
 }
