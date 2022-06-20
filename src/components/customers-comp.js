@@ -21,6 +21,12 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
 
+import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { navigationClientPanel,navigationAppointmentPanel, navigationDrawer, navigationLoading, navigationSuccess } from '../pages/dashboard/navigation-slice';
+import AddCustomer from '../pages/customers/add-customer-page';
+
+
 
 const addNewAppointment= (customerId) =>{
   console.log("ADD APPOINTMENT IN CUSTOMER " + customerId);
@@ -234,7 +240,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 
 
 export default function CustomersComponent() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { t, i18n } = useTranslation();
+
+  const AddCustomerButton= () =>{
+    console.log("QUE COÑO PASA?")
+    const actualScreen = "AddCustomer";
+    navigate("/addcustomer",{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
 
   return (
     <React.Fragment>
@@ -254,7 +270,7 @@ export default function CustomersComponent() {
           </Search>
 
           <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant='contained' size="small" href="#" startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
+            <Button variant='contained' size="small" onClick={AddCustomerButton} startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
             <Tooltip title={t("print")}>
               <IconButton 
                 color="primary" 

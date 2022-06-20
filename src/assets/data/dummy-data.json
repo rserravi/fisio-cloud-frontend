@@ -21,7 +21,7 @@
         {
             "streetAddress": "21 2nd Street",
             "city": "New York",
-            "province": "NY",
+            "state": "NY",
             "postalCode": "10021",
             "country":"spain"
         },
@@ -109,7 +109,7 @@
         {
             "streetAddress": "Calle Charles Dickens n17",
             "city": "Málaga",
-            "province": "Mälaga",
+            "state": "Mälaga",
             "postalCode": "29010",
             "country":"spain"
         },

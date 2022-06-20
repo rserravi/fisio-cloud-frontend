@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { createTheme} from '@mui/material/styles';
-import { useSelector } from 'react-redux';
 import { styled } from '@mui/material/styles';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
@@ -17,23 +15,42 @@ import { socialNetworks } from '../utils/social-networks-utils';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useTranslation } from 'react-i18next';
+import { Box } from '@mui/system';
 
-
-
-
-const mdTheme = createTheme();
 
 export default function CustomerForm() {
 
   const { t, i18n } = useTranslation();
-  const handleSubmit = (event)=>{
 
+  const handleSubmit = (event)=>{
+    event.preventDefault();
+
+    frmData.addedAt = new Date().toLocaleDateString();
+    console.log(frmData);
   }
   
-  const socialInitState = {
+  const frmDataInit = {
+    firstname:"",
+    lastname:"",
+    image: "images/Portrait_Placeholder.png",
+    emailhome:"",
+    emailwork:"",
+    streetaddress: "",
+    city:"",
+    state:"",
+    postalCode:"",
+    country:"Spain",
+    homephone:"",
+    mobilephone:"+34",
+    homephone:"+34",
+    whatsapp:"+34",
     social1: "Facebook",
     social2: "Twitter",
-    social3: "Instagram"
+    social3: "Instagram",
+    socialUser1:"@",
+    socialUser2:"@",
+    socialUser3:"@",
+    addedAt: null
   }
 
   const [nameValid, setNameValid] = React.useState(false);
@@ -44,18 +61,19 @@ export default function CustomerForm() {
   const [homphoneValid, setHomephoneValid] = React.useState(false);
   const [whatsappValid, setWhatsappValid] = React.useState(false);
 
-  const [mobileValue, setMobielValue] = React.useState("+");
-  const [whatsAppValue, setWhatsappValue] = React.useState("+");
-  const [socialValue, setSocialValue] = React.useState(socialInitState);
-
+  const [frmData, setFrmData] = React.useState(frmDataInit);
+ 
 
   const WhatsappPick = () => {
-    setWhatsappValue(mobileValue);
+    
+    setFrmData({...frmData, ["whatsapp"]:frmData.mobilephone});
   }
 
   const handleChange = (event) => {
     console.log(event.target.id);
     const {id, name, value} = event.target;
+    setFrmData({...frmData, [name]:value});
+    console.log(name)
     switch (id) {
       case "firstname":       
         setNameValid(ShortTextValidation(value, 3));
@@ -74,30 +92,27 @@ export default function CustomerForm() {
         break;
       case "mobilephone":
         setMobilephoneValid(PhoneVerification(value));
-        setMobielValue(value);
         break;
       case "whatsapp":
         setWhatsappValid(PhoneVerification(value));
-        setWhatsappValue(value);
-        break;
-      case "socialmedia1":
-        setSocialValue({...socialValue, [name]: value});
-        break;
-      case "socialmedia2":
-        setSocialValue({...socialValue, [name]: value});
-        break;
-      case "socialmedia3":
-        setSocialValue({...socialValue, [name]: value});
         break;
       default:
         break;
     }
-    if (name=="social1" || name=="social2" || name=="social3"){
-      setSocialValue({...socialValue, [name]: value});
-    }
-    
-
   };
+
+  const makePicture = () =>{
+
+  }
+
+  const deletePicture = () =>{
+    setFrmData({...frmData,["image"]: "images/Portrait_Placeholder.png"})
+  }
+
+  function handleFileChange(e) {
+    console.log(e.target.files);
+    setFrmData({...frmData, ["image"]:(URL.createObjectURL(e.target.files[0]))});
+}
 
   const Input = styled('input')({
     display: 'none',
@@ -115,7 +130,7 @@ export default function CustomerForm() {
 
   return (
     <React.Fragment>
-  
+        <Box component="form" noValidate onSubmit={handleSubmit} >
             <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
              <Grid item xs={12}>
                 <Item>
@@ -131,11 +146,12 @@ export default function CustomerForm() {
                 <Grid item xs={12}  md={2} sm={4} >
                   <TextField
                       id="firstname"
+                      name='firstname'
                       label={t("name")}
-                      defaultValue=""
                       helperText={t("enteryour")+t("name")+" ("+t("required")+")"}
                       variant="standard"
                       fullWidth
+                      value={frmData.firstname}
                       onChange={handleChange}
                       color={nameValid ? "success" : "primary"}
                       focused
@@ -145,11 +161,12 @@ export default function CustomerForm() {
                 <Grid item xs={12} md={5} sm={8} marginTop={2}>
                   <TextField
                       id="lastname"
+                      name="lastname"
                       label={t("lastname")}
-                      defaultValue=""
                       helperText={t("enteryour_plural")+t("lastname")+" ("+t("required")+")"}
                       variant="standard"
                       fullWidth
+                      value={frmData.lastname}
                       onChange={handleChange}
                       color={lastnameValid ? "success" : "primary"}
                       focused
@@ -161,23 +178,23 @@ export default function CustomerForm() {
               <Grid item xs={2} md={2} sm={2} marginTop={3}>
                 <Paper>
                 <ButtonBase maxWidth="160" height="160" width="160">
-                    <img maxWidth="155" width={155} height={155} src='images/Portrait_Placeholder.png' alt="Upload"></img>
+                    <img maxWidth="155" width={155} height={155} src={frmData.image} alt="Upload"></img>
                 </ButtonBase>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <label htmlFor="upload-button">
-                    <Input accept="image/*" id="upload-button" type="file" />
+                    <Input accept="image/*" id="upload-button" type="file" onChange={handleFileChange}/>
                     <IconButton color="primary" aria-label="upload picture" component="span">
                      
                       <UploadIcon />
                     </IconButton>
                   </label>
                   <label htmlFor="camera-button">
-                    <Input accept="image/*" id="camera-button" type="file" />
-                    <IconButton color="primary" aria-label="make picture" component="span">
+                   
+                    <IconButton color="primary" aria-label="make picture" component="span" onClick={makePicture}>
                       <PhotoCamera />
                     </IconButton>
                   </label>
-                  <IconButton color="primary" aria-label="make picture" component="span">
+                  <IconButton color="primary" aria-label="make picture" component="span" onClick={deletePicture}>
                       <DeleteIcon />
                   </IconButton>
                  </Stack>
@@ -189,11 +206,12 @@ export default function CustomerForm() {
               <Grid item xs={12} md={6} sm={6}>
                 <TextField
                     id="homeemail"
+                    name="homeemail"
                     label={t("homemail")}
-                    defaultValue=""
                     helperText={t("enteryour")+t("bestmail")+" ("+t("required")+")"}
                     variant="standard"
                     fullWidth
+                    value={frmData.homeemail}
                     onChange={handleChange}
                     color={!emailValid ? "error" : "primary"}
                     focused
@@ -202,12 +220,13 @@ export default function CustomerForm() {
               </Grid>
               <Grid item xs={12} md={6} sm={6}>
                 <TextField
-                    id="workemail"
+                    id="emailwork"
+                    name="emailwork"
                     label={t("workmail")}
-                    defaultValue=""
                     helperText={t("enteryour")+t("bestmail")+" ("+t("required")+")"}
                     variant="standard"
                     fullWidth
+                    value={frmData.emailwork}
                     onChange={handleChange}
                     color={!emailWorkValid ? "error" : "primary"}
                     focused
@@ -220,12 +239,13 @@ export default function CustomerForm() {
               <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start" marginTop={2} marginBottom={6}>
               <Grid item xs={12} md={8} sm={8}>
                 <TextField
-                    id="streetAddress"
+                    id="streetaddress"
+                    name="streetaddress"
                     label={t("street")}
-                    defaultValue=""
                     helperText={t("enteryour") + " "+ t("street") + " "+t("andnumber")}
                     variant="standard"
                     fullWidth
+                    value={frmData.streetaddress}
                     onChange={handleChange}
                     focused
                     />
@@ -233,11 +253,12 @@ export default function CustomerForm() {
               <Grid item xs={12} md={4} sm={4}>
                 <TextField
                     id="city"
+                    name="city"
                     label={t("cityortown")}
-                    defaultValue=""
                     helperText={t("enteryour") + t("cityortown")}
                     variant="standard"
                     fullWidth
+                    value={frmData.city}
                     onChange={handleChange}
                     focused
                     />
@@ -245,12 +266,13 @@ export default function CustomerForm() {
 
               <Grid item xs={12} md={5} sm={5}>
                 <TextField
-                    id="province"
+                    id="state"
+                    name="state"
                     label={t("state")}
-                    defaultValue="+"
                     helperText={t("enteryour")+" "+t("state")}
                     variant="standard"
                     fullWidth
+                    value={frmData.state}
                     onChange={handleChange}
                     focused
                     />
@@ -258,11 +280,12 @@ export default function CustomerForm() {
               <Grid item xs={12} md={3} sm={3}>
                 <TextField
                     id="postalCode"
+                    name="postalCode"
                     label={t("postalcode")}
-                    defaultValue="00800"
                     helperText={t("enteryour")+" " + t("postalcode")}
                     variant="standard"
                     fullWidth
+                    value={frmData.postalCode}
                     onChange={handleChange}
                     focused
                     />
@@ -270,11 +293,13 @@ export default function CustomerForm() {
               <Grid item xs={12} md={4} sm={4}>
                 <TextField
                     id="country"
+                    name="country"
                     label={t("country")}
                     defaultValue="España"
                     helperText={t("enteravalidcountry")}
                     variant="standard"
                     fullWidth
+                    value={frmData.country}
                     onChange={handleChange}
                     focused
                     />
@@ -286,11 +311,12 @@ export default function CustomerForm() {
               <Grid item xs={12} md={4} sm={4}>
                 <TextField
                     id="homephone"
+                    name="homephone"
                     label={t("home phone")}
-                    defaultValue="+"
                     helperText={t("enteravalidphone")}
                     variant="standard"
                     fullWidth
+                    value={frmData.homephone}
                     onChange={handleChange}
                     color={homphoneValid ? "success" : "primary"}
                     focused
@@ -299,11 +325,12 @@ export default function CustomerForm() {
               <Grid item xs={12} md={4} sm={4}>
                 <TextField
                     id="mobilephone"
+                    name="mobilephone"
                     label={t("mobile phone")}
-                    defaultValue="+"
                     helperText={t("enteravalidphone")}
                     variant="standard"
                     fullWidth
+                    value={frmData.mobilephone}
                     onChange={handleChange}
                     color={mobilephoneValid ? "success" : "primary"}
                     focused
@@ -312,8 +339,9 @@ export default function CustomerForm() {
               <Grid item xs={12} md={4} sm={4}>
                 <TextField
                     id="whatsapp"
+                    name="whatsapp"
                     label="Whatsapp"
-                    value = {whatsAppValue}
+                    value = {frmData.whatsapp}
                     helperText={t("enteravalidphone")}
                     variant="standard"
                     fullWidth
@@ -335,13 +363,13 @@ export default function CustomerForm() {
               <Item>
               <Grid item xs={12} md={12} sm={12}>
                 <TextField
-                    id="socialmedia1"
+                    id="social1"
                     label="Social Media 1"
                     name= "social1"
                     select
                     helperText={t("selectasocialnetwork")}
                     variant="standard"
-                    value={socialValue.social1}
+                    value={frmData.social1}
                     fullWidth
                     onChange={handleChange}
                     focused
@@ -358,11 +386,12 @@ export default function CustomerForm() {
               </Grid>
               <Grid item xs={12} md={12} sm={12}>
                 <TextField
-                    id="socialuser1"
+                    id="socialUser1"
+                    name="socialUser1"
                     label={t("socialmediauser")}
-                    defaultValue="@"
                     helperText={t("selectauser")}
                     variant="standard"
+                    value={frmData.socialUser1}
                     fullWidth
                     onChange={handleChange}
                     color={mobilephoneValid ? "success" : "primary"}
@@ -373,13 +402,13 @@ export default function CustomerForm() {
               <Item>
               <Grid item xs={12} md={12} sm={12}>
               <TextField
-                    id="socialmedia2"
+                    id="social2"
                     label="Social Media 2"
                     name= "social2"
                     select
                     helperText={t("selectasocialnetwork")}
                     variant="standard"
-                    value={socialValue.social2}
+                    value={frmData.social2}
                     fullWidth
                     onChange={handleChange}
                     focused
@@ -396,11 +425,13 @@ export default function CustomerForm() {
               </Grid>
               <Grid item xs={12} md={12} sm={12}>
                 <TextField
-                    id="socialuser2"
+                    id="socialUser2"
+                    name="socialUser2"
                     label={t("socialmediauser")}
-                    defaultValue="@"
+
                     helperText={t("selectauser")}
                     variant="standard"
+                    value={frmData.socialUser2}
                     fullWidth
                     onChange={handleChange}
                     color={mobilephoneValid ? "success" : "primary"}
@@ -412,13 +443,13 @@ export default function CustomerForm() {
               <Item>
               <Grid item xs={12} md={12} sm={12}>
               <TextField
-                    id="socialmedia3"
+                    id="social3"
                     label="Social Media 3"
                     name= "social3"
                     select
                     helperText={t("selectasocialnetwork")}
                     variant="standard"
-                    value={socialValue.social3}
+                    value={frmData.social3}
                     fullWidth
                     onChange={handleChange}
                     focused
@@ -435,9 +466,10 @@ export default function CustomerForm() {
               </Grid>
               <Grid item xs={12} md={12} sm={12}>
                 <TextField
-                    id="socialuser3"
+                    id="socialUser3"
+                    name="socialUser3"
                     label={t("socialmediauser")}
-                    defaultValue="@"
+                    value={frmData.socialUser3}
                     helperText={t("selectauser")}
                     variant="standard"
                     fullWidth
@@ -466,6 +498,7 @@ export default function CustomerForm() {
               >
                {t("cancel")}
               </Button>
+        </Box>
     </React.Fragment>
   )
 }
