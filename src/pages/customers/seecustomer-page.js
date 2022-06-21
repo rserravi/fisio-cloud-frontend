@@ -10,12 +10,12 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import {CustomersComponent} from '../../components/customers-comp';
+import CustomerCard from '../../components/customercard-comp';
 
 
 const mdTheme = createTheme();
 
-function CustomersContent() {
+function SeeCustomerContent() {
 
   const boardState = useSelector((state)=> state.navigator);
 
@@ -45,7 +45,7 @@ function CustomersContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CustomersComponent visible={true} />
+                  <CustomerCard/>
                 </Paper>
               </Grid>
             </Grid>
@@ -59,6 +59,6 @@ function CustomersContent() {
   );
 }
 
-export default function Customers() {
-  return <CustomersContent />;
+export default function SeeCustomer() {
+  return <SeeCustomerContent />;
 }

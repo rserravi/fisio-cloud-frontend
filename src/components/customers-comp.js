@@ -1,31 +1,31 @@
 import * as React from 'react';
 import Title from './Title';
 import { useTranslation } from 'react-i18next';
-import { Button, IconButton, Toolbar, Typography } from '@mui/material';
+import { Button, IconButton, Paper, Toolbar, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
-import SearchIcon from '@mui/icons-material/Search';
-import { styled, alpha } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-import Stack from '@mui/material/Stack';
 
 import PrintIcon from '@mui/icons-material/Print';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
 import Tooltip from '@mui/material/Tooltip';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import customerData from "../assets/data/dummy-data.json";
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import Avatar from '@mui/material/Avatar';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import PhoneForwardedIcon from '@mui/icons-material/PhoneForwarded';
+import WhatsAppIcon from '@mui/icons-material/WhatsApp';
+import EmailIcon from '@mui/icons-material/Email';
 
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { navigationClientPanel,navigationAppointmentPanel, navigationDrawer, navigationLoading, navigationSuccess } from '../pages/dashboard/navigation-slice';
-import AddCustomer from '../pages/customers/add-customer-page';
-
+import { navigationSuccess } from '../pages/dashboard/navigation-slice';
+import { nameInitial } from '../utils/name-utils.js';
+import ButtonGroup from '@mui/material/ButtonGroup';
+import PropTypes from 'prop-types'; // ES6
 
 
 const addNewAppointment= (customerId) =>{
@@ -51,20 +51,26 @@ const seeCustomer = (customerId) => {
   console.log("SEE CUSTOMER " + customerId);
 }
 
-const printForm = () =>{
-  console.log("PRINT FORM ");
+
+const callUser = (firstname, lastname, number) =>{
+  console.log("Calling to " + nameInitial(firstname) + " "+ lastname + " at " + number )
 }
 
-const pdfForm = () =>{
-  console.log("CREATE PDF");
+const whatsappUser = (firstname, lastname, number, whastsapp) =>{
+  if (whastsapp){
+    console.log("Sending Whatsapp to " + nameInitial(firstname) + " "+ lastname + " at " + whastsapp )
+  }else{
+  console.log("Sending Whastapp to " + nameInitial(firstname) + " "+ lastname + " at Mobile " + number )
+  }
 }
 
-const RenderAppointmentButton = (props) => {
+const RenderAppointmentCell = (props) => {
   const {hasFocus, value } = props;
+
   const _id = props.row.id;
   const buttonElement = React.useRef(null);
   const rippleRef = React.useRef(null);
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   React.useLayoutEffect(() => {
     if (hasFocus) {
@@ -78,16 +84,64 @@ const RenderAppointmentButton = (props) => {
 
   return (
      <strong>
-      {value}
-      
-   
-      <Button
+      <Tooltip title={t("nextappointments")}>
+      <IconButton 
+        aria-label="delete" 
+        variant='contained' 
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+     
+        sx={{ 
+          backgroundColor:'green', 
+          color:'white', 
+          fontSize:'small',
+          minHeight: 0,
+          minWidth: 0,
+          paddingX: 1.5,
+          '&:hover': {
+            backgroundColor: 'green',
+            color: 'white',
+          },
+          
+        }}>
+      {value.next}
+      </IconButton>
+      </Tooltip>
+      <Tooltip title={t("pastappointments")}>
+      <IconButton 
+        aria-label="delete" 
+        variant='contained' 
+        style={{ marginLeft: 2 }}
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+        sx={{ 
+          backgroundColor:'orange', 
+          color:'white', 
+          fontSize:'small',
+          minHeight: 0,
+          minWidth: 0,
+          paddingX: 1.5,
+          '&:hover': {
+            backgroundColor: 'orange',
+            color: 'white',
+          },
+          
+        }}>
+      {value.past}
+      </IconButton>
+      </Tooltip>
+         
+      <Tooltip title={t("adddate")}>
+      <IconButton
         component="button"
         ref={buttonElement}
         touchRippleRef={rippleRef}
         variant="contained"
+        color='primary'
         size="small"
-        style={{ marginLeft: 16 }}
+        style={{ marginLeft: 5 }}
         // Remove button from tab sequence when cell does not have focus
         tabIndex={hasFocus ? 0 : -1}
         onKeyDown={(event) => {
@@ -103,19 +157,165 @@ const RenderAppointmentButton = (props) => {
         }}
       
       >
-        {t("add")}
-      </Button>
+       <AddCircleIcon />
+      </IconButton>
+      </Tooltip>
       </strong>
   );
 };
 
+const RenderPhoneCell = (props) => {
+  const {hasFocus, value } = props;
+  const {firstName, lastName, whatsapp} = props.row;
+  const buttonElement = React.useRef(null);
+  const rippleRef = React.useRef(null);
+  const { t } = useTranslation();
+
+  React.useLayoutEffect(() => {
+    if (hasFocus) {
+      const input = buttonElement.current?.querySelector('input');
+      input?.focus();
+    } else if (rippleRef.current) {
+      // Only available in @mui/material v5.4.1 or later
+      rippleRef.current.stop({});
+    }
+  }, [hasFocus]);
+
+  return (
+     <strong>
+     
+      <Tooltip title={t("call")}>
+        <IconButton
+          component="button"
+          ref={buttonElement}
+          touchRippleRef={rippleRef}
+          variant="contained"
+          color='primary'
+          size="small"
+          style={{ marginLeft: 0 }}
+          // Remove button from tab sequence when cell does not have focus
+          tabIndex={hasFocus ? 0 : -1}
+          onKeyDown={(event) => {
+            if (event.key === ' ') {
+              // Prevent key navigation when focus is on button
+              event.stopPropagation();
+            }
+          }}
+      
+          onClick={(event) => {
+            callUser(firstName, lastName, value);
+            event.stopPropagation();
+          }}
+        
+        >
+          <PhoneForwardedIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title={t("sendwhatsapp")}>
+        <IconButton
+          component="button"
+          ref={buttonElement}
+          touchRippleRef={rippleRef}
+          variant="contained"
+          color='primary'
+          size="small"
+          style={{ marginLeft: 5 }}
+          // Remove button from tab sequence when cell does not have focus
+          tabIndex={hasFocus ? 0 : -1}
+          onKeyDown={(event) => {
+            if (event.key === ' ') {
+              // Prevent key navigation when focus is on button
+              event.stopPropagation();
+            }
+          }}
+      
+          onClick={(event) => {
+            whatsappUser(firstName, lastName, value, whatsapp);
+            event.stopPropagation();
+          }}
+        
+        >
+          <WhatsAppIcon />
+        </IconButton>
+      </Tooltip>
+      {value}
+      </strong>
+  );
+};
+
+const RenderInboundCell = (props) => {
+  const {hasFocus, value } = props;
+  const { t } = useTranslation();
+
+  const buttonElement = React.useRef(null);
+  const rippleRef = React.useRef(null);
+
+  const paperColor = () =>{
+    let back = ""
+    let front = ""
+    switch (props.row.inbound) {
+      case "unknown":
+          back = "rosybrown";
+          front = "white"
+        break;
+      case "lead":
+        back = "khaki";
+        front = "dimgray"
+      break;
+      case "customer":
+        back = "dodgerblue";
+        front = "white"
+      break;
+      case "passive":
+        back = "darkred";
+        front = "white"
+      break;
+    
+      default:
+        back = "yellow"
+        front = "white"
+        break;
+    }
+    return {
+      "back" : back,
+      "front": front
+    }
+  }
+
+  const colorPaperInbound = paperColor();
+
+  React.useLayoutEffect(() => {
+    if (hasFocus) {
+      const input = buttonElement.current?.querySelector('input');
+      input?.focus();
+    } else if (rippleRef.current) {
+      // Only available in @mui/material v5.4.1 or later
+      rippleRef.current.stop({});
+    }
+  }, [hasFocus]);
+
+  return (
+      <Paper 
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
+        
+        sx={{bgcolor:colorPaperInbound.back, color:colorPaperInbound.front}}
+        
+      >
+        <Typography variant='p' component="p" marginX={2}>{t(value)}</Typography>
+      
+      </Paper>
+  );
+};
 
 const Columns = () => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return(
     [
-      { field: 'id', headerName: t("id"), width: 50 },
+      { field: 'id', headerName: t("Id"), width: 20 },
+      { field: 'inbound', headerName: "Inbound", width: 120 ,renderCell:RenderInboundCell },
       { field: 'image', headerName:"Imagen", width:60, renderCell: (params)=>
           {
             return(
@@ -125,29 +325,33 @@ const Columns = () => {
             )
           }
       },
-      { field: 'firstName', headerName: t("name"), width: 130 },
+      { field: 'firstName', headerName: t("name"), width: 100 },
       { field: 'lastName', headerName: t("lastname"), width: 160 },
+      { field: 'email', headerName: t("email"), width: 160,},
+      
       {
         field: 'phoneNumber',
         headerName: t("phoneNumber"),
-        width: 130,
+        width: 190,
+        renderCell: RenderPhoneCell,
       },
       {
         field: 'appointments',
         headerName: t("calendar"),
         width: 130,
-        renderCell: RenderAppointmentButton,
+        renderCell: RenderAppointmentCell,
       },
       {
         field: 'actions',
         type: 'actions',
         headerName: t("actions"),
-        width: 200,
+        width: 80,
         sortable: false,
         getActions: (params) => [
           <GridActionsCellItem
-          icon={<VisibilityIcon />}
-          label="See"
+          icon={<Tooltip title={t("seecustomer")}><VisibilityIcon /></Tooltip>}
+          label={t("seecustomer")}
+          
           onClick={(event) => {
             seeCustomer(params.id);
             event.stopPropagation();
@@ -155,7 +359,8 @@ const Columns = () => {
         />,
           <GridActionsCellItem
             icon={<EditIcon />}
-            label="Edit"
+            label={t("editcustomer")}
+            showInMenu
             onClick={(event) => {
               editCustomer(params.id);
               event.stopPropagation();
@@ -163,7 +368,8 @@ const Columns = () => {
           />,
           <GridActionsCellItem
           icon={<ContentCopyIcon />}
-          label="Duplicate"
+          label={t("duplicatecustomer")}
+          showInMenu
           onClick={(event) => {
             duplicateCustomer(params.id);
             event.stopPropagation();
@@ -171,7 +377,8 @@ const Columns = () => {
         />,
         <GridActionsCellItem
             icon={<DeleteIcon />}
-            label="Delete"
+            label={t("deletecustomer")}
+            showInMenu
             onClick={(event) => {
               deleteCustomer(params.id);
               event.stopPropagation();
@@ -179,7 +386,8 @@ const Columns = () => {
           />,
           <GridActionsCellItem
           icon={<LocalPrintshopIcon />}
-          label="Print"
+          label={t("printcustomer")}
+          showInMenu
           onClick={(event) => {
             printCustomer(params.id);
             event.stopPropagation();
@@ -193,124 +401,162 @@ const Columns = () => {
 
 const rows = customerData.map((row) => 
    ({
-      id: row.id, image: row.image, firstName: row.firstname, lastName: row.lastname, phoneNumber: row.phoneNumber[0].number, appointments: row.appointments.length, 
+      id: row.id, 
+      inbound: row.inbound,
+      image: row.image, 
+      firstName: row.firstname, 
+      lastName: row.lastname,
+      email: row.email[1] ? row.email[1].emailAddress : row.email[0].emailAddress, 
+      phoneNumber: row.phoneNumber[1].number,
+      whatsapp: row.whatsapp,
+      appointments: {"next": row.appointments.length, "past": row.history.length}, 
    })
 );
 
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: alpha(theme.palette.common.white, 0.15),
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.common.white, 0.25),
-  },
-  marginRight: theme.spacing(2),
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
-}));
-
-
-export default function CustomersComponent() {
+export const CustomersComponent = (props)=> {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const compact = props.visible;
+  console.log(compact)
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const AddCustomerButton= () =>{
-    console.log("QUE COÑO PASA?")
     const actualScreen = "AddCustomer";
     navigate("/addcustomer",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
+  const [select, setSelection] = React.useState([]);
+
+  const handleRowSelection = (ids) =>{
+    setSelection(ids);
+  }
+
+  const emailSelected = () =>{
+    if (select.length===0){
+      console.log("Enviando un mail a todos");
+    }else{
+    select.forEach((valor)=>{console.log("Enviando un mail al " + valor)})
+    }
+  }
+
+  const printSelected= () =>{
+    if (select.length===0){
+      console.log("Imprimiendo todo el formulario");
+    }else{
+       let cadena = "Imprimiendo la seleccion de ";
+    select.forEach((valor)=>{cadena = cadena + valor + ","})
+     console.log (cadena);
+    }
+  }
+
+  const whastappSelected= () =>{
+    if (select.length===0){
+      console.log("Enviando un whastsapp a todos");
+    }else{
+    select.forEach((valor)=>{console.log("Enviando un whatsapp al " + valor)})
+    }
+  }
+
+  const customerToolBar = () =>{
+
+  }
+
   return (
     <React.Fragment>
      <Box sx={{ flexGrow: 1 }}>
-      <Toolbar variant='dense'>
-        <Typography variant="h6" noWrap component="div"  sx={{ display: { xs: 'none', sm: 'block' }}}>
-          {t("allcustomers")}
-        </Typography>
-        <Search>
-            <SearchIconWrapper>
-                <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-                placeholder={t("search")}
-                inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-
-          <Stack direction="row" spacing={2} justifyContent="flex-end">
-            <Button variant='contained' size="small" onClick={AddCustomerButton} startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
-            <Tooltip title={t("print")}>
-              <IconButton 
-                color="primary" 
-                aria-label="imprimir-formulario" 
-                component="span" 
-                onClick={(event) => {
-                              printForm();
-                              event.stopPropagation();
-                          }}>
-                <PrintIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title={t("exporttoPDF")}>
-              <IconButton 
-                color="primary" 
-                aria-label="exportar-formulario" 
-                component="span" onClick={(event) => {
-                              pdfForm();
-                              event.stopPropagation();
-                          }}>
-                <PictureAsPdfIcon />
-              </IconButton>
-            </Tooltip>
-          </Stack>
-
-        </Toolbar>
+     <Toolbar variant='regular'>   
+        <ButtonGroup variant="contained" aria-label="outlined primary button group">
+          <Button variant='contained' size="small" onClick={AddCustomerButton} startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
+          <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>Imprimir {select.length===0 ? "Todos" : "Seleccion"}</Button>
+          <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>Mail a {select.length===0 ? "Todos" : "Seleccion"} </Button>
+          <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>Whatsapp a {select.length===0 ? "Todos" : "Seleccion"} </Button>
+        </ButtonGroup>
+    </Toolbar>
       </Box>
-      <Toolbar />
-
+      
       <Title>{t("allcustomers")}</Title>
     
       <DataGrid
         rows={rows}
         columns={Columns()}
-        pageSize={5}
-        rowsPerPageOptions={[5]}
+        autoHeight
         checkboxSelection
-        autoHeight ="true"
+        components={{
+          Toolbar: GridToolbar,
+        }}
+        onSelectionModelChange={handleRowSelection}
+
+        localeText={{
+          toolbarDensity: t("Density"),
+          toolbarDensityLabel: t("Density"),
+          toolbarDensityCompact: t("Compact"),
+          toolbarDensityStandard: t("Standart"),
+          toolbarDensityComfortable: t("Comfortable"),
+          noRowsLabel: t("noRows"),
+          noResultsOverlayLabel: t("noResultsFound"),
+          errorOverlayDefaultLabel: t("anerrorocurred"),
+          toolbarFilters: t('Filters'),
+          toolbarFiltersLabel: t('Showfilters'),
+          toolbarFiltersTooltipHide: t('Hidefilters'),
+          toolbarFiltersTooltipShow: t('Showfilters'),
+          toolbarQuickFilterPlaceholder: t('search'),
+          toolbarQuickFilterLabel: t('search'),
+          toolbarQuickFilterDeleteIconLabel: t('Clear'),
+          toolbarExport: t('Export'),
+          toolbarExportLabel: t('Export'),
+          toolbarExportCSV: t('DownloadasCSV'),
+          toolbarExportPrint: t('print'),
+          columnsPanelTextFieldLabel: t('findcolumn'),
+          columnsPanelTextFieldPlaceholder: t('Columntitle'),
+          columnsPanelDragIconLabel: t('reordercolumn'),
+          columnsPanelShowAllButton: t('showall'),
+          columnsPanelHideAllButton: t('hideall'),
+          filterPanelAddFilter: t('Addfilter'),
+          filterPanelDeleteIconLabel: t('Delete'),
+          filterPanelLinkOperator: t('logicoperator'),
+          filterPanelOperators: t('Operator'), // TODO v6: rename to filterPanelOperator
+          filterPanelOperatorAnd: t('And'),
+          filterPanelOperatorOr: t('Or'),
+          filterPanelColumns: t('Columns'),
+          filterPanelInputLabel: t('Value'),
+          filterPanelInputPlaceholder: t('Filtervalue'),
+          filterOperatorContains: t('contains'),
+          filterOperatorEquals: t('equals'),
+          filterOperatorStartsWith: t('startswith'),
+          filterOperatorEndsWith: t('endswith'),
+          filterOperatorIs: t('is'),
+          filterOperatorNot: t('isnot'),
+          filterOperatorIsEmpty: t('isempty'),
+          filterOperatorIsNotEmpty: t('isnotempty'),
+          filterOperatorIsAnyOf: t('isanyof'),
+          filterValueAny: t('any'),
+          filterValueTrue: t('true'),
+          filterValueFalse: t('false'),
+          columnMenuLabel: t('Menu'),
+          columnMenuShowColumns: t('showcolumns'),
+          columnMenuFilter: t('Filter'),
+          columnMenuHideColumn: t('Hide'),
+          columnMenuUnsort: t('Unsort'),
+          columnMenuSortAsc: t('SortbyASC'),
+          columnMenuSortDesc: t('SortbyDESC'),
+          columnHeaderFiltersLabel: t('Showfilters'),
+          columnHeaderSortIconLabel: t('Sort'),
+          booleanCellTrueLabel: t('yes'),
+          booleanCellFalseLabel: t('no'),
+          footerRowSelected: (count) =>
+          count !== 1
+            ? `${count.toLocaleString() + " " + t("rowsselected")}`
+            : `${count.toLocaleString() + " " + t("rowselected")}`,
+          footerTotalRows: t('TotalRows')
+        }}
       />
 
     </React.Fragment>
   );
+}
+
+CustomersComponent.propTypes = {
+  props: PropTypes.bool.isRequired
 }

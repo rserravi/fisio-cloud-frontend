@@ -6,6 +6,7 @@
         "lastname": "Rubio",
         "image": "juanjorubio.jpg",
         "gender": "male",
+        "inbound": "customer",
         "email":
         [
             {
@@ -36,7 +37,7 @@
               "number": "646 555-4567"
             }
         ],
-        "whatsapp": "+3464534212",
+        "whatsapp": "",
         "socialMedia":
         [
             {
@@ -88,6 +89,16 @@
                 "status":"pending",
                 "notes":""
             }
+        ],
+        "contacthistory":[
+            {
+                "date": "14-2-2018",
+                "type": "email",
+                "duration": "",
+                "subject": "Información",
+                "notes": "Preguntó por horarios. Debo devolver la llamada cuanto antes.",
+                "follow": "nothing"
+            }
         ]
     },
     {
@@ -96,7 +107,8 @@
         "firstname": "Adel",
         "lastname": "Khader",
         "image": "adelkader.jpg",
-        "gender": "female",
+        "gender": "male",
+        "inbound": "passive",
         "email":
         [
             {
@@ -167,6 +179,81 @@
                 "price":"50",
                 "status":"pending",
                 "notes":""
+            }
+        ],
+        "contacthistory":[
+            {
+                "date": "14-2-2018",
+                "type": "call",
+                "duration": "80",
+                "subject": "Información",
+                "notes": "Preguntó por horarios pero no le iba bien"
+            }
+        ]
+    },
+    {
+        "id":3,
+        "addedAt": "1-10-2015",
+        "firstname": "Maria",
+        "lastname": "Lapuerta",
+        "image": "marialapuerta.jpg",
+        "gender": "female",
+        "inbound": "lead",
+        "email":
+        [
+            {
+              "type": "home",
+              "emailAddress": ""
+            }
+        ],
+
+        "address":
+        {
+            "streetAddress": "",
+            "city": "",
+            "state": "",
+            "postalCode": "",
+            "country":""
+        },
+        "phoneNumber":
+        [
+            {
+              "type": "home",
+              "number": ""
+            },
+            {
+              "type": "mobile",
+              "number": "+34633279233"
+            }
+        ],
+        "whatsapp": "+34633279233",
+        "socialMedia":
+        [
+            {
+                "media": "facebook",
+                "url": ""
+            },
+            {
+                "media": "twitter",
+                "url": ""
+            }
+
+        ],
+ 
+        "history":[
+
+        ],
+        "appointments":[
+            
+        ],
+        "contacthistory":[
+            {
+                "date": "14-2-2018",
+                "type": "call",
+                "duration": "80",
+                "subject": "Información",
+                "notes": "Preguntó por horarios pero no le iba bien",
+                "follow": "incalendar"
             }
         ]
     }

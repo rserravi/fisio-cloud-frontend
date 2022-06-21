@@ -27,7 +27,10 @@ function Header(props) {
         <IconButton>
           <SearchIcon />
         </IconButton>
-        <Button variant="outlined" size="small">
+        <Button variant="outlined" size="small" href='/signin' sx={{mr:2, ml:2}}>
+          Sign in
+        </Button>
+        <Button variant="outlined" size="small" href='/signup'>
           Sign up
         </Button>
       </Toolbar>

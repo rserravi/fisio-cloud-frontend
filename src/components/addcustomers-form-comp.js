@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 import { Button, ButtonBase, Typography } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { EmailValidation, PhoneVerification, ShortTextValidation } from '../utils/verification-utils';
+import { CustomerValidation, EmailValidation, PhoneVerification, ShortTextValidation } from '../utils/verification-utils';
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import UploadIcon from '@mui/icons-material/Upload';
@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
-
+import Webcam from "react-webcam";
 
 export default function CustomerForm() {
 
@@ -26,9 +26,16 @@ export default function CustomerForm() {
     event.preventDefault();
 
     frmData.addedAt = new Date().toLocaleDateString();
+    const frmValidation = CustomerValidation(frmData);
     console.log(frmData);
+    console.log(frmValidation)
+
+    /// API PARA ENVIAR EL FORMULARIO AL BACKEND
+
+    // NAVIGATE TO SEECUSTOMER(_id);
   }
-  
+
+ 
   const frmDataInit = {
     firstname:"",
     lastname:"",
@@ -42,7 +49,6 @@ export default function CustomerForm() {
     country:"Spain",
     homephone:"",
     mobilephone:"+34",
-    homephone:"+34",
     whatsapp:"+34",
     social1: "Facebook",
     social2: "Twitter",
@@ -62,6 +68,7 @@ export default function CustomerForm() {
   const [whatsappValid, setWhatsappValid] = React.useState(false);
 
   const [frmData, setFrmData] = React.useState(frmDataInit);
+  const [webcamShow, setWebcamShow] = React.useState(false); 
  
 
   const WhatsappPick = () => {
@@ -70,10 +77,9 @@ export default function CustomerForm() {
   }
 
   const handleChange = (event) => {
-    console.log(event.target.id);
+  
     const {id, name, value} = event.target;
     setFrmData({...frmData, [name]:value});
-    console.log(name)
     switch (id) {
       case "firstname":       
         setNameValid(ShortTextValidation(value, 3));
@@ -101,18 +107,41 @@ export default function CustomerForm() {
     }
   };
 
-  const makePicture = () =>{
+  const videoConstraints = {
+    width: 160,
+    height: 160,
+    facingMode: "user"
+  };
 
+  const webcamRef = React.useRef(null);
+  const getWebcamShot = ()=>{
+    if (!webcamShow){
+        setWebcamShow(true);
+    }
+    else {
+        const image = capture();
+        setFrmData({...frmData,["image"]:image});
+        setWebcamShow(false);
+    }
   }
+  const capture = React.useCallback(
+    () => {
+      const imageSrc = webcamRef.current.getScreenshot();
+      return imageSrc
+    },
+    [webcamRef]
+  );
 
   const deletePicture = () =>{
     setFrmData({...frmData,["image"]: "images/Portrait_Placeholder.png"})
   }
 
   function handleFileChange(e) {
-    console.log(e.target.files);
     setFrmData({...frmData, ["image"]:(URL.createObjectURL(e.target.files[0]))});
-}
+    }
+  const resetData= ()=>{
+    setFrmData(frmDataInit);
+  }
 
   const Input = styled('input')({
     display: 'none',
@@ -130,6 +159,7 @@ export default function CustomerForm() {
 
   return (
     <React.Fragment>
+       
         <Box component="form" noValidate onSubmit={handleSubmit} >
             <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
              <Grid item xs={12}>
@@ -178,7 +208,15 @@ export default function CustomerForm() {
               <Grid item xs={2} md={2} sm={2} marginTop={3}>
                 <Paper>
                 <ButtonBase maxWidth="160" height="160" width="160">
-                    <img maxWidth="155" width={155} height={155} src={frmData.image} alt="Upload"></img>
+                    
+                        {webcamShow ? <Webcam
+                            audio={false}
+                            height={160}
+                            ref={webcamRef}
+                            screenshotFormat="image/jpeg"
+                            width={160}
+                            videoConstraints={videoConstraints}
+                        /> : <img maxWidth="155" width={155} height={155} src={frmData.image} alt="Upload"></img>}
                 </ButtonBase>
                 <Stack direction="row" alignItems="center" spacing={2}>
                   <label htmlFor="upload-button">
@@ -189,8 +227,8 @@ export default function CustomerForm() {
                     </IconButton>
                   </label>
                   <label htmlFor="camera-button">
-                   
-                    <IconButton color="primary" aria-label="make picture" component="span" onClick={makePicture}>
+                 
+                    <IconButton color={!webcamShow?"primary":"success"} aria-label="make picture" component="span" onClick={getWebcamShot}>
                       <PhotoCamera />
                     </IconButton>
                   </label>
@@ -295,7 +333,6 @@ export default function CustomerForm() {
                     id="country"
                     name="country"
                     label={t("country")}
-                    defaultValue="España"
                     helperText={t("enteravalidcountry")}
                     variant="standard"
                     fullWidth
@@ -494,6 +531,7 @@ export default function CustomerForm() {
                 fullWidth
                 variant="contained"
                 color = "error"
+                onClick={resetData}
                 sx={{ mt: 3, mb: 2 }}
               >
                {t("cancel")}

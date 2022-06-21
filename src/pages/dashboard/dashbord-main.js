@@ -8,11 +8,11 @@ import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Chart from '../../components/Chart';
 import Deposits from '../../components/Deposits';
-import Orders from '../../components/Orders';
 import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
+import {CustomersComponent} from '../../components/customers-comp';
 
 
 const mdTheme = createTheme();
@@ -73,10 +73,10 @@ function DashboardContent() {
                   <Deposits />
                 </Paper>
               </Grid>
-              {/* Recent Orders */}
+              {/* Customer Grid*/}
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
+                  <CustomersComponent visible={false} />
                 </Paper>
               </Grid>
             </Grid>

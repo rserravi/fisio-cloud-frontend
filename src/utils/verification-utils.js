@@ -1,4 +1,3 @@
-import React from "react";
 import validator from 'validator';
 
 export const SignUpValidator = (frmdata) =>{
@@ -49,5 +48,22 @@ export const LongTextValidation = (text, maxChars) => {
 }
 
 export const PhoneVerification = (text) => {
-    return (true)
+    return (validator.isMobilePhone(text))
+}
+
+export const CustomerValidation = (frmData) =>{
+    const required = {
+        firstname : false,
+        lastname : false,
+        email: false,
+        phone: false,
+    }
+
+    required.firstname = frmData.firstname !="";
+    required.lastname = frmData.lastname !="";
+    required.email = (validator.isEmail(frmData.emailhome) || validator.isEmail(frmData.emailwork));
+    const homephone= (frmData.homephone !="" && validator.isMobilePhone(frmData.homephone));
+    const mobilephone= (frmData.mobilephone !="" && validator.isMobilePhone(frmData.mobilephone));
+    required.phone = homephone || mobilephone;
+    return required;
 }

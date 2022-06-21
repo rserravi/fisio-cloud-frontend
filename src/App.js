@@ -8,6 +8,7 @@ import LandingPage from './pages/landing-page/landing-page';
 import SignUp from './pages/sign-up/sign-up';
 import Customers from './pages/customers/customers-page';
 import AddCustomer from './pages/customers/add-customer-page';
+import SeeCustomer from './pages/customers/seecustomer-page';
 
 
 function App() {
@@ -25,6 +26,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/customers" element={<Customers />} />
           <Route path="/addcustomer" element={<AddCustomer />} />
+          <Route path='/customer/:tid' element={<SeeCustomer />} />
         </Routes>
       </Router>
 
