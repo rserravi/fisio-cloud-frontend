@@ -18,6 +18,7 @@ import Title from './Title';
 import { navigationSuccess } from '../pages/dashboard/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import customerData from "../assets/data/dummy-data.json";
+import { paperColor } from '../utils/mui-custom-utils';
 
 
 //ICONS
@@ -322,40 +323,7 @@ const RenderInboundCell = (props) => {
 
   const buttonElement = React.useRef(null);
   const rippleRef = React.useRef(null);
-
-  const paperColor = () =>{
-    let back = ""
-    let front = ""
-    switch (props.row.inbound) {
-      case "unknown":
-          back = "rosybrown";
-          front = "white"
-        break;
-      case "lead":
-        back = "khaki";
-        front = "dimgray"
-      break;
-      case "customer":
-        back = "dodgerblue";
-        front = "white"
-      break;
-      case "passive":
-        back = "darkred";
-        front = "white"
-      break;
-    
-      default:
-        back = "yellow"
-        front = "white"
-        break;
-    }
-    return {
-      "back" : back,
-      "front": front
-    }
-  }
-
-  const colorPaperInbound = paperColor();
+  const colorPaperInbound = paperColor(props.row.inbound);
 
   React.useLayoutEffect(() => {
     if (hasFocus) {

@@ -6,6 +6,7 @@ import RedditIcon from '@mui/icons-material/Reddit';
 import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import InstagramIcon from '@mui/icons-material/Instagram';
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 
 export const socialNetworks = [
     {
@@ -37,3 +38,19 @@ export const socialNetworks = [
       icon: <React.Fragment><YouTubeIcon /></React.Fragment>,
     },
 ];
+
+export const findSocialIcon= (socialNet) =>{
+
+  const str = socialNet;
+  const str2 = str.charAt(0).toUpperCase() + str.slice(1);
+
+  const iconFragment = socialNetworks.find(o => o.value === str2 );
+
+  if (iconFragment){
+    return iconFragment.icon
+  }else{
+    return <React.Fragment><ErrorOutlineIcon /></React.Fragment>
+  }
+
+  
+}

@@ -10,7 +10,7 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import CustomerCard from '../../components/customercard-comp';
+import CustomerCard from '../../components/customer-card-comp';
 
 
 const mdTheme = createTheme();

@@ -6,13 +6,13 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Chart from '../../components/Chart';
 import Deposits from '../../components/Deposits';
 import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import {CustomersComponent} from '../../components/customers-comp';
+import CalendarComp from '../../components/calendar-comp';
 
 
 const mdTheme = createTheme();
@@ -46,7 +46,7 @@ function DashboardContent() {
 
          
             <Grid container spacing={3}>
-              {/* Chart */}
+              {/* Calendar */}
               <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
@@ -56,7 +56,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                  <Chart />
+                 <CalendarComp />
                 </Paper>
               </Grid>
           
