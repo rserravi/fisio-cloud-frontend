@@ -157,6 +157,8 @@
     "lead":"interesado",
     "customer":"cliente",
     "passive":"pasivo",
-    "TotalRows:":"Lineas Totales:"
-
+    "newCustomers": "Clientes Nuevos",
+    "customersWithAppointments": "Clientes con citas próximas",
+    "totalrows:":"Lineas Totales:",
+    "sendemail": "Enviar email"
 }

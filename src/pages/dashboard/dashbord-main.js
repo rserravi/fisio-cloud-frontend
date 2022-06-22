@@ -70,13 +70,17 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
+                
                   <Deposits />
+                 
                 </Paper>
               </Grid>
               {/* Customer Grid*/}
               <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CustomersComponent visible={false} />
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 400 }}>
+                  <Container sx={{height:320}}>
+                    <CustomersComponent compact={true} info="withAppointments" />
+                    </Container>
                 </Paper>
               </Grid>
             </Grid>

@@ -45,7 +45,7 @@ function CustomersContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CustomersComponent visible={true} />
+                  <CustomersComponent compact={false} info="all"/>
                 </Paper>
               </Grid>
             </Grid>
