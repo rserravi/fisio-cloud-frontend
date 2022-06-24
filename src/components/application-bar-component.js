@@ -151,7 +151,7 @@ function ApplicationBar(boardState) {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-             {t(title)}
+             {title}
             </Typography>
             
              <Tooltip title={t("settings")}>

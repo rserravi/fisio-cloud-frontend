@@ -12,6 +12,8 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
 import CustomerForm from '../../components/addcustomers-form-comp';
+import { useTranslation } from 'react-i18next';
+
 
 
 const mdTheme = createTheme();
@@ -19,13 +21,14 @@ const mdTheme = createTheme();
 function AddCustomerContent() {
 
   const boardState = useSelector((state)=> state.navigator);
+  const { t } = useTranslation();
 
   
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title="customers" />
+        <ApplicationBar boardState={boardState} title={t("customers")} />
         <SideMenu boardState={boardState} />
 
         <Box

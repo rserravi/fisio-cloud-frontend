@@ -11,6 +11,7 @@ import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import {CustomersComponent} from '../../components/customers-comp';
+import { useTranslation } from 'react-i18next';
 
 
 const mdTheme = createTheme();
@@ -18,12 +19,13 @@ const mdTheme = createTheme();
 function CustomersContent() {
 
   const boardState = useSelector((state)=> state.navigator);
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title="customers" />
+        <ApplicationBar boardState={boardState} title={t("customers")} />
         <SideMenu boardState={boardState} />
 
         <Box

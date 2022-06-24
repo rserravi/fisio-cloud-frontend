@@ -11,6 +11,8 @@ import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import CustomerCard from '../../components/customer-card-comp';
+import customerData from "../../assets/data/dummy-data.json";
+import { t } from 'i18next';
 
 
 const mdTheme = createTheme();
@@ -18,12 +20,14 @@ const mdTheme = createTheme();
 function SeeCustomerContent() {
 
   const boardState = useSelector((state)=> state.navigator);
-
+  const _id = 0;
+  const customer = customerData[_id];
+  
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title="customers" />
+        <ApplicationBar boardState={boardState} title={t("Customer") +": " + customer.firstname + " " + customer.lastname +". ID:" + customer.id} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -44,7 +48,7 @@ function SeeCustomerContent() {
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                <Paper sx={{ p: 0, display: 'flex', flexDirection: 'column' }}>
                   <CustomerCard/>
                 </Paper>
               </Grid>

@@ -1,3 +1,8 @@
+import FemaleIcon from '@mui/icons-material/Female';
+import MaleIcon from '@mui/icons-material/Male';
+import TransgenderIcon from '@mui/icons-material/Transgender';
+import React from 'react';
+ 
  export const paperColor = (inbound) =>{
     let back = ""
     let front = ""
@@ -29,3 +34,13 @@
       "front": front
     }
   }
+
+export const GenderIcon = (props) =>{
+  if (props.name === "male"){
+     return <React.Fragment><MaleIcon /></React.Fragment>
+  }
+  if (props.name === "female"){
+    return <React.Fragment><FemaleIcon /></React.Fragment>
+ }
+ return <React.Fragment><TransgenderIcon /></React.Fragment>
+}

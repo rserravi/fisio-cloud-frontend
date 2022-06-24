@@ -13,19 +13,21 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import {CustomersComponent} from '../../components/customers-comp';
 import CalendarComp from '../../components/calendar-comp';
+import { useTranslation } from 'react-i18next';
+
 
 
 const mdTheme = createTheme();
 
 function DashboardContent() {
-
+  const { t } = useTranslation();
   const boardState = useSelector((state)=> state.navigator);
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title="dashboard" />
+        <ApplicationBar boardState={boardState} title={t("dashboard")} />
         <SideMenu boardState={boardState} />
 
         <Box
