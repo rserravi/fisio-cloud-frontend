@@ -18,7 +18,7 @@ import Title from './Title';
 import { navigationSuccess } from '../pages/dashboard/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import customerData from "../assets/data/dummy-data.json";
-import { paperColor } from '../utils/mui-custom-utils';
+import { LocalTextForDataGrid, paperColor } from '../utils/mui-custom-utils';
 
 
 //ICONS
@@ -61,9 +61,6 @@ const printCustomer = (customerId) => {
   console.log("PRINT CUSTOMER " + customerId);
 }
 
-const seeCustomer = (customerId) => {
-  console.log("SEE CUSTOMER " + customerId);
-}
 
 const callUser = (firstname, lastname, number) =>{
   console.log("Calling to " + nameInitial(firstname) + " "+ lastname + " at " + number )
@@ -389,95 +386,7 @@ const appointmentsWidth = () =>{
   }
 }
 
-const Columns = () => {
-  const { t } = useTranslation();
 
-  return(
-    [
-      { field: 'id', headerName: t("Id"), width: 20 },
-      { field: 'inbound', headerName: "Inbound", width: 120 ,renderCell:RenderInboundCell },
-      { field: 'image', headerName:"Imagen", width:60, renderCell: (params)=>
-          {
-            return(
-              <>
-                <Avatar src={"./images/" + params.value} />
-              </>
-            )
-          }
-      },
-      { field: 'firstName', headerName: t("name"), width: 100 },
-      { field: 'lastName', headerName: t("lastname"), width: 130 },
-      { field: 'email', headerName: t("email"), width: 190, renderCell:RenderEmailCell},
-      
-      {
-        field: 'phoneNumber',
-        headerName: t("phoneNumber"),
-        width: 190,
-        renderCell: RenderPhoneCell,
-      },
-      {
-        field: 'appointments',
-        headerName: t("calendar"),
-        width: appointmentsWidth(),
-        renderCell: RenderAppointmentCell,
-      },
-      {
-        field: 'actions',
-        type: 'actions',
-        headerName: t("actions"),
-        width: 80,
-        sortable: false,
-        getActions: (params) => [
-          <GridActionsCellItem
-          icon={<Tooltip title={t("seecustomer")}><VisibilityIcon /></Tooltip>}
-          label={t("seecustomer")}
-          
-          onClick={(event) => {
-            seeCustomer(params.id);
-            event.stopPropagation();
-        }}
-        />,
-          <GridActionsCellItem
-            icon={<EditIcon />}
-            label={t("editcustomer")}
-            showInMenu
-            onClick={(event) => {
-              editCustomer(params.id);
-              event.stopPropagation();
-          }}
-          />,
-          <GridActionsCellItem
-          icon={<ContentCopyIcon />}
-          label={t("duplicatecustomer")}
-          showInMenu
-          onClick={(event) => {
-            duplicateCustomer(params.id);
-            event.stopPropagation();
-        }}
-        />,
-        <GridActionsCellItem
-            icon={<DeleteIcon />}
-            label={t("deletecustomer")}
-            showInMenu
-            onClick={(event) => {
-              deleteCustomer(params.id);
-              event.stopPropagation();
-          }}
-          />,
-          <GridActionsCellItem
-          icon={<LocalPrintshopIcon />}
-          label={t("printcustomer")}
-          showInMenu
-          onClick={(event) => {
-            printCustomer(params.id);
-            event.stopPropagation();
-        }}
-        />,
-        ],
-      },
-    ]
-  )
-} 
 
 
 /////////////////////////////////
@@ -509,13 +418,104 @@ export const CustomersComponent = (props)=> {
      whatsapp: row.whatsapp,
      appointments: {"next": row.appointments.length, "past": row.history.length}, 
   })
-);
+  );
+
+  const Columns = () => {
+    const { t } = useTranslation();
+  
+    return(
+      [
+        { field: 'id', headerName: t("Id"), width: 20 },
+        { field: 'inbound', headerName: "Inbound", width: 120 ,renderCell:RenderInboundCell },
+        { field: 'image', headerName:"Imagen", width:60, renderCell: (params)=>
+            {
+              return(
+                <>
+                  <Avatar src={"./images/" + params.value} />
+                </>
+              )
+            }
+        },
+        { field: 'firstName', headerName: t("name"), width: 100 },
+        { field: 'lastName', headerName: t("lastname"), width: 130 },
+        { field: 'email', headerName: t("email"), width: 190, renderCell:RenderEmailCell},
+        
+        {
+          field: 'phoneNumber',
+          headerName: t("phoneNumber"),
+          width: 190,
+          renderCell: RenderPhoneCell,
+        },
+        {
+          field: 'appointments',
+          headerName: t("calendar"),
+          width: appointmentsWidth(),
+          renderCell: RenderAppointmentCell,
+        },
+        {
+          field: 'actions',
+          type: 'actions',
+          headerName: t("actions"),
+          width: 80,
+          sortable: false,
+          getActions: (params) => [
+            <GridActionsCellItem
+            icon={<Tooltip title={t("seecustomer")}><VisibilityIcon /></Tooltip>}
+            label={t("seecustomer")}
+            
+            onClick={(event) => {
+              seeCustomer(params.id);
+              event.stopPropagation();
+          }}
+          />,
+          
+            <GridActionsCellItem
+            icon={<ContentCopyIcon />}
+            label={t("duplicatecustomer")}
+            showInMenu
+            onClick={(event) => {
+              duplicateCustomer(params.id);
+              event.stopPropagation();
+          }}
+          />,
+          <GridActionsCellItem
+              icon={<DeleteIcon />}
+              label={t("deletecustomer")}
+              showInMenu
+              onClick={(event) => {
+                deleteCustomer(params.id);
+                event.stopPropagation();
+            }}
+            />,
+            <GridActionsCellItem
+            icon={<LocalPrintshopIcon />}
+            label={t("printcustomer")}
+            showInMenu
+            onClick={(event) => {
+              printCustomer(params.id);
+              event.stopPropagation();
+          }}
+          />,
+          ],
+        },
+      ]
+    )
+  } 
+
   // NAVIGATE FUNCTIONS
   const AddCustomerButton= () =>{
     const actualScreen = "AddCustomer";
     navigate("/addcustomer",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
+
+  const seeCustomer = (customerId) => {
+    console.log("SEE CUSTOMER " + customerId);
+    const actualScreen = "SeeCustomer";
+    navigate("/customer/"+customerId,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+ 
 
   // Select has an array of selected rows
   const [select, setSelection] = React.useState([]);
@@ -609,71 +609,7 @@ export const CustomersComponent = (props)=> {
       
         onSelectionModelChange={handleRowSelection}
 
-        localeText={
-          { 
-          toolbarDensity: t("Density"),
-          toolbarDensityLabel: t("Density"),
-          toolbarDensityCompact: t("Compact"),
-          toolbarDensityStandard: t("Standart"),
-          toolbarDensityComfortable: t("Comfortable"),
-          noRowsLabel: t("noRows"),
-          noResultsOverlayLabel: t("noResultsFound"),
-          errorOverlayDefaultLabel: t("anerrorocurred"),
-          toolbarFilters: t('Filters'),
-          toolbarFiltersLabel: t('Showfilters'),
-          toolbarFiltersTooltipHide: t('Hidefilters'),
-          toolbarFiltersTooltipShow: t('Showfilters'),
-          toolbarQuickFilterPlaceholder: t('search'),
-          toolbarQuickFilterLabel: t('search'),
-          toolbarQuickFilterDeleteIconLabel: t('Clear'),
-          toolbarExport: t('Export'),
-          toolbarExportLabel: t('Export'),
-          toolbarExportCSV: t('DownloadasCSV'),
-          toolbarExportPrint: t('print'),
-          columnsPanelTextFieldLabel: t('findcolumn'),
-          columnsPanelTextFieldPlaceholder: t('Columntitle'),
-          columnsPanelDragIconLabel: t('reordercolumn'),
-          columnsPanelShowAllButton: t('showall'),
-          columnsPanelHideAllButton: t('hideall'),
-          filterPanelAddFilter: t('Addfilter'),
-          filterPanelDeleteIconLabel: t('Delete'),
-          filterPanelLinkOperator: t('logicoperator'),
-          filterPanelOperators: t('Operator'), // TODO v6: rename to filterPanelOperator
-          filterPanelOperatorAnd: t('And'),
-          filterPanelOperatorOr: t('Or'),
-          filterPanelColumns: t('Columns'),
-          filterPanelInputLabel: t('Value'),
-          filterPanelInputPlaceholder: t('Filtervalue'),
-          filterOperatorContains: t('contains'),
-          filterOperatorEquals: t('equals'),
-          filterOperatorStartsWith: t('startswith'),
-          filterOperatorEndsWith: t('endswith'),
-          filterOperatorIs: t('is'),
-          filterOperatorNot: t('isnot'),
-          filterOperatorIsEmpty: t('isempty'),
-          filterOperatorIsNotEmpty: t('isnotempty'),
-          filterOperatorIsAnyOf: t('isanyof'),
-          filterValueAny: t('any'),
-          filterValueTrue: t('true'),
-          filterValueFalse: t('false'),
-          columnMenuLabel: t('Menu'),
-          columnMenuShowColumns: t('showcolumns'),
-          columnMenuFilter: t('Filter'),
-          columnMenuHideColumn: t('Hide'),
-          columnMenuUnsort: t('Unsort'),
-          columnMenuSortAsc: t('SortbyASC'),
-          columnMenuSortDesc: t('SortbyDESC'),
-          columnHeaderFiltersLabel: t('Showfilters'),
-          columnHeaderSortIconLabel: t('Sort'),
-          booleanCellTrueLabel: t('yes'),
-          booleanCellFalseLabel: t('no'),
-          footerRowSelected: (count) =>
-            count !== 1
-              ? `${count.toLocaleString() + " " + t("rowsselected")}`
-              : `${count.toLocaleString() + " " + t("rowselected")}`,
-            footerTotalRows: "total"
-          }
-        }
+        localeText={LocalTextForDataGrid()}
       />
       
     </React.Fragment>

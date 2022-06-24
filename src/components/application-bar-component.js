@@ -14,7 +14,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@mui/material/Avatar';
-import avatarPicture from "../img/RubenSerra.jpg";
+import avatarPicture from "../assets/img/RubenSerra.jpg"
 import { useDispatch } from "react-redux";
 import {navigationDrawer } from '../pages/dashboard/navigation-slice';
 import Tooltip from '@mui/material/Tooltip';
@@ -70,7 +70,7 @@ function ApplicationBar(boardState) {
 
   const [openDialog, setOpenDialog]= React.useState(false);
 
-  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenUserMenu = (event) => {
   setAnchorElUser(event.currentTarget);
   };
 
@@ -78,7 +78,7 @@ function ApplicationBar(boardState) {
     setAnchorElUser("");
   };
 
-  const handleOpenBadgesMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleOpenBadgesMenu = (event) => {
     setAnchorElBadges(event.currentTarget);
     };
   

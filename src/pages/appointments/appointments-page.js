@@ -10,46 +10,23 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import CustomerCard from '../../components/customer-card-comp';
-import { t } from 'i18next';
-import { useNavigate, useParams } from 'react-router-dom';
-import { getCustomer } from '../../utils/tests/dataFetch-utils';
-import LinearProgress from '@mui/material/LinearProgress';
-
+import {CustomersComponent} from '../../components/customers-comp';
+import { useTranslation } from 'react-i18next';
+import { AppointmentsComponent } from '../../components/appointments-comp';
 
 
 const mdTheme = createTheme();
 
-function SeeCustomerContent() {
+function AppoinmentsContent() {
 
   const boardState = useSelector((state)=> state.navigator);
-  const _id = Number(useParams().tid);
-  const customer = getCustomer(_id);
-  const navigate = useNavigate();
-  
-  React.useEffect(() => {
-    if (!customer){
-     navigate("/404")   
-    }
-  },[])
-
-  if (!customer){
-    console.log("NO HAY CLIENTE");
-    return (
-      <ThemeProvider theme={mdTheme}>
-         <CssBaseline />
-         <Box sx={{ width: '100%', height:'100%'}}>
-            <LinearProgress />
-         </Box>
-      </ThemeProvider>
-    )
-  }
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("Customer") +": " + customer.firstname + " " + customer.lastname +". ID:" + customer.id} />
+        <ApplicationBar boardState={boardState} title={t("appointments")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -70,8 +47,8 @@ function SeeCustomerContent() {
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
-                <Paper sx={{ p: 0, display: 'flex', flexDirection: 'column' }}>
-                  <CustomerCard _id={_id}/>
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  <AppointmentsComponent compact={false} info="all"/>
                 </Paper>
               </Grid>
             </Grid>
@@ -85,6 +62,6 @@ function SeeCustomerContent() {
   );
 }
 
-export default function SeeCustomer() {
-  return <SeeCustomerContent />;
+export default function Appointments() {
+  return <AppoinmentsContent />;
 }

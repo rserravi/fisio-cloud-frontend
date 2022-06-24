@@ -182,6 +182,10 @@
     "printcontact": "Imprimir comunicación",
     "appointmenthistory": "Historial de Citas",
     "contacthistory": "Historial de Comunicaciones",
-    "showmore":"Mostrar más"
+    "showmore":"Mostrar más",
+    "paid": "pagado",
+    "pending": "pendiente",
+    "Price": "Precio",
+    "appointments": "Citas"
 
 }

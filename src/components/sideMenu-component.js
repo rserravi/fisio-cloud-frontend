@@ -118,7 +118,9 @@ function SideMenu(boardState) {
   }
 
   const toogleShowSchedule= () =>{
+    dispatch(navigationLoading());
     actualScreen = "Schedule";
+    navigate("/appointments",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 

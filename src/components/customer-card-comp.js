@@ -4,7 +4,6 @@ import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import CardActions from '@mui/material/CardActions';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import customerData from "../assets/data/dummy-data.json";
@@ -13,7 +12,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
 
-import { paperColor } from '../utils/mui-custom-utils';
+import { LocalTextForDataGrid, paperColor, StatusColor } from '../utils/mui-custom-utils';
 import { styled } from '@mui/material/styles';
 import { findSocialIcon } from '../utils/social-networks-utils';
 import { GenderIcon } from '../utils/mui-custom-utils';
@@ -22,20 +21,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Title from './Title';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
+import Grid from '@mui/material/Grid';
+import { firstItemId, getCustomer, lastItemId } from '../utils/tests/dataFetch-utils';
+import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { navigationSuccess } from '../pages/dashboard/navigation-slice';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
-
-const _id = 0;
-
-const customer = customerData[_id];
-const history = customer.history;
-const appointments = customer.appointments;
-const contacthistory = customer.contacthistory;
-
-var compact = false;
 
 
 const ExpandMore = styled((props) => {
@@ -49,23 +45,111 @@ const ExpandMore = styled((props) => {
     }),
   }));
 
-const SeeHistory= (props)=>{
+const EditName= ()=>{
+    console.log("Editar Nombre")
+}
 
+
+const SeeHistory= (props)=>{
+    console.log("Ver Historial de Citas")
 }
 
 const EditHistory= (props)=>{
-
+    console.log("editar Historial de Citas")
 }
 
 const DuplicateHistory= (props)=>{
-
+    console.log("Duplicar Historial de Citas")
 }
 
 const DeleteHistory= (props)=>{
-
+    console.log("Borrar Historial de Citas")
 }
 
 const PrintHistory= (props)=>{
+    console.log("imprimir Historial de Citas")
+}
+
+const SeeAppointments= (props)=>{
+    console.log("Ver  Cita")
+}
+
+const EditAppointments= (props)=>{
+    console.log("editar Cita")
+}
+
+const DuplicateAppointments= (props)=>{
+    console.log("Duplicar Cita")
+}
+
+const DeleteAppointments= (props)=>{
+    console.log("Borrar Cita")
+}
+
+const PrintAppointments= (props)=>{
+    console.log("imprimir Cita")
+}
+
+const SeeComunications= (props)=>{
+    console.log("Ver Comunicación")
+}
+
+const EditComunications= (props)=>{
+    console.log("editar Comunicación")
+}
+
+const DuplicateComunications= (props)=>{
+    console.log("Duplicar Comunicación")
+}
+
+const DeleteComunications= (props)=>{
+    console.log("Borrar Comunicación")
+}
+
+const PrintComunications= (props)=>{
+    console.log("imprimir Comunicación")
+}
+
+const handleImageClick = () =>{
+    console.log("Name Click")
+}
+const handleEmailClick = () =>{
+    console.log("Email Click")
+}
+const handlePhoneClick = () =>{
+    console.log("Phones Click")
+}
+const handleSocialNetworksClick = () =>{
+    console.log("Social Click")
+}
+
+const handleAddressClick = () =>{
+    console.log("Address Click")
+}
+
+const addNewAppointment = () =>{
+    console.log("Añadir Cita")
+}
+
+const addNewCommunication = () =>{
+    console.log("Añadir Comunicación")
+}
+
+const seeCalendar = () =>{
+    console.log ("Ver Calendario")
+}
+
+const RenderStatusCell=(props)=>{
+  const price = props.row.price;
+  const state = props.row.status;
+  const { t } = useTranslation();
+  return (
+    <>
+    <Typography variant="p" component="p" align='left' color={StatusColor(state)} >
+        {price}€, {t(state)}
+    </Typography>
+    </>
+  );
 
 }
 
@@ -79,8 +163,8 @@ const Columns = () => {
         { field: 'startingTime', headerName: t("startingTime"), width: 100 },
         { field: 'duration', headerName: t("Duration"), width: 80 },
         { field: 'service', headerName: t("Service"), width: 90},
-        { field: 'status', headerName: t("Status"), width: 90},
-        { field: 'notes', headerName: t("Notes"), width: 300},
+        { field: 'status', headerName: t("Status"), width: 120, renderCell:RenderStatusCell },
+        { field: 'notes', headerName: t("Notes"), width: 260},
         {
             field: 'actions',
             type: 'actions',
@@ -139,6 +223,77 @@ const Columns = () => {
     )
 } 
 
+
+const AppointmentColumns = () => {
+    const { t } = useTranslation();
+
+    return(
+        [
+        { field: 'id', headerName: t("Id"), width: 20 },
+        { field: 'date', headerName: t("date"), width: 90},
+        { field: 'startingTime', headerName: t("startingTime"), width: 100 },
+        { field: 'duration', headerName: t("Duration"), width: 80 },
+        { field: 'service', headerName: t("Service"), width: 90},
+        { field: 'price', headerName: t("Price"), width: 90},
+        { field: 'notes', headerName: t("Notes"), width: 290},
+        {
+            field: 'actions',
+            type: 'actions',
+            headerName: t("actions"),
+            width: 80,
+            sortable: false,
+            getActions: (params) => [
+            <GridActionsCellItem
+            icon={<Tooltip title={t("seeappointment")}><VisibilityIcon /></Tooltip>}
+            label={t("seeappointment")}
+            
+            onClick={(event) => {
+                SeeAppointments(params.id);
+                event.stopPropagation();
+            }}
+            />,
+            <GridActionsCellItem
+                icon={<EditIcon />}
+                label={t("editappointment")}
+                showInMenu
+                onClick={(event) => {
+                EditAppointments(params.id);
+                event.stopPropagation();
+            }}
+            />,
+            <GridActionsCellItem
+            icon={<ContentCopyIcon />}
+            label={t("duplicateappointment")}
+            showInMenu
+            onClick={(event) => {
+                DuplicateAppointments(params.id);
+                event.stopPropagation();
+            }}
+            />,
+            <GridActionsCellItem
+                icon={<DeleteIcon />}
+                label={t("deleteappointment")}
+                showInMenu
+                onClick={(event) => {
+                DeleteAppointments(params.id);
+                event.stopPropagation();
+            }}
+            />,
+            <GridActionsCellItem
+            icon={<LocalPrintshopIcon />}
+            label={t("printappointment")}
+            showInMenu
+            onClick={(event) => {
+                PrintAppointments(params.id);
+                event.stopPropagation();
+            }}
+            />,
+            ],
+        },
+        ]
+    )
+} 
+
 const ColumnsContactHistory = () => {
     const { t } = useTranslation();
 
@@ -163,7 +318,7 @@ const ColumnsContactHistory = () => {
             label={t("seecontact")}
             
             onClick={(event) => {
-                SeeHistory(params.id);
+                SeeComunications(params.id);
                 event.stopPropagation();
             }}
             />,
@@ -172,7 +327,7 @@ const ColumnsContactHistory = () => {
                 label={t("editcontact")}
                 showInMenu
                 onClick={(event) => {
-                EditHistory(params.id);
+                EditComunications(params.id);
                 event.stopPropagation();
             }}
             />,
@@ -181,7 +336,7 @@ const ColumnsContactHistory = () => {
             label={t("duplicatecontact")}
             showInMenu
             onClick={(event) => {
-                DuplicateHistory(params.id);
+                DuplicateComunications(params.id);
                 event.stopPropagation();
             }}
             />,
@@ -190,7 +345,7 @@ const ColumnsContactHistory = () => {
                 label={t("deletecontact")}
                 showInMenu
                 onClick={(event) => {
-                DeleteHistory(params.id);
+                DeleteComunications(params.id);
                 event.stopPropagation();
             }}
             />,
@@ -199,7 +354,7 @@ const ColumnsContactHistory = () => {
             label={t("printcontact")}
             showInMenu
             onClick={(event) => {
-                PrintHistory(params.id);
+                PrintComunications(params.id);
                 event.stopPropagation();
             }}
             />,
@@ -209,15 +364,30 @@ const ColumnsContactHistory = () => {
     )
 } 
 
-export default function CustomerCard() {
-
-
+export default function CustomerCard(props) {
+    const _id = Number(props._id);
+    const customer = getCustomer(_id);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    
+    var compact = false;
     const { t, i18n } = useTranslation();
-    const colorPaperInbound = paperColor(customer.inbound)
 
     const [historyExpanded, setHistoryExpanded] = React.useState(true);
     const [appointmentsExpanded, setAppointmentsExpanded] = React.useState(true);
     const [contactsExpanded, setContatctExpanded] = React.useState(true);
+    // Select has an array of selected rows
+    const [select, setSelection] = React.useState([]);
+
+    if (!customer){
+        return (
+            <b>SE HA PRODUCIDO UN ERROR</b>
+        )
+    }
+    const colorPaperInbound = paperColor(customer.inbound)
+    const history = customer.history;
+    const appointments = customer.appointments;
+    const contacthistory = customer.contacthistory;
 
     const handleHistoryExpandClick = () => {
         setHistoryExpanded(!historyExpanded);
@@ -230,31 +400,69 @@ export default function CustomerCard() {
         setContatctExpanded(!contactsExpanded);
     };
 
-
-    const handleNameClick = () =>{
-        console.log("Name Click")
-    }
-    const handleEmailClick = () =>{
-        console.log("Email Click")
-    }
-    const handlePhoneClick = () =>{
-        console.log("Phones Click")
-    }
-    const handleSocialNetworksClick = () =>{
-        console.log("Social Click")
+    const SeeAllCustomers=()=>{
+        console.log("See all customers");
+        const actualScreen = "AllCustomers";
+        navigate("/customers", {replace: true});
+        dispatch(navigationSuccess(actualScreen))
     }
 
-    const handleAddressClick = () =>{
-        console.log("Address Click")
+    const SeePreviousCustomer = (event) =>{
+        event.stopPropagation();
+        if (_id <= Number(firstItemId())){
+            const actualScreen = "SeeCustomer";
+            navigate("/customer/"+ lastItemId(), {replace: true});
+            dispatch(navigationSuccess(actualScreen))
+        }else{
+            const actualScreen = "SeeCustomer";
+            navigate("/customer/"+ (_id-1), {replace: true});
+            dispatch(navigationSuccess(actualScreen))
+        }
     }
 
-    // Select has an array of selected rows
-    const [select, setSelection] = React.useState([]);
+    const SeeNextCustomer = (event) =>{
+        event.stopPropagation();
+        if (_id >= Number(lastItemId())){
+            const actualScreen = "SeeCustomer";
+            navigate("/customer/"+ firstItemId(), {replace: true});
+            dispatch(navigationSuccess(actualScreen))
+        }else{
+            const actualScreen = "SeeCustomer";
+            navigate("/customer/"+ (_id+1), {replace: true});
+            dispatch(navigationSuccess(actualScreen))
+        }
+    }
+
+    const CheckPendingNotes=()=>{
+
+        const count = history.reduce((accumulatos, obj)=>{
+         if (obj.status === "pending"){
+             return accumulatos + Number(obj.price);
+         }
+         return accumulatos;
+         
+        }, 0);
+     
+          
+         return (
+             <React.Fragment>
+             
+             {count ?<Button color='error' sx={{ marginRight:2 }}> ¡{count}€ pendientes!</Button>:<Button color='success'> 
+             Sin Deudas</Button>}
+            
+            </React.Fragment>
+         )
+     }
+    
+    
+  
 
     const handleRowSelection = (ids) =>{
         setSelection(ids);
     }
     
+  
+   
     const rowsHistory = history.map((row) => 
         ({
             id: row.id, 
@@ -273,12 +481,10 @@ export default function CustomerCard() {
         ({
             id: row.id, 
             date: row.date,
-            image: row.image, 
             startingTime: row.startingTime, 
             duration: row.duration,
             service: row.service,
-            price: row.price,
-            status: row.status,
+            price: row.price + "€",
             notes: row.notes
         })
     );
@@ -295,7 +501,7 @@ export default function CustomerCard() {
         })
     );
 
-
+  if (customer){
  
   return (
     <React.Fragment>
@@ -303,32 +509,48 @@ export default function CustomerCard() {
             <Toolbar>
                 <Typography variant="h4" component="div" align='left' sx={{ flexGrow: 1 }}>
                     {customer.firstname} {customer.lastname} <GenderIcon name={customer.gender} />
-                    <Button key={"editar nombre"}  >
+                    <Button key={"editar nombre"} onClick={EditName} >
                         Editar Nombre
                     </Button>
                 </Typography>
               
+                    {CheckPendingNotes()}
                     
-                    <Button variant="contained" key={"todos los clientes"} >
+                    <Button variant="contained" key={"todos los clientes"} onClick={SeeAllCustomers}>
                         Todos los Clientes
                     </Button>
-            
-            
+                    <IconButton color="primary" aria-label="backwards" component="span" onClick={SeePreviousCustomer}>
+                        <ChevronLeftIcon />
+                    </IconButton>
+                    <IconButton color="primary" aria-label="forward" component="span" onClick={SeeNextCustomer}>
+                        <ChevronRightIcon />
+                    </IconButton>
             </Toolbar>
         </AppBar>
         <Divider sx={{mb:2}} />
+
+
        <Card sx={{ display: 'flex',  width: '100%'  }}>
           <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
             
             {/* Firs Column of Main Box */}
-            <Box sx={{ display: 'flex', flexDirection: 'column'}}>
-               
+            <Box sx={{ display: 'inline-block', flexDirection: 'column'}}>
+            <Grid
+                container
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justify="center"
+                >
+                <Grid item xs={3}>
                 <CardMedia
                     component="img"
-                    sx={{ width: 180, alignSelf:'center' }}
+                    sx={{ width: 180, align:'center' }}
                     image={"/images/" + customer.image}
                     alt="Foto"
                 />
+                </Grid>
+                </Grid>
                 <CardContent sx={{ flex: '1 0 auto' }}>
                     
                 <Paper
@@ -346,10 +568,10 @@ export default function CustomerCard() {
                          <strong>Emails: </strong><Button size='small'  onClick={handleEmailClick}>Edit</Button>
                     </Typography>
                     <Typography component="div" variant="p" align='left'>
-                        Home: <a href={`mailto:${customer.email[0].emailAddress}`}> {customer.email[0].emailAddress} </a> 
+                        Home:{customer.email[0].emailAddress ? <a href={`mailto:${customer.email[0].emailAddress}`}> {customer.email[0].emailAddress} </a> :<></>}
                     </Typography>
                     <Typography component="div" variant="p" align='left'>
-                        Work: <a href={`mailto:${customer.email[1].emailAddress}`}> {customer.email[1].emailAddress} </a> 
+                        Work:{customer.email[1] ? <a href={`mailto:${customer.email[1].emailAddress}`}> {customer.email[1].emailAddress} </a> :<></>}
                     </Typography>
                     </Card>
                 </CardContent>
@@ -406,106 +628,15 @@ export default function CustomerCard() {
             {/* Second column of main box */}
           
             <Box sx={{ display: 'inline', flexDirection: 'column',  width:'100%', height:'100%'}}>
-              <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%'}}>
-                <Title>{t("appointmenthistory")}</Title>
-                <ExpandMore
-                    expand={historyExpanded}
-                    onClick={handleHistoryExpandClick}
-                    aria-expanded={historyExpanded}
-                    aria-label={t("showmore")}
-                >
-                    <ExpandMoreIcon />
-                </ExpandMore>
-                </Box>
-            <Collapse in={historyExpanded} timeout="auto" unmountOnExit>
-                <div style={{ height: 285, width: '100%' }}>
-                <div style={{ height: 280, width: '100%' }}>
-                
-                    <DataGrid
-                        rows={rowsHistory}
-                        columns={Columns()}
-                        density="compact"
-                        checkboxSelection ={!compact}
-                        rowsPerPageOptions={[5,10,25,50,100]}
-                        rowsPerPage ={10}
-                        components={!compact?{
-                        Toolbar: GridToolbar,
-                        }:null}
-                    
-                        onSelectionModelChange={handleRowSelection}
-
-                        localeText={
-                        { 
-                        toolbarDensity: t("Density"),
-                        toolbarDensityLabel: t("Density"),
-                        toolbarDensityCompact: t("Compact"),
-                        toolbarDensityStandard: t("Standart"),
-                        toolbarDensityComfortable: t("Comfortable"),
-                        noRowsLabel: t("noRows"),
-                        noResultsOverlayLabel: t("noResultsFound"),
-                        errorOverlayDefaultLabel: t("anerrorocurred"),
-                        toolbarFilters: t('Filters'),
-                        toolbarFiltersLabel: t('Showfilters'),
-                        toolbarFiltersTooltipHide: t('Hidefilters'),
-                        toolbarFiltersTooltipShow: t('Showfilters'),
-                        toolbarQuickFilterPlaceholder: t('search'),
-                        toolbarQuickFilterLabel: t('search'),
-                        toolbarQuickFilterDeleteIconLabel: t('Clear'),
-                        toolbarExport: t('Export'),
-                        toolbarExportLabel: t('Export'),
-                        toolbarExportCSV: t('DownloadasCSV'),
-                        toolbarExportPrint: t('print'),
-                        columnsPanelTextFieldLabel: t('findcolumn'),
-                        columnsPanelTextFieldPlaceholder: t('Columntitle'),
-                        columnsPanelDragIconLabel: t('reordercolumn'),
-                        columnsPanelShowAllButton: t('showall'),
-                        columnsPanelHideAllButton: t('hideall'),
-                        filterPanelAddFilter: t('Addfilter'),
-                        filterPanelDeleteIconLabel: t('Delete'),
-                        filterPanelLinkOperator: t('logicoperator'),
-                        filterPanelOperators: t('Operator'), // TODO v6: rename to filterPanelOperator
-                        filterPanelOperatorAnd: t('And'),
-                        filterPanelOperatorOr: t('Or'),
-                        filterPanelColumns: t('Columns'),
-                        filterPanelInputLabel: t('Value'),
-                        filterPanelInputPlaceholder: t('Filtervalue'),
-                        filterOperatorContains: t('contains'),
-                        filterOperatorEquals: t('equals'),
-                        filterOperatorStartsWith: t('startswith'),
-                        filterOperatorEndsWith: t('endswith'),
-                        filterOperatorIs: t('is'),
-                        filterOperatorNot: t('isnot'),
-                        filterOperatorIsEmpty: t('isempty'),
-                        filterOperatorIsNotEmpty: t('isnotempty'),
-                        filterOperatorIsAnyOf: t('isanyof'),
-                        filterValueAny: t('any'),
-                        filterValueTrue: t('true'),
-                        filterValueFalse: t('false'),
-                        columnMenuLabel: t('Menu'),
-                        columnMenuShowColumns: t('showcolumns'),
-                        columnMenuFilter: t('Filter'),
-                        columnMenuHideColumn: t('Hide'),
-                        columnMenuUnsort: t('Unsort'),
-                        columnMenuSortAsc: t('SortbyASC'),
-                        columnMenuSortDesc: t('SortbyDESC'),
-                        columnHeaderFiltersLabel: t('Showfilters'),
-                        columnHeaderSortIconLabel: t('Sort'),
-                        booleanCellTrueLabel: t('yes'),
-                        booleanCellFalseLabel: t('no'),
-                        footerRowSelected: (count) =>
-                            count !== 1
-                            ? `${count.toLocaleString() + " " + t("rowsselected")}`
-                            : `${count.toLocaleString() + " " + t("rowselected")}`,
-                            footerTotalRows: "total"
-                        }
-                        }
-                    />
-                  
-                   </div>
-                    </div>
-                </Collapse>
-                <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%'}}>
-                <Title>{t("nextappointments")}</Title>
+              
+                <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%' }}>
+                <Title>{t("nextappointments")}</Title> 
+                <Button variant="outlined" size="small" sx={{ ml: 6, mb:1 }} key={"Ver Calendario"} onClick={seeCalendar}>
+                    Ver Calendario
+                </Button>
+                <Button variant="outlined" size="small" sx={{ ml: 6, mb:1 }} key={"AñadirCita"} onClick={addNewAppointment}>
+                    Añadir Cita
+                </Button>
                 <ExpandMore
                     expand={appointmentsExpanded}
                     onClick={handleAppointmentExpandClick}
@@ -520,7 +651,7 @@ export default function CustomerCard() {
                 <div style={{ height: 280, width: '100%' }}>
                     <DataGrid
                         rows={rowsAppointments}
-                        columns={Columns()}
+                        columns={AppointmentColumns()}
                         checkboxSelection ={!compact}
                         density="compact"
                         rowsPerPageOptions={[5,10,25,50,100]}
@@ -530,78 +661,16 @@ export default function CustomerCard() {
                         }:null}
                     
                         onSelectionModelChange={handleRowSelection}
-
-                        localeText={
-                        { 
-                        toolbarDensity: t("Density"),
-                        toolbarDensityLabel: t("Density"),
-                        toolbarDensityCompact: t("Compact"),
-                        toolbarDensityStandard: t("Standart"),
-                        toolbarDensityComfortable: t("Comfortable"),
-                        noRowsLabel: t("noRows"),
-                        noResultsOverlayLabel: t("noResultsFound"),
-                        errorOverlayDefaultLabel: t("anerrorocurred"),
-                        toolbarFilters: t('Filters'),
-                        toolbarFiltersLabel: t('Showfilters'),
-                        toolbarFiltersTooltipHide: t('Hidefilters'),
-                        toolbarFiltersTooltipShow: t('Showfilters'),
-                        toolbarQuickFilterPlaceholder: t('search'),
-                        toolbarQuickFilterLabel: t('search'),
-                        toolbarQuickFilterDeleteIconLabel: t('Clear'),
-                        toolbarExport: t('Export'),
-                        toolbarExportLabel: t('Export'),
-                        toolbarExportCSV: t('DownloadasCSV'),
-                        toolbarExportPrint: t('print'),
-                        columnsPanelTextFieldLabel: t('findcolumn'),
-                        columnsPanelTextFieldPlaceholder: t('Columntitle'),
-                        columnsPanelDragIconLabel: t('reordercolumn'),
-                        columnsPanelShowAllButton: t('showall'),
-                        columnsPanelHideAllButton: t('hideall'),
-                        filterPanelAddFilter: t('Addfilter'),
-                        filterPanelDeleteIconLabel: t('Delete'),
-                        filterPanelLinkOperator: t('logicoperator'),
-                        filterPanelOperators: t('Operator'), // TODO v6: rename to filterPanelOperator
-                        filterPanelOperatorAnd: t('And'),
-                        filterPanelOperatorOr: t('Or'),
-                        filterPanelColumns: t('Columns'),
-                        filterPanelInputLabel: t('Value'),
-                        filterPanelInputPlaceholder: t('Filtervalue'),
-                        filterOperatorContains: t('contains'),
-                        filterOperatorEquals: t('equals'),
-                        filterOperatorStartsWith: t('startswith'),
-                        filterOperatorEndsWith: t('endswith'),
-                        filterOperatorIs: t('is'),
-                        filterOperatorNot: t('isnot'),
-                        filterOperatorIsEmpty: t('isempty'),
-                        filterOperatorIsNotEmpty: t('isnotempty'),
-                        filterOperatorIsAnyOf: t('isanyof'),
-                        filterValueAny: t('any'),
-                        filterValueTrue: t('true'),
-                        filterValueFalse: t('false'),
-                        columnMenuLabel: t('Menu'),
-                        columnMenuShowColumns: t('showcolumns'),
-                        columnMenuFilter: t('Filter'),
-                        columnMenuHideColumn: t('Hide'),
-                        columnMenuUnsort: t('Unsort'),
-                        columnMenuSortAsc: t('SortbyASC'),
-                        columnMenuSortDesc: t('SortbyDESC'),
-                        columnHeaderFiltersLabel: t('Showfilters'),
-                        columnHeaderSortIconLabel: t('Sort'),
-                        booleanCellTrueLabel: t('yes'),
-                        booleanCellFalseLabel: t('no'),
-                        footerRowSelected: (count) =>
-                            count !== 1
-                            ? `${count.toLocaleString() + " " + t("rowsselected")}`
-                            : `${count.toLocaleString() + " " + t("rowselected")}`,
-                            footerTotalRows: "total"
-                        }
-                        }
+                        localeText={LocalTextForDataGrid()}
                     />
                     </div>
                     </div>
                     </Collapse>
                     <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%'}}>
                     <Title>{t("contacthistory")}</Title>
+                    <Button variant="outlined" size="small" sx={{ ml: 6, mb:1 }} key={"AñadirComunicación"} onClick={addNewCommunication}>
+                        Añadir Comunicación
+                    </Button>
                     <ExpandMore
                         expand={contactsExpanded}
                         onClick={handleContactsExpandClick}
@@ -626,76 +695,44 @@ export default function CustomerCard() {
                         }:null}
                     
                         onSelectionModelChange={handleRowSelection}
-
-                        localeText={
-                        { 
-                        toolbarDensity: t("Density"),
-                        toolbarDensityLabel: t("Density"),
-                        toolbarDensityCompact: t("Compact"),
-                        toolbarDensityStandard: t("Standart"),
-                        toolbarDensityComfortable: t("Comfortable"),
-                        noRowsLabel: t("noRows"),
-                        noResultsOverlayLabel: t("noResultsFound"),
-                        errorOverlayDefaultLabel: t("anerrorocurred"),
-                        toolbarFilters: t('Filters'),
-                        toolbarFiltersLabel: t('Showfilters'),
-                        toolbarFiltersTooltipHide: t('Hidefilters'),
-                        toolbarFiltersTooltipShow: t('Showfilters'),
-                        toolbarQuickFilterPlaceholder: t('search'),
-                        toolbarQuickFilterLabel: t('search'),
-                        toolbarQuickFilterDeleteIconLabel: t('Clear'),
-                        toolbarExport: t('Export'),
-                        toolbarExportLabel: t('Export'),
-                        toolbarExportCSV: t('DownloadasCSV'),
-                        toolbarExportPrint: t('print'),
-                        columnsPanelTextFieldLabel: t('findcolumn'),
-                        columnsPanelTextFieldPlaceholder: t('Columntitle'),
-                        columnsPanelDragIconLabel: t('reordercolumn'),
-                        columnsPanelShowAllButton: t('showall'),
-                        columnsPanelHideAllButton: t('hideall'),
-                        filterPanelAddFilter: t('Addfilter'),
-                        filterPanelDeleteIconLabel: t('Delete'),
-                        filterPanelLinkOperator: t('logicoperator'),
-                        filterPanelOperators: t('Operator'), // TODO v6: rename to filterPanelOperator
-                        filterPanelOperatorAnd: t('And'),
-                        filterPanelOperatorOr: t('Or'),
-                        filterPanelColumns: t('Columns'),
-                        filterPanelInputLabel: t('Value'),
-                        filterPanelInputPlaceholder: t('Filtervalue'),
-                        filterOperatorContains: t('contains'),
-                        filterOperatorEquals: t('equals'),
-                        filterOperatorStartsWith: t('startswith'),
-                        filterOperatorEndsWith: t('endswith'),
-                        filterOperatorIs: t('is'),
-                        filterOperatorNot: t('isnot'),
-                        filterOperatorIsEmpty: t('isempty'),
-                        filterOperatorIsNotEmpty: t('isnotempty'),
-                        filterOperatorIsAnyOf: t('isanyof'),
-                        filterValueAny: t('any'),
-                        filterValueTrue: t('true'),
-                        filterValueFalse: t('false'),
-                        columnMenuLabel: t('Menu'),
-                        columnMenuShowColumns: t('showcolumns'),
-                        columnMenuFilter: t('Filter'),
-                        columnMenuHideColumn: t('Hide'),
-                        columnMenuUnsort: t('Unsort'),
-                        columnMenuSortAsc: t('SortbyASC'),
-                        columnMenuSortDesc: t('SortbyDESC'),
-                        columnHeaderFiltersLabel: t('Showfilters'),
-                        columnHeaderSortIconLabel: t('Sort'),
-                        booleanCellTrueLabel: t('yes'),
-                        booleanCellFalseLabel: t('no'),
-                        footerRowSelected: (count) =>
-                            count !== 1
-                            ? `${count.toLocaleString() + " " + t("rowsselected")}`
-                            : `${count.toLocaleString() + " " + t("rowselected")}`,
-                            footerTotalRows: "total"
-                        }
-                        }
+                        localeText={LocalTextForDataGrid()}
                     />
                     </div>
                     </div>
                     </Collapse>
+                    <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%'}}>
+                <Title>{t("appointmenthistory")}</Title>
+                <ExpandMore
+                    expand={historyExpanded}
+                    onClick={handleHistoryExpandClick}
+                    aria-expanded={historyExpanded}
+                    aria-label={t("showmore")}
+                >
+                    <ExpandMoreIcon />
+                </ExpandMore>
+                </Box>
+                <Collapse in={historyExpanded} timeout="auto" unmountOnExit>
+                <div style={{ height: 285, width: '100%' }}>
+                <div style={{ height: 280, width: '100%' }}>
+                
+                    <DataGrid
+                        rows={rowsHistory}
+                        columns={Columns()}
+                        density="compact"
+                        checkboxSelection ={!compact}
+                        rowsPerPageOptions={[5,10,25,50,100]}
+                        rowsPerPage ={10}
+                        components={!compact?{
+                        Toolbar: GridToolbar,
+                        }:null}
+                    
+                        onSelectionModelChange={handleRowSelection}
+                        localeText={LocalTextForDataGrid()}
+                    />
+                  
+                   </div>
+                    </div>
+                </Collapse>
                 </Box>
             </Box>
             
@@ -705,4 +742,9 @@ export default function CustomerCard() {
         
     </React.Fragment>
   )
+  }else{return(
+    <p>
+        Se ha producido un error
+    </p>
+  )}
 }
