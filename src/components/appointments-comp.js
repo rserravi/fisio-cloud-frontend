@@ -18,7 +18,7 @@ import Title from './Title';
 import { navigationSuccess } from '../pages/dashboard/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
-import { GetAppointments } from '../utils/tests/dataFetch-utils';
+import { GetAppointments } from '../utils/dataFetch-utils';
 import { getDateFromISOTime, getTimeFromISOTime, getWeekInYear, timeDifference } from '../utils/date-utils';
 
 

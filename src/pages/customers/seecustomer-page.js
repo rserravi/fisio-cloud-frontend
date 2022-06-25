@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import CustomerCard from '../../components/customer-card-comp';
 import { t } from 'i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCustomer } from '../../utils/tests/dataFetch-utils';
+import { getCustomer } from '../../utils/dataFetch-utils';
 import LinearProgress from '@mui/material/LinearProgress';
 
 

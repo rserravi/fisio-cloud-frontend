@@ -1,5 +1,4 @@
-import { $CombinedState } from "@reduxjs/toolkit";
-import customerData from "../../assets/data/dummy-data.json"
+import customerData from "../assets/data/dummy-data.json"
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -57,7 +56,38 @@ export const GetAppointments = ()=>{
             }
         }
     }
-    return jsonObj
-    
+    return jsonObj  
+}
 
+export const GetAppointmentsCalendarFormat = ()=>{
+    var jsonObj = [];
+    var newIdCount =0;
+    for (let userKey in customerData){
+        if(customerData[userKey].appointments.length >=0){
+            for (let appoKey in customerData[userKey].appointments){
+                newIdCount = newIdCount +1;
+                var id = newIdCount;
+                var title = customerData[userKey].firstname + " " + customerData[userKey].lastname + " para " + customerData[userKey].appointments[appoKey].service 
+                var allDay = false;
+                var start = new Date(customerData[userKey].appointments[appoKey].date)
+                const end = () => {
+                    var newd = start;
+                    newd.setMinutes(start.getMinutes()+customerData[userKey].appointments[appoKey].duration);
+                    return newd
+                }
+                var resourceId = 1;
+
+                var item = {}
+                item ["id"] = id;
+                item ["title"] = title;
+                item ["allDay"] = allDay;
+                item ["start"] = start;
+                item ["end"] = end();
+                item ["resourceId"] = resourceId;
+                jsonObj.push(item)
+            }
+        }
+    }
+    console.log(jsonObj)
+    return jsonObj  
 }

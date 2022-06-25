@@ -25,7 +25,7 @@ import Title from './Title';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Collapse from '@mui/material/Collapse';
 import Grid from '@mui/material/Grid';
-import { firstItemId, getCustomer, lastItemId } from '../utils/tests/dataFetch-utils';
+import { firstItemId, getCustomer, lastItemId } from '../utils/dataFetch-utils';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { navigationSuccess } from '../pages/dashboard/navigation-slice';
