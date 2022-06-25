@@ -22,7 +22,6 @@ import { LocalTextForDataGrid, paperColor } from '../utils/mui-custom-utils';
 
 
 //ICONS
-import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
@@ -46,9 +45,6 @@ const addNewAppointment= (customerId) =>{
   console.log("ADD APPOINTMENT IN CUSTOMER " + customerId);
 }
 
-const editCustomer= (customerId) =>{
-  console.log("EDIT "+ customerId);
-}
 const deleteCustomer = (customerId) => {
   console.log("DELETE CUSTOMER " + customerId);
 }
@@ -264,7 +260,7 @@ const RenderPhoneCell = (props) => {
 
 const RenderEmailCell = (props) => {
   const {hasFocus, value } = props;
-  const {firstName, lastName, whatsapp} = props.row;
+  const {firstName, lastName} = props.row;
   const buttonElement = React.useRef(null);
   const rippleRef = React.useRef(null);
   const { t } = useTranslation();
@@ -370,7 +366,6 @@ const data = (infoType) =>{
         } catch (error) {
             console.log(error);
           return customerData;
-          break
         }       
       default:
         return customerData;

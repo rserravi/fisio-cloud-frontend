@@ -186,6 +186,14 @@
     "paid": "pagado",
     "pending": "pendiente",
     "Price": "Precio",
-    "appointments": "Citas"
+    "appointments": "Citas",
+    "addappointment": "Añadir Cita",
+    "Time": "Hora",
+    "GridActionsCellItem": "GridActionsCellItem",
+    "pastDateClickforoptions":"Cita Pasada. Pulsa para ver opciones",
+    "makereport":"Hacer Informe",
+    "modifyAppointment":"Modificar cita",
+    "cancelAppointment":"Cancelar cita",
+    "exit":"Salir"
 
 }

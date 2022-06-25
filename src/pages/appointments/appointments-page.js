@@ -10,7 +10,6 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import {CustomersComponent} from '../../components/customers-comp';
 import { useTranslation } from 'react-i18next';
 import { AppointmentsComponent } from '../../components/appointments-comp';
 
@@ -42,8 +41,7 @@ function AppoinmentsContent() {
           }}
         >
           <Toolbar />
-          
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+          <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
@@ -52,8 +50,6 @@ function AppoinmentsContent() {
                 </Paper>
               </Grid>
             </Grid>
-
-            
           </Container>
           <Copyright sx={{ pt: 4 }} />
         </Box>

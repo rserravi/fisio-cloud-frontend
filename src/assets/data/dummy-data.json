@@ -117,7 +117,7 @@
         "appointments":[
             {
                 "id":"1",
-                "date": "21-6-2022",
+                "date": "2022-06-21T17:00:00.000Z",
                 "startingTime": "17:00",
                 "duration": "60", 
                 "service": "Masaje",
@@ -128,7 +128,7 @@
             },
             {
                 "id":"2",
-                "date": "25-7-2022",
+                "date": "2022-06-28T10:00:00.000Z",
                 "startingTime": "10:00",
                 "duration": "60", 
                 "service": "Masaje",
@@ -226,7 +226,7 @@
         "appointments":[
             {
                 "id":"1",
-                "date": "22-7-2022",
+                "date": "2022-07-22T11:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "Masaje",
