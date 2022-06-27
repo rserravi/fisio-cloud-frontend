@@ -58,7 +58,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                 <CalendarComp />
+                 <CalendarComp compact={true}/>
                 </Paper>
               </Grid>
           
@@ -81,7 +81,7 @@ function DashboardContent() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 400 }}>
                   <Container sx={{height:320}}>
-                    <CustomersComponent compact={true} info="withAppointments" />
+                    <CustomersComponent compact={true} info="newCustomers" />
                     </Container>
                 </Paper>
               </Grid>

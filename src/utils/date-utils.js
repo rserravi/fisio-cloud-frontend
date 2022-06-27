@@ -42,3 +42,17 @@ export const getWeekInYear = (date) =>{
   const answer = Math.ceil(( currentdate.getDay() + 1 + numberOfDays) / 7);
   return (answer);
 }
+
+export const addMinutesToDate = (date, minutes)=>{
+  var oldDate = new Date(date)
+  var newd = new Date(date);
+  newd.setMinutes(oldDate.getMinutes()+Number(minutes));
+  return newd
+}
+
+export const addMonthtoDate= (date, months) =>{
+  var oldDate = new Date(date)
+  var newd = new Date(date);
+  newd.setMonth(oldDate.getMonth()+Number(months));
+  return newd
+}

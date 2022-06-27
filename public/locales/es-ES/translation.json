@@ -194,6 +194,7 @@
     "makereport":"Hacer Informe",
     "modifyAppointment":"Modificar cita",
     "cancelAppointment":"Cancelar cita",
-    "exit":"Salir"
+    "exit":"Salir",
+    "lastmonthdeposits":"Depósitos último més"
 
 }

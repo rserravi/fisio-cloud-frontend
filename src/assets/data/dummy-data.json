@@ -57,19 +57,17 @@
         "history":[
             {   
                 "id":"1",
-                "date": "4-2-2019",
-                "startingTime": "17:04",
+                "date": "2019-04-02T17:30:00.000Z",
                 "duration": "60",
                 "service": "Masaje",
                 "price":"50",
                 "status":"paid",
-                "closed":"5-2-2019",
+                "closed": "2019-04-04T17:30:00.000Z",
                 "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             },
             {
                 "id":"2",
-                "date": "8-2-2019",
-                "startingTime": "17:04",
+                "date": "2019-08-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
                 "price":"50",
@@ -80,8 +78,7 @@
             ,
             {
                 "id":"3",
-                "date": "8-2-2019",
-                "startingTime": "17:04",
+                "date": "2020-04-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
                 "price":"50",
@@ -92,8 +89,7 @@
             ,
             {
                 "id":"4",
-                "date": "8-2-2019",
-                "startingTime": "17:04",
+                "date": "2021-04-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
                 "price":"50",
@@ -104,13 +100,12 @@
             ,
             {
                 "id":"5",
-                "date": "8-2-2019",
-                "startingTime": "17:04",
+                "date": "2022-06-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
                 "price":"50",
-                "status":"pending",
-                "closed":"",
+                "status":"paid",
+                "closed":"2022-06-03T17:30:00.000Z",
                 "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             }
         ],
@@ -202,24 +197,22 @@
         "history":[
             {
                 "id":"1",
-                "date": "20-9-2020",
-                "startingTime": "11:00",
+                "date": "2020-09-20T11:00:00.000Z",     
                 "duration": "60",
                 "service": "Masaje",
                 "price":"50",
                 "status":"paid",
-                "closed":"20-9-2020",
+                "closed":"2020-09-21T11:00:00.000Z",
                 "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             },
             {
                 "id":"2",
-                "date": "2-11-2020",
-                "startingTime": "17:04",
+                "date": "2020-11-02T17:30:00.000Z",
                 "duration": "60",
                 "service": "Masaje",
                 "price":"50",
                 "status":"paid",
-                "closed":"20-9-2020",
+                "closed":"2020-11-02T20:30:00.000Z",
                 "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
             }
         ],
@@ -227,6 +220,17 @@
             {
                 "id":"1",
                 "date": "2022-07-22T11:00:00.000Z",
+                "startingTime": "11:00",
+                "duration": "60", 
+                "service": "Masaje",
+                "price":"50",
+                "status":"pending",
+                "closed":"",
+                "notes":""
+            },
+            {
+                "id":"2",
+                "date": "2022-07-02T12:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "Masaje",

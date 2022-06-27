@@ -356,7 +356,15 @@ const data = (infoType) =>{
 
         return customerData;
       case "newCustomers" :
-        return customerData
+        try {
+          return customerData.filter((newData)=>  {
+            return newData.inbound === 'lead';
+          });
+        } catch (error) {
+            console.log(error);
+          return customerData;
+        }       
+        
       case "withAppointments" :
 
         try {
@@ -402,17 +410,19 @@ export const CustomersComponent = (props)=> {
   const { t } = useTranslation();
  
   const rows = data(info).map((row) => 
-  ({
-     id: row.id, 
-     inbound: row.inbound,
-     image: row.image, 
-     firstName: row.firstname, 
-     lastName: row.lastname,
-     email: row.email[1] ? row.email[1].emailAddress : row.email[0].emailAddress, 
-     phoneNumber: row.phoneNumber[1].number,
-     whatsapp: row.whatsapp,
-     appointments: {"next": row.appointments.length, "past": row.history.length}, 
-  })
+    (
+      {
+      id: row.id, 
+      inbound: row.inbound,
+      image: row.image, 
+      firstName: row.firstname, 
+      lastName: row.lastname,
+      email: row.email[1] ? row.email[1].emailAddress : row.email[0].emailAddress, 
+      phoneNumber: row.phoneNumber[1].number,
+      whatsapp: row.whatsapp,
+      appointments: {"next": row.appointments.length, "past": row.history.length}, 
+      }
+    )
   );
 
   const Columns = () => {

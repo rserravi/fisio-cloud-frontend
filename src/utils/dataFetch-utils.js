@@ -1,4 +1,5 @@
 import customerData from "../assets/data/dummy-data.json"
+import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -40,17 +41,17 @@ export const GetAppointments = ()=>{
                 var notes = customerData[userKey].appointments[appoKey].notes;
 
                 var item = {}
-                item ["id"] = id;
-                item ["customerId"] = customerId;
-                item ["customerName"] = customerName;
-                item ["date"] = date;
-                item ["startingTime"] = startingTime;
-                item ["duration"] = duration;
-                item ["service"] = service;
-                item ["price"] = price;
-                item ["status"] = status;
-                item ["closed"] = closed;
-                item ["notes"] = notes;
+                item["id"] = id;
+                item["customerId"] = customerId;
+                item["customerName"] = customerName;
+                item["date"] = date;
+                item["startingTime"] = startingTime;
+                item["duration"] = duration;
+                item["service"] = service;
+                item["price"] = price;
+                item["status"] = status;
+                item["closed"] = closed;
+                item["notes"] = notes;
 
                 jsonObj.push(item)
             }
@@ -69,25 +70,77 @@ export const GetAppointmentsCalendarFormat = ()=>{
                 var id = newIdCount;
                 var title = customerData[userKey].firstname + " " + customerData[userKey].lastname + " para " + customerData[userKey].appointments[appoKey].service 
                 var allDay = false;
-                var start = new Date(customerData[userKey].appointments[appoKey].date)
-                const end = () => {
-                    var newd = start;
-                    newd.setMinutes(start.getMinutes()+customerData[userKey].appointments[appoKey].duration);
-                    return newd
+                const start = new Date(customerData[userKey].appointments[appoKey].date)
+                const end = addMinutesToDate(start,Number(customerData[userKey].appointments[appoKey].duration));
+                var backgroundColor = "dodgerblue";
+                var color = "white";
+                var isPast = false;
+                const thisWeek = getWeekInYear(Date.now());
+                const dateWeek = getWeekInYear(start);
+                if (timeDifference(start) <= 0){
+                    var backgroundColor = "red";
+                    var color = "white"
+                    isPast = true;
                 }
-                var resourceId = 1;
 
+                if (dateWeek-thisWeek === 0){
+                    var backgroundColor = "orange";
+                    var color = "white"
+                }
+              
+
+                var resourceId = 1;
                 var item = {}
-                item ["id"] = id;
-                item ["title"] = title;
-                item ["allDay"] = allDay;
-                item ["start"] = start;
-                item ["end"] = end();
-                item ["resourceId"] = resourceId;
+                item["id"] = id;
+                item["title"] = title;
+                item["allDay"] = allDay;
+                item["start"] = start;
+                item["end"] = end;
+                item["resourceId"] = resourceId;
+                item["backgroundColor"]= backgroundColor;
+                item["color"] = color;
+                item["ispast"] = isPast;
                 jsonObj.push(item)
             }
         }
     }
-    console.log(jsonObj)
     return jsonObj  
+}
+
+export const GetDepositsFromDate = (startdate, endDate) =>{
+    const start = new Date (startdate);
+    const end = new Date (endDate)    
+
+    var accumulated = 0;
+    for (let userKey in customerData){
+        if(customerData[userKey].history.length >=0){
+            for (let histoKey in customerData[userKey].history){
+                
+               const eventDate = new Date(customerData[userKey].history[histoKey].date)
+               if (customerData[userKey].history[histoKey].status==="paid" && eventDate > start && eventDate < end ){
+                accumulated = accumulated + Number(customerData[userKey].history[histoKey].price)
+               }
+            }
+        }
+    }
+
+    return accumulated;
+}
+
+export const GetDebtsToDate = (endDate) =>{
+
+    const end = new Date (endDate)    
+    var accumulated = 0;
+    for (let userKey in customerData){
+        if(customerData[userKey].history.length >=0){
+            for (let histoKey in customerData[userKey].history){       
+               const eventDate = new Date(customerData[userKey].history[histoKey].date)
+               if (customerData[userKey].history[histoKey].status==="pending" && eventDate < end ){
+                accumulated = accumulated + Number(customerData[userKey].history[histoKey].price)
+               }
+            }
+        }
+    }
+
+    return accumulated;
 }
