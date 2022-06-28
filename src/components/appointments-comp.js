@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 //CUSTOM IMPORTS
 import Title from './Title';
-import { navigationSuccess } from '../pages/dashboard/navigation-slice';
+import { navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
 import { GetAppointments } from '../utils/dataFetch-utils';

@@ -15,7 +15,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 //CUSTOM IMPORTS
 import Title from './Title';
-import { navigationSuccess } from '../pages/dashboard/navigation-slice';
+import { navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import customerData from "../assets/data/dummy-data.json";
 import { LocalTextForDataGrid, paperColor } from '../utils/mui-custom-utils';

@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 import Avatar from '@mui/material/Avatar';
 import avatarPicture from "../assets/img/RubenSerra.jpg"
 import { useDispatch } from "react-redux";
-import {navigationDrawer } from '../pages/dashboard/navigation-slice';
+import {navigationDrawer } from '../slices/navigation-slice';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';

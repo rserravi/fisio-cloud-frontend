@@ -28,7 +28,7 @@ import Grid from '@mui/material/Grid';
 import { firstItemId, getCustomer, lastItemId } from '../utils/dataFetch-utils';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { navigationSuccess } from '../pages/dashboard/navigation-slice';
+import { navigationSuccess } from '../slices/navigation-slice';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 

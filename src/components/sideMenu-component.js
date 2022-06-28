@@ -28,7 +28,7 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Collapse } from '@mui/material';
-import { navigationClientPanel,navigationAppointmentPanel, navigationDrawer, navigationLoading, navigationSuccess } from '../pages/dashboard/navigation-slice';
+import { navigationClientPanel,navigationAppointmentPanel, navigationDrawer, navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 
 
 const drawerWidth = 240;

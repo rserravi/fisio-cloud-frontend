@@ -195,6 +195,14 @@
     "modifyAppointment":"Modificar cita",
     "cancelAppointment":"Cancelar cita",
     "exit":"Salir",
-    "lastmonthdeposits":"Depósitos último més"
+    "lastmonthdeposits":"Depósitos último més",
+    "enterthe": "Entra el",
+    "enterthePlural": "Entra los",
+    "birthdate":"Fecha de Nacimiento",
+    "gender":"Género",
+    "none":"no disponible",
+    "male":"Masculino",
+    "female":"Femenino",
+    "other":"Otro"
 
 }
