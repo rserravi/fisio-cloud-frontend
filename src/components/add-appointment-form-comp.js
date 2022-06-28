@@ -3,78 +3,57 @@ import Grid from '@mui/material/Grid';
 import { Alert, Button, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
-import { ImageComponent } from './form-components/image-comp';
-import { NameForm } from './form-components/name-comp';
 import { useDispatch, useSelector } from 'react-redux';
-import { nc_editingStart } from '../slices/newCustomer-slice';
 import { EmailForm } from './form-components/emails-comp';
 import { AddressForm } from './form-components/address-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { SocialForm } from './form-components/social-comp';
-import { CustomerValidation } from '../utils/verification-utils';
-import { useParams } from 'react-router-dom';
+import IconButton from "@mui/material/IconButton";
+import SearchIcon from "@mui/icons-material/Search";
+import TextField from "@mui/material/TextField";
 
 var initValidation={
-  firstname: true,
-  lastname: true,
-  email: true,
-  phone: true
+  id:"1",
+  date: "2022-06-21T17:00:00.000Z",
+  duration: "60", 
+  service: "Masaje",
+  price:"50",
+  status:"pending",
+  closed:"",
+  notes:""
 }
 
-export default function CustomerForm() {
-  const NcState = useSelector((state)=> state.newCustomer);
-  const _id = Number(useParams().tid);
-  const [validation, setValidation] = React.useState(initValidation);
+  
+export default function AddAppointmentForm(props) {
+  const [appo, setAppo] = React.useState(initValidation);
+  React.useEffect (()=>{
+
+    },[])
+  const customerid = props.customerid;
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const data = {}
+
+
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
-   const addedAt = new Date().toLocaleDateString();
-  
-   const frm = {
-    firstname: NcState.firstname,
-    lastname: NcState.lastname,
-    birthdate: NcState.birthdate,
-    gender: NcState.gender,
-    image: NcState.image,
-    emailhome: NcState.emailhome,
-    emailwork:NcState.emailwork,
-    streetaddress: NcState.streetaddress,
-    city: NcState.city,
-    state: NcState.state,
-    postalCode: NcState.postalCode,
-    country:NcState.country,
-    homephone: NcState.homephone,
-    mobilephone:NcState.mobilephone,
-    whatsapp: NcState.whatsapp,
-    social1: NcState.social1,
-    social2: NcState.social2,
-    social3: NcState.social3,
-    socialUser1:NcState.socialUser1,
-    socialUser2:NcState.socialUser2,
-    socialUser3:NcState.socialUser3,
-    addedAt: addedAt
    }
 
-    const validation2 = CustomerValidation(frm);
-    setValidation(validation2);
-    console.log(frm);
-    console.log(validation)
-
-    /// API PARA ENVIAR EL FORMULARIO AL BACKEND
-
-    // NAVIGATE TO SEECUSTOMER(_id);
-  }
-
-  React.useEffect (()=>{
-    dispatch(nc_editingStart());
-
-  },[dispatch])
+ 
  
 
   const resetData= ()=>{
     //setFrmData(frmDataInit);
+  }
+
+  const CustomerData = () =>{
+
+    return(
+        <React.Fragment>
+        
+      </React.Fragment>
+    )
   }
 
   return (
@@ -84,7 +63,7 @@ export default function CustomerForm() {
             <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
              <Grid item xs={12}>
                 
-                     <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
+                <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
                 
               </Grid>
             </Grid>
@@ -94,15 +73,12 @@ export default function CustomerForm() {
          
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
-              <Grid item xs={12} md={10} sm={10} marginTop={3}>
-                <NameForm gender={"none"} />
-                {!validation.firstname ? <Alert severity="error">{t("introduceaname")}</Alert>: <></>}
-                {!validation.lastname ? <Alert severity="error">{t("introducealastname")}</Alert>: <></>} 
+              <Grid item xs={12} md={12} sm={12} marginTop={3}>
+                <CustomerData />
+             
               </Grid>
               
-              <Grid item xs={2} md={2} sm={2} marginTop={3}>
-                <ImageComponent />
-              </Grid>
+
             </Grid>
               
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
@@ -111,7 +87,7 @@ export default function CustomerForm() {
 
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <EmailForm  />
-                {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
+               
               </Grid>
 
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
@@ -128,7 +104,6 @@ export default function CustomerForm() {
              
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <PhoneForm />
-                {!validation.phone ? <Alert severity="error">{t("introduceavelidmobile")}</Alert>: <></>}
               </Grid>
 
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
@@ -161,10 +136,9 @@ export default function CustomerForm() {
                {t("cancel")}
               </Button>
               </Box>
-              {!validation.lastname || !validation.firstname || !validation.email || !validation.phone ? <Alert severity="error">{ t("errorin")} {!validation.firstname ? t("name") + ",":""} {!validation.lastname ? t("lastname") + ",":""} {!validation.phone ? t("phone") + ",":""} {!validation.email ? t("emails") + ".":""}</Alert>:""}
+        
               
         </Box>
-        
     </React.Fragment>
   )
 }

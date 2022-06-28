@@ -3,15 +3,16 @@ import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
 import { Box, Button, InputAdornment } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { nc_homephone_Commit, nc_mobilephone_Commit, nc_whatsapp_Commit } from '../../slices/newCustomer-slice';
 
-
 export const PhoneForm = (props) =>{
+  const NcState = useSelector((state)=> state.newCustomer);
+  
     const InitData = {
-        phonehome: props.phonehome,
+        phonehome:  props.phonehome,
         mobilephone: props.mobilephone,
-        whatsapp: props.whatsapp,
+        whatsapp: props.whatsapp
     }
     const dispatch = useDispatch();
     const [phoneFrmDta, setPhoneFrmData] = React.useState(InitData);
@@ -44,6 +45,7 @@ export const PhoneForm = (props) =>{
     return (
         <React.Fragment>
             <Card sx={{ display: 'flex',  width: '100%'  }}>
+           
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
                   <TextField
@@ -88,7 +90,9 @@ export const PhoneForm = (props) =>{
                     />
                 </Box>
                 </Box> 
+                
             </Card>
+         
         
         </React.Fragment>
 

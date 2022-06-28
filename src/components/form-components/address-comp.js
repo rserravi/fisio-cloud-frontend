@@ -2,9 +2,10 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
-import { Box } from '@mui/material';
+import { Autocomplete, Box } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { nc_city_Commit, nc_country_Commit, nc_emailHome_Commit, nc_emailWork_Commit, nc_postalCode_Commit, nc_state_Commit, nc_streetaddress_Commit } from '../../slices/newCustomer-slice';
+import { nc_city_Commit, nc_countryPhoneCode_Commit, nc_country_Commit, nc_postalCode_Commit, nc_state_Commit, nc_streetaddress_Commit } from '../../slices/newCustomer-slice';
+import { countries} from '../../utils/dataFetch-utils'
 
 export const AddressForm = (props) =>{
     const InitData = {
@@ -44,8 +45,10 @@ export const AddressForm = (props) =>{
     };
 
     const handleChangeCountry= (event) => {
-        setAddressFrmData({...addressFrmDta, ["country"]: event.target.value})
-        dispatch(nc_country_Commit(event.target.value))
+        console.log(event.target.childNodes[1].data)
+        setAddressFrmData({...addressFrmDta, ["country"]: event.target.childNodes[1].data})
+        dispatch(nc_country_Commit(event.target.childNodes[1].data))
+        dispatch(nc_countryPhoneCode_Commit(event.target.childNodes[5].data))
 
     };
 
@@ -78,7 +81,7 @@ export const AddressForm = (props) =>{
                     sx = {{mr:2}}
                     value={addressFrmDta.city}
                     onChange={handleChangeCity}
-                    focused
+                    
                     />
              
                 <TextField
@@ -91,7 +94,7 @@ export const AddressForm = (props) =>{
                     sx = {{mr:2}}
                     value={addressFrmDta.state}
                     onChange={handleChangeState}
-                    focused
+                    
                     />
               
                 <TextField
@@ -104,19 +107,44 @@ export const AddressForm = (props) =>{
                     sx = {{mr:2}}
                     value={addressFrmDta.postalCode}
                     onChange={handleChangePostalCode}
-                    focused
+                    
                     />
               
-                <TextField
+                <Autocomplete
                     id="country"
-                    name="country"
-                    label={t("country")}
-                    helperText={t("enteravalidcountry")}
-                    variant="standard"
                     fullWidth
-                    value={addressFrmDta.country}
+                    options={countries}
+                    variant="standard"
+                    label={t("country")}
                     onChange={handleChangeCountry}
-                    focused
+                    autoHighlight
+                    getOptionLabel={(option) => option.label}
+                    renderOption={(props, option) => (
+                        <Box component="li" sx={{ '& > img': { mr: 2, flexShrink: 0 } }} {...props}>
+                        <img
+                            loading="lazy"
+                            width="20"
+                            src={`https://flagcdn.com/w20/${option.code.toLowerCase()}.png`}
+                            srcSet={`https://flagcdn.com/w40/${option.code.toLowerCase()}.png 2x`}
+                            alt=""
+                        />
+                        {option.label} ({option.code}) +{option.phone}
+                        </Box>
+                    )}
+                    renderInput={(params) => (
+                        <TextField
+                        {...params}
+                        variant="standard"
+                        value={addressFrmDta.country}
+          
+                        helperText={t("enteravalidcountry")}
+                        label={t("country")}
+                        inputProps={{
+                            ...params.inputProps,
+                            autoComplete: 'new-password', // disable autocomplete and autofill
+                        }}
+                        />
+                    )}
                     />
                 </Box>
               </Box>

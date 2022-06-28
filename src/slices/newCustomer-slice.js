@@ -26,6 +26,7 @@ const initialState = {
     socialUser1:"@",
     socialUser2:"@",
     socialUser3:"@",
+    countryPhoneCode:"+34",
 }
 
 const createCustomerSlice = createSlice({
@@ -109,6 +110,9 @@ const createCustomerSlice = createSlice({
         },
         nc_socialUser3_Commit:(state, action)=>{
             state.socialUser3 = action.payload;
+        },
+        nc_countryPhoneCode_Commit:(state, action)=>{
+            state.countryPhoneCode = action.payload;
         }
     }
 });
@@ -139,6 +143,7 @@ export const {
     nc_social3_Commit,
     nc_socialUser1_Commit,
     nc_socialUser2_Commit,
-    nc_socialUser3_Commit
+    nc_socialUser3_Commit,
+    nc_countryPhoneCode_Commit
     } = actions;
 export default reducer;

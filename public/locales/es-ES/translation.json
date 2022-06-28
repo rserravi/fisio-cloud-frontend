@@ -203,6 +203,16 @@
     "none":"no disponible",
     "male":"Masculino",
     "female":"Femenino",
-    "other":"Otro"
-
+    "other":"Otro",
+    "EMAILS":"EMAILS",
+    "Selectauser":"Selecciona un usuario",
+    "PHONES":"TELÉFONOS",
+    "SOCIALNETWORKS":"REDES SOCIALES",
+    "youmustintroduceatleastonevalidemail":"Debes introducir al menos 1 email válido y volver a enviar",
+    "introduceaname": "Introduce un nombre y vuelve a enviar",
+    "introducealastname": "Introduce al menos un apellido y vuelve a enviar",
+    "introduceavelidmobile": "Introduce un móvil válido",
+    "errorin": "Error en",
+    "phone":"Teléfono",
+    "emails":"Emails"
 }

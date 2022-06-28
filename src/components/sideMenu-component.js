@@ -113,8 +113,10 @@ function SideMenu(boardState) {
   }
 
   const toogleAddSchedule= () =>{
+    dispatch(navigationLoading());
     actualScreen = "AddSchedule";
-    dispatch(navigationSuccess(actualScreen))
+    navigate("/addappointment",{replace: true});
+    dispatch(navigationSuccess(actualScreen));
   }
 
   const toogleShowSchedule= () =>{
