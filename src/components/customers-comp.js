@@ -15,10 +15,11 @@ import Tooltip from '@mui/material/Tooltip';
 
 //CUSTOM IMPORTS
 import Title from './Title';
-import { navigationSuccess } from '../slices/navigation-slice';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import customerData from "../assets/data/dummy-data.json";
 import { LocalTextForDataGrid, paperColor } from '../utils/mui-custom-utils';
+
 
 
 //ICONS
@@ -40,10 +41,6 @@ var compact = false;
 
 
 // FUNCTIONS FOR EXTERNAL ACTIONS
-
-const addNewAppointment= (customerId) =>{
-  console.log("ADD APPOINTMENT IN CUSTOMER " + customerId);
-}
 
 const deleteCustomer = (customerId) => {
   console.log("DELETE CUSTOMER " + customerId);
@@ -84,6 +81,9 @@ const RenderAppointmentCell = (props) => {
   const rippleRef = React.useRef(null);
   const { t } = useTranslation();
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   React.useLayoutEffect(() => {
     if (hasFocus) {
       const input = buttonElement.current?.querySelector('input');
@@ -93,6 +93,13 @@ const RenderAppointmentCell = (props) => {
       rippleRef.current.stop({});
     }
   }, [hasFocus]);
+
+  const addNewAppointment= (customerId) =>{
+    dispatch(navigationLoading());
+    navigate("/addappointment/"+ customerId,{replace: true});
+    dispatch(navigationSuccess("addappointment"))
+  }
+  
   return (
      <strong>
       <Tooltip title={t("nextappointments")}>
@@ -509,14 +516,14 @@ export const CustomersComponent = (props)=> {
 
   // NAVIGATE FUNCTIONS
   const AddCustomerButton= () =>{
-    const actualScreen = "AddCustomer";
+    const actualScreen = "addcustomer";
     navigate("/addcustomer",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
   const seeCustomer = (customerId) => {
     console.log("SEE CUSTOMER " + customerId);
-    const actualScreen = "SeeCustomer";
+    const actualScreen = "customer/"+customerId
     navigate("/customer/"+customerId,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }

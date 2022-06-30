@@ -6,7 +6,6 @@ import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import customerData from "../assets/data/dummy-data.json";
 import Paper from '@mui/material/Paper';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
@@ -28,7 +27,7 @@ import Grid from '@mui/material/Grid';
 import { firstItemId, getCustomer, lastItemId } from '../utils/dataFetch-utils';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { navigationSuccess } from '../slices/navigation-slice';
+import { navigationFail, navigationSuccess } from '../slices/navigation-slice';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 
@@ -127,17 +126,11 @@ const handleAddressClick = () =>{
     console.log("Address Click")
 }
 
-const addNewAppointment = () =>{
-    console.log("Añadir Cita")
-}
-
 const addNewCommunication = () =>{
     console.log("Añadir Comunicación")
 }
 
-const seeCalendar = () =>{
-    console.log ("Ver Calendario")
-}
+
 
 const RenderStatusCell=(props)=>{
   const price = props.row.price;
@@ -389,33 +382,36 @@ export default function CustomerCard(props) {
     const appointments = customer.appointments;
     const contacthistory = customer.contacthistory;
 
-    const handleHistoryExpandClick = () => {
+    const handleHistoryExpandClick = (event) => {
+        event.stopPropagation();
         setHistoryExpanded(!historyExpanded);
     };
 
-    const handleAppointmentExpandClick = () => {
+    const handleAppointmentExpandClick = (event) => {
+        event.stopPropagation();
         setAppointmentsExpanded(!appointmentsExpanded);
     };
-    const handleContactsExpandClick = () => {
+    const handleContactsExpandClick = (event) => {
+        event.stopPropagation();
         setContatctExpanded(!contactsExpanded);
     };
 
-    const SeeAllCustomers=()=>{
-        console.log("See all customers");
-        const actualScreen = "AllCustomers";
-        navigate("/customers", {replace: true});
+    const SeeAllCustomers=(event)=>{
+        event.stopPropagation();
+        const actualScreen = "/customers";
+        navigate(actualScreen, {replace: true});
         dispatch(navigationSuccess(actualScreen))
     }
 
     const SeePreviousCustomer = (event) =>{
         event.stopPropagation();
         if (_id <= Number(firstItemId())){
-            const actualScreen = "SeeCustomer";
-            navigate("/customer/"+ lastItemId(), {replace: true});
+            const actualScreen = "/customer/"+lastItemId();
+            navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
         }else{
-            const actualScreen = "SeeCustomer";
-            navigate("/customer/"+ (_id-1), {replace: true});
+            const actualScreen = "/customer/" + (_id-1);
+            navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
         }
     }
@@ -423,14 +419,31 @@ export default function CustomerCard(props) {
     const SeeNextCustomer = (event) =>{
         event.stopPropagation();
         if (_id >= Number(lastItemId())){
-            const actualScreen = "SeeCustomer";
-            navigate("/customer/"+ firstItemId(), {replace: true});
+            const actualScreen = "/customer/" + firstItemId();
+            navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
         }else{
-            const actualScreen = "SeeCustomer";
-            navigate("/customer/"+ (_id+1), {replace: true});
+            const actualScreen = "/customer/" + (_id+1);
+            navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
         }
+    }
+
+    const seeCalendar = (event) =>{
+        event.stopPropagation();
+        console.log ("Ver Calendario")
+       
+    }
+
+    const addNewAppointment = (event) =>{
+        event.stopPropagation();
+        const actualScreen = "/addappointment/"+_id.toString()
+        try {
+            navigate(actualScreen, {replace: true});
+            dispatch(navigationSuccess(actualScreen))
+        } catch (error) {
+            dispatch(navigationFail(error))
+        }     
     }
 
     const CheckPendingNotes=()=>{
@@ -632,10 +645,10 @@ export default function CustomerCard(props) {
                 <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%' }}>
                 <Title>{t("nextappointments")}</Title> 
                 <Button variant="outlined" size="small" sx={{ ml: 6, mb:1 }} key={"Ver Calendario"} onClick={seeCalendar}>
-                    Ver Calendario
+                    {t("seecalendar")}
                 </Button>
                 <Button variant="outlined" size="small" sx={{ ml: 6, mb:1 }} key={"AñadirCita"} onClick={addNewAppointment}>
-                    Añadir Cita
+                    {t("addappointment")}
                 </Button>
                 <ExpandMore
                     expand={appointmentsExpanded}

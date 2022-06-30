@@ -13,6 +13,7 @@ import Grid from '@mui/material/Grid';
 
 import { useTranslation } from 'react-i18next';
 import AddAppointmentForm from '../../components/add-appointment-form-comp';
+import { useParams } from 'react-router-dom';
 
 
 
@@ -21,6 +22,10 @@ const mdTheme = createTheme();
 function AddAppointmentContent() {
 
   const boardState = useSelector((state)=> state.navigator);
+  const _id = Number(useParams().tid);
+  const _appoId = Number(useParams().aid);
+
+  console.log(useParams());
   const { t } = useTranslation();
 
   
@@ -45,12 +50,12 @@ function AddAppointmentContent() {
         >
           <Toolbar />
           
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container sx={{ mt: 4, mb: 4 }}>
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AddAppointmentForm />
+                  <AddAppointmentForm customerId={_id} appoId={_appoId}/>
                 </Paper>
               </Grid>
             </Grid>

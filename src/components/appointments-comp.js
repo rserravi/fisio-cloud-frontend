@@ -348,7 +348,8 @@ const RenderDateCell = (props) =>{
             label={t("seeappointment")}
             
             onClick={(event) => {
-              seeAppointment(params.id);
+              console.log(params.row.userid);
+              seeAppointment(params.row.userid, params.id);
               event.stopPropagation();
           }}
           />,     
@@ -388,23 +389,23 @@ const RenderDateCell = (props) =>{
 
   // NAVIGATE FUNCTIONS
   const AddAppoButton= () =>{
-    //const actualScreen = "AddAppointment";
-   // navigate("/addAppointment",{replace: true});
-    //dispatch(navigationSuccess(actualScreen))
+    const actualScreen = "/addAppointment";
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
   }
 
   const seeCustomer = (customerId) => {
     console.log("SEE CUSTOMER " + customerId);
-    const actualScreen = "SeeCustomer";
-    navigate("/customer/"+customerId,{replace: true});
+    const actualScreen = "/customer/"+customerId;
+    navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
-  const seeAppointment= (appoId) => {
-    console.log("SEE APPOINTMENT " + appoId);
-   //const actualScreen = "SeeAppointment";
-   // navigate("/appointment/"+appoId,{replace: true});
-   // dispatch(navigationSuccess(actualScreen))
+  const seeAppointment= (userId, appoId) => {
+    console.log("SEE APPOINTMENT", appoId, " OF CUSTOMER", userId );
+    const actualScreen = "/addappointment/"+ Number(userId) +"/"+ Number(appoId);
+    navigate(actualScreen, {replace: true});
+    dispatch(navigationSuccess(actualScreen))
   }
  
 
@@ -466,11 +467,14 @@ const RenderDateCell = (props) =>{
   const doReport = (props) =>{
     console.log("Hacer informe de cita " + props.id);
     setAnchorPastButtonEL(null);
+    seeAppointment(props.userid, props.id);
+
   }
 
   const modifyAppointment = (props) =>{
     console.log("Modificar cita " + props.id);
     setAnchorPastButtonEL(null);
+    seeAppointment(props.userid, props.id);
   }
 
    // Set if Toolbar is visible depending on var compact

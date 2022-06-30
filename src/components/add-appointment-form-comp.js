@@ -1,117 +1,388 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Alert, Button, Typography } from '@mui/material';
+import { Alert, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, MenuItem, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
-import { useDispatch, useSelector } from 'react-redux';
-import { EmailForm } from './form-components/emails-comp';
-import { AddressForm } from './form-components/address-comp';
-import { PhoneForm } from './form-components/phones-comp';
-import { SocialForm } from './form-components/social-comp';
-import IconButton from "@mui/material/IconButton";
-import SearchIcon from "@mui/icons-material/Search";
-import TextField from "@mui/material/TextField";
+import { useDispatch } from 'react-redux';
+import { GetAllData, GetAppointmentById, getCustomer, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
+import CustomerSearchBar from './form-components/customer-search-form-comp';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers';
+import { useNavigate } from 'react-router-dom';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 
-var initValidation={
-  id:"1",
-  date: "2022-06-21T17:00:00.000Z",
-  duration: "60", 
-  service: "Masaje",
-  price:"50",
-  status:"pending",
-  closed:"",
-  notes:""
+var initAddService={
+  service:"",
+  price:""
 }
 
   
 export default function AddAppointmentForm(props) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [customerID, setCustomerID] = React.useState(props.customerId)
+  // const _appoId = props.appoId
+  
+  const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "edit"
+    
+  var initValidation={
+    id:"1",
+    date: new Date(Date.now()),
+    duration: "60", 
+    service:"Masaje",
+    price: "50",
+    paid:"0",
+    status: "pending",
+    closed: "",
+    notes: ""
+  }
   const [appo, setAppo] = React.useState(initValidation);
+
+  React.useEffect(() => {   
+    
+    //SELECCION DE MODOS
+     
+    if (props.customerId && !props.appoId){
+          //MODO AÑADIR CITA A ID
+          setMode("addToId")
+        }
+
+    if (props.customerId && props.appoId){
+          //MODO EDITAR
+          setMode("edit")
+          const newData = GetAppointmentById({appoId: props.appoId, userId: props.customerId })
+          setAppo(newData[0])
+        }
+    },[props.appoId, props.customerId, setMode, setAppo ]);
+
+  const [customerName, setCustomerName] = React.useState("")
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [closeAppoDialogOpen, setCloseAppoDialogOpen] = React.useState(false);
+  const [newService, setNewService] = React.useState(initAddService);
+  const services = getServices();
+  
   React.useEffect (()=>{
 
     },[])
-  const customerid = props.customerid;
+ 
   const { t } = useTranslation();
-  const dispatch = useDispatch();
-  const data = {}
+  
+  const data = () => {
+    if (customerID){
+      return getCustomer(customerID);
+    }
+    else
+      return (GetAllData)
+  }   
 
 
   const HandleSubmit = (event)=>{
+  
     event.preventDefault();
+    console.log(appo)
+    //CALL API TO PUT IN DATABASE
+    dispatch(navigationLoading());
+    navigate("/appointments",{replace: true});
+    dispatch(navigationSuccess("Appointments"))
 
    }
+   const closeAppointment = (event)=>{
+    event.preventDefault();
+    setCloseAppoDialogOpen(true);
 
- 
+  }
+
+  const closeAppo = (event) =>{
+    event.preventDefault();
+    console.log(appo)
+    setAppo({...appo, ["closed"]: new Date().now})
+    //CALL API TO PUT IN DATABASE
+    dispatch(navigationLoading());
+    navigate("/appointments",{replace: true});
+    dispatch(navigationSuccess("Appointments"))
+  }
+
+  const closeAppoDialog = () =>{
+    setCloseAppoDialogOpen(false);
+  }
+
+   const SetCustomer = (data) =>{
+
+    setCustomerName(data);
+    setCustomerID(GetCustomerIdFromName(data));
+   }
  
 
   const resetData= ()=>{
     //setFrmData(frmDataInit);
   }
 
-  const CustomerData = () =>{
-
-    return(
-        <React.Fragment>
-        
-      </React.Fragment>
-    )
+  const handleDate= (value)=>{
+    setAppo({...appo, ["date"]: value})
+  }
+  
+  const handleDurationChange= (event)=>{
+    setAppo({...appo, ["duration"]: event.target.value})
   }
 
-  return (
+  const handlePriceChange = (event)=>{
+    setAppo({...appo, ["price"]: event.target.value})
+  }
+
+  const handlePaidChange = (event)=>{
+    setAppo({...appo, ["price"]: event.target.value})
+  }
+
+  const handleServicesChange= (event)=>{
+    setAppo({...appo, ["service"]: event.target.value,["price"]: getPriceForService(event.target.value) })
+  }
+
+  const handleNotesChange= (event)=>{
+    setAppo({...appo, ["notes"]: event.target.value})
+  }
+
+  const addService= () =>{
+    setDialogOpen(true);
+  }
+
+  const closeAddServiceDialog = () =>{
+    setDialogOpen(false);
+  }
+
+  const newServiceFormCommit = ()=>{
+    console.log(newService);
+    setDialogOpen(false);
+  }
+
+  const handleNewServiceService = (event)=>{
+    setNewService({...newService, ["service"]: event.target.value})
+  }
+
+  const handleNewServicePrice = (event)=>{
+    setNewService({...newService, ["price"]: event.target.value})
+  }
+
+
+
+  const MainTitle = () =>{
+    // Modes "add", "addToId", "edit"
+    switch (mode) {
+      case "add":
+          return(<><CustomerSearchBar customerFunc={SetCustomer}/></>);
+      case "addToId":
+        return (
+            <h2>{t("addingdateto")} {data().firstname} {data().lastname} </h2>
+          )  
+      case "edit":
+          return (
+            <h2>{t("editingdateof")} {data().firstname} {data().lastname}, el {new Date(appo.date).toLocaleDateString()} a las {new Date(appo.date).toLocaleTimeString()}</h2>
+          )
+        
+      default:
+          return (
+            <>Ha habido un error</>
+          )
+        break;
+    }
+  }
+
+  const AdditionalButton = ()=>{
+    // Modes "add", "addToId", "edit"
+    if (mode === "edit"){
+      return (
+        <Button       
+          fullWidth
+          variant="contained"
+          color = "warning"
+          onClick={closeAppointment}
+          sx={{ m:3 }}
+        >
+        {t("closeappointment")}
+    </Button>
+      )
+
+      }
+    }
+
+
+   return (
     <React.Fragment>
        
         <Box component="form" noValidate onSubmit={HandleSubmit} >
-            <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
-             <Grid item xs={12}>
-                
-                <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
-                
-              </Grid>
-            </Grid>
-            <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-              {t("NAMEANDIMAGE")}
-            </Typography>
+          
          
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <CustomerData />
+              {/* {customerID?<h1>{t("addingdateto")} {data().firstname} {data().lastname} </h1>:
+                <><CustomerSearchBar customerFunc={SetCustomer}/></>
+              } */}
+              <MainTitle />
+
+              <h1>{customerName}</h1>
              
               </Grid>
-              
-
             </Grid>
               
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("EMAILS")}
+                {t("appointment")}
               </Typography>
 
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <EmailForm  />
-               
+
+              {/* DATE AND TIME CARD */}
+
+                <Card sx={{ display: 'flex',  width: '100%'  }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
+                    <Button onClick={addService} variant="outlined" sx={{mr:2, width:130}}>{t("calendar")}</Button>
+                      <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                            label={t("date")}
+                            value={appo.date}
+                            variant="standard"
+                            sx = {{mr:2}}
+                            onChange={handleDate}
+                            
+                            renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
+                        />
+                        <TimePicker
+                          label={t("Time")}
+                          value={appo.date}
+                          variant="standard"
+                          
+                          onChange={handleDate}
+                          renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
+                        />
+                       </LocalizationProvider>
+                      
+                        <TextField
+                            label={t("duration")}
+                            value={appo.duration}
+                            variant="standard"
+                            
+                            sx = {{mr:2}}
+                            onChange={handleDurationChange}
+                        />
+                    </Box>
+                  </Box>
+                </Card>
+
+                 {/* SERVICE AND PRICE */}
+
+                 <Card sx={{ display: 'flex',  width: '100%', mt:2  }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
+                      
+                    <Button onClick={addService} variant="outlined" sx={{mr:2, width:400}}>{t("addservice")}</Button>
+                        <Dialog open={dialogOpen} onClose={closeAddServiceDialog}>
+                          <DialogTitle>{t("addservice")}</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                            {t("addaservicetothelistandusualprice")}
+                            </DialogContentText>
+                            <TextField
+                              autoFocus
+                              margin="dense"
+                              id="service"
+                              label={t("service")}
+                              type="email"
+                              fullWidth
+                              variant="standard"
+                              onChange={handleNewServiceService}
+                              value = {newService.service}
+                            />
+                            <TextField
+                              autoFocus
+                              margin="dense"
+                              id="price"
+                              label={t("price")}
+                              type="number"
+                              fullWidth
+                              variant="standard"
+                              onChange={handleNewServicePrice}
+                              value= {newService.price}
+                            />
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={newServiceFormCommit}>{t("add")}</Button>
+                            <Button onClick={closeAddServiceDialog}>{t("cancel")}</Button>
+                          </DialogActions>
+                        </Dialog>
+
+                        <TextField
+                            label={t("service")}
+                            value={appo.service}
+                            variant="standard"
+                            sx = {{mr:2, textAlign:'left'}}
+                            fullWidth
+                            select
+                            helperText= {t("pleaseselectaserviceoraddnew")}
+                            onChange={handleServicesChange}
+                        >
+                          {services.map((option) =>{ return (
+                            <MenuItem key={option.id} value={option.serviceName}>
+                              {option.serviceName}
+                            </MenuItem>
+                            )
+                          })}
+                         
+                        </TextField>
+                        
+                        <TextField
+                          label={t("price")}
+                          value={appo.price}
+                          variant="standard"
+                          sx = {{mr:2}}
+                          fullWidth
+                          onChange={handlePriceChange}
+                          InputProps={{
+                            startAdornment: <InputAdornment position="start">€</InputAdornment>,
+                          }}
+                        />
+
+                        <TextField
+                          label={t("paid")}
+                          value={appo.paid}
+                          variant="standard"
+                          sx = {{mr:2}}
+                          fullWidth
+                          onChange={handlePaidChange}
+                          InputProps={{
+                            startAdornment: <InputAdornment position="start">€</InputAdornment>,
+                            endAdornment: <InputAdornment position="end"><Button size="small">{t("printrecipe")}</Button></InputAdornment>
+                          }}
+                        />
+
+
+                    </Box>
+                  </Box>
+                </Card>
               </Grid>
 
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("ADDRESS")}
-              </Typography>
-
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <AddressForm />
-              </Grid>
-             
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("PHONES")}
-              </Typography>
-             
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <PhoneForm />
-              </Grid>
+                {/* NOTAS */}
 
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("SOCIALNETWORKS")}
+                {t("notes")}
               </Typography>
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <SocialForm />
+                
+              <Card sx={{ display: 'flex',  width: '100%', mt:2  }}>
+
+                <TextField
+                  id="outlined-multiline-flexible"
+                  label={t("notes")}
+                  multiline
+                  sx = {{m:2}}
+                  rows={6}
+                  fullWidth
+                  value={appo.notes}
+                  onChange={handleNotesChange}
+                />
+                </Card>
               </Grid>
 
             <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', m:2 }}>
@@ -122,20 +393,33 @@ export default function AddAppointmentForm(props) {
                 variant="contained"
                 onClick={HandleSubmit}
                 sx={{ m:3}}
-              >
-               {t("createcustomer")}
-              </Button>
-              <Button
+            >
+               {mode==="add"? t("createappointment"): t("editappointment")}
+            </Button>
+            <AdditionalButton />
+            <Dialog open={closeAppoDialogOpen} onClose={closeAppoDialog}>
+                          <DialogTitle>{t("closeappointment")}</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>
+                            {t("doyouwanttofiletheappointmentorkeepediting")}
+                            </DialogContentText>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={closeAppo}>{t("fileit")}</Button>
+                            <Button onClick={closeAppoDialog}>{t("keepediting")}</Button>
+                          </DialogActions>
+                        </Dialog>
+            <Button
                
                 fullWidth
                 variant="contained"
                 color = "error"
                 onClick={resetData}
                 sx={{ m:3 }}
-              >
+            >
                {t("cancel")}
-              </Button>
-              </Box>
+            </Button>
+          </Box>
         
               
         </Box>

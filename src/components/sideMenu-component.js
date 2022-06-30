@@ -23,6 +23,7 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import PeopleOutlineIcon from '@mui/icons-material/PeopleOutline';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
+import EuroIcon from '@mui/icons-material/Euro';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
@@ -93,50 +94,50 @@ function SideMenu(boardState) {
 
   const toggleDashboad = () =>{
     dispatch(navigationLoading());
-    actualScreen = "Dashboard";
+    actualScreen = "dashboard";
     navigate("/dashboard",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
   const toogleAddCustomer = () =>{
-    actualScreen = "AddCustomer";
+    actualScreen = "addcustomer";
     navigate("/addcustomer",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
   const toogleShoweAllCustomers= () =>{
     dispatch(navigationLoading());
-    actualScreen = "AllCustomers";
+    actualScreen = "customers";
     navigate("/customers",{replace: true});
     dispatch(navigationSuccess(actualScreen));
 
   }
 
-  const toogleAddSchedule= () =>{
+  const toogleAddAppointment= () =>{
     dispatch(navigationLoading());
-    actualScreen = "AddSchedule";
+    actualScreen = "addappointment";
     navigate("/addappointment",{replace: true});
     dispatch(navigationSuccess(actualScreen));
   }
 
-  const toogleShowSchedule= () =>{
+  const toogleShowAppointment= () =>{
     dispatch(navigationLoading());
-    actualScreen = "Schedule";
+    actualScreen = "appointments";
     navigate("/appointments",{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
-  const toogleShowOrders = () =>{
-    actualScreen = "Orders";
+  const toogleShowDeposits = () =>{
+    actualScreen = "deposits";
     dispatch(navigationSuccess(actualScreen))
   }
 
   const toogleShowReports= () =>{
-    actualScreen = "Reports";
+    actualScreen = "reports";
     dispatch(navigationSuccess(actualScreen))
   }
   const toogleShowIntegrations= () =>{
-    actualScreen = "Integrations";
+    actualScreen = "integrations";
     dispatch(navigationSuccess(actualScreen))
   }
 
@@ -202,14 +203,14 @@ function SideMenu(boardState) {
             </ListItemButton>
 
             <Collapse in={expandCal} timeout="auto" unmountOnExit>
-                <ListItemButton sx={{ pl:4}} onClick={toogleAddSchedule}>
+                <ListItemButton sx={{ pl:4}} onClick={toogleAddAppointment}>
                   <ListItemIcon>
                     <ScheduleIcon />
                   </ListItemIcon>
                   <ListItemText primary={t("adddate")} />
                 </ListItemButton>
                 
-                <ListItemButton sx={{ pl:4}} onClick={toogleShowSchedule}>
+                <ListItemButton sx={{ pl:4}} onClick={toogleShowAppointment}>
                   <ListItemIcon>
                     <CalendarViewWeekIcon />
                   </ListItemIcon>
@@ -217,11 +218,11 @@ function SideMenu(boardState) {
                 </ListItemButton>
             </Collapse>
 
-            <ListItemButton onClick={toogleShowOrders}>
+            <ListItemButton onClick={toogleShowDeposits}>
                 <ListItemIcon >
-                <ShoppingCartIcon />
+                <EuroIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("orders")} />
+                <ListItemText primary={t("deposits")} />
             </ListItemButton>
             
             <ListItemButton onClick={toogleShowReports}>

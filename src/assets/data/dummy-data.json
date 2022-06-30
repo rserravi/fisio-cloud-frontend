@@ -313,10 +313,10 @@
     {
         "id":4,
         "addedAt": "1-10-2015",
-        "firstname": "Maria",
-        "lastname": "Lapuerta",
+        "firstname": "Ines",
+        "lastname": "Arrimadas",
         "image": "marialapuerta.jpg",
-        "gender": "female",
+        "gender": "other",
         "inbound": "lead",
         "email":
         [
@@ -373,8 +373,8 @@
     {
         "id":5,
         "addedAt": "1-10-2015",
-        "firstname": "Maria",
-        "lastname": "Lapuerta",
+        "firstname": "Ana",
+        "lastname": "Torroja",
         "image": "marialapuerta.jpg",
         "gender": "female",
         "inbound": "lead",
@@ -432,8 +432,8 @@
     {
         "id":6,
         "addedAt": "1-10-2015",
-        "firstname": "Maria",
-        "lastname": "Lapuerta",
+        "firstname": "Bo",
+        "lastname": "Derek",
         "image": "marialapuerta.jpg",
         "gender": "female",
         "inbound": "lead",

@@ -1,5 +1,7 @@
 import customerData from "../assets/data/dummy-data.json"
+import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
+import {nameInitial} from "./name-utils";
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -11,6 +13,41 @@ export const getCustomer = (_id) =>{
         }
     }
     return found;
+}
+
+export const getCustomerList = () =>{
+  var jsonObj = [];
+  for (let userKey in customerData){
+      var _id = customerData[userKey].id;
+      var customerName = customerData[userKey].firstname + " " + customerData[userKey].lastname;
+
+      var item = {}
+      item["_id"] = _id;
+      item["customerName"] = customerName;
+
+      jsonObj.push(item)
+  }
+  return jsonObj;
+}
+
+export const getServices= () =>{
+  return configData[0].services;
+}
+
+export const getPriceForService = (service)=>{
+ var result = "0";
+ for (let key in configData[0].services){
+    if (configData[0].services[key].serviceName === service){
+      result = configData[0].services[key].priceXHour;
+      return result
+    }
+ }
+ return result;
+}
+
+export const GetCustomerIdFromName = (name) =>{
+  //TODO
+  return 0
 }
 
 export const firstItemId = ()=>{
@@ -36,6 +73,7 @@ export const GetAppointments = ()=>{
                 var duration = customerData[userKey].appointments[appoKey].duration;
                 var service = customerData[userKey].appointments[appoKey].service;
                 var price = customerData[userKey].appointments[appoKey].price;
+                var paid = customerData[userKey].appointments[appoKey].paid;
                 var status = customerData[userKey].appointments[appoKey].status;
                 var closed = customerData[userKey].appointments[appoKey].closed;
                 var notes = customerData[userKey].appointments[appoKey].notes;
@@ -49,6 +87,7 @@ export const GetAppointments = ()=>{
                 item["duration"] = duration;
                 item["service"] = service;
                 item["price"] = price;
+                item["paid"] = paid;
                 item["status"] = status;
                 item["closed"] = closed;
                 item["notes"] = notes;
@@ -57,6 +96,33 @@ export const GetAppointments = ()=>{
             }
         }
     }
+    return jsonObj  
+}
+
+export const GetAppointmentById = (props) =>{
+  var jsonObj = [];
+    for (let userKey in customerData){
+      if (Number(customerData[userKey].id )=== Number(props.userId)){
+        for (let appoKey in customerData[userKey].appointments){
+          if (Number(customerData[userKey].appointments[appoKey].id) ===  Number(props.appoId)){
+            var item = {}
+                item["id"] = customerData[userKey].appointments[appoKey].id
+                item["date"] =  customerData[userKey].appointments[appoKey].date;
+                item["duration"] = customerData[userKey].appointments[appoKey].duration;
+                item["service"] =  customerData[userKey].appointments[appoKey].service;
+                item["price"] =customerData[userKey].appointments[appoKey].price;
+                item["paid"] =customerData[userKey].appointments[appoKey].paid;
+                item["status"] = customerData[userKey].appointments[appoKey].status;
+                item["closed"] = customerData[userKey].appointments[appoKey].closed;
+                item["notes"] = customerData[userKey].appointments[appoKey].notes;
+
+                jsonObj.push(item)
+                return jsonObj  
+          }
+        }
+      }
+      }
+    console.log(jsonObj)
     return jsonObj  
 }
 
@@ -143,6 +209,10 @@ export const GetDebtsToDate = (endDate) =>{
     }
 
     return accumulated;
+}
+
+export const GetAllData = () =>{
+  return customerData;
 }
 
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js

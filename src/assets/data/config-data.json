@@ -1,0 +1,19 @@
+[
+    {
+        "id":1,
+        "locales":"es-ES",
+        "services":[
+            {
+                "id":1,
+                "serviceName":"Masaje",
+                "priceXHour":"50"
+            },
+            {
+                "id":2,
+                "serviceName":"Consulta",
+                "priceXHour":"30"
+            }
+        ]
+        
+    }
+]

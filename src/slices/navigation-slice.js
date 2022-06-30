@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     screen :"Dashboard",
+    previousScreen:"",
     drawerOpen: true,
     customerOpen: false,
     appointmentsOpen: false,
@@ -17,6 +18,7 @@ const navigationSlice = createSlice({
             state.isLoading = true;
         },
         navigationSuccess:(state, action)=>{
+            state.previousScreen = state.screen;
             state.screen = action.payload;
             state.isLoading = false;
         },
