@@ -13,6 +13,7 @@ import MyMap from './utils/tests/googlemaps-test';
 import FourOuFour from './pages/404/404';
 import Appointments from './pages/appointments/appointments-page';
 import AddAppointment from './pages/appointments/add-appointment-page';
+import DepositsPage from './pages/deposits/deposits-page';
 
 
 function App() {
@@ -37,6 +38,11 @@ function App() {
           <Route path='/addappointment' element={<AddAppointment />} />
           <Route path='/addappointment/:tid' element={<AddAppointment />} />
           <Route path='/addappointment/:tid/:aid' element={<AddAppointment />} />
+          <Route path='/deposits' element={<DepositsPage/>} /> 
+          {/* <Route path='/reports' element={<Reports/>} /> 
+          <Route path='/integrations' element={<Integrations/>} /> 
+          <Route path='/setup' element={<Setup/>} />
+          <Route path='/usersetup/:tid' element={<UserSetup/>} />   */}
         </Routes>
       </Router>
 

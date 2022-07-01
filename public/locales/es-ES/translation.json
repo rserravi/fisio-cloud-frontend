@@ -237,5 +237,19 @@
     "fileit":"Archivar",
     "keepediting":"Continuar editando",
     "writereport":"Escribir informe",
-    "printrecipe":"Imprimir Recibo"
+    "printrecipe":"Imprimir Recibo",
+    "periodStart":"Fecha Comienzo",
+    "periodEnd":"Fecha Final",
+    "incomes":"Ingresos",
+    "income":"Ingreso",
+    "closed": "Cerrado a",
+    "month": "Mes",
+    "quarter": "Cuatrimestre",
+    "year": "Año",
+    "last": "último",
+    "loses":"Pérdidas",
+    "debt":"Deuda",
+    "always":"Siempre",
+    "sendRequest":"Enviar Recordatorio de Pago",
+    "close": "Cerrar"
 }

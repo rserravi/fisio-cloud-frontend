@@ -12,7 +12,6 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
@@ -75,6 +74,13 @@ function SideMenu(boardState) {
 
 
   const { t, i18n } = useTranslation();
+
+  const goTo = (actualScreen) =>{
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
   const toggleDrawer = () => {
     open = !open;
     dispatch(navigationDrawer(open));
@@ -93,56 +99,35 @@ function SideMenu(boardState) {
   }
 
   const toggleDashboad = () =>{
-    dispatch(navigationLoading());
-    actualScreen = "dashboard";
-    navigate("/dashboard",{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/dashboard");
   }
 
   const toogleAddCustomer = () =>{
-    actualScreen = "addcustomer";
-    navigate("/addcustomer",{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/addcustomer");
   }
 
   const toogleShoweAllCustomers= () =>{
-    dispatch(navigationLoading());
-    actualScreen = "customers";
-    navigate("/customers",{replace: true});
-    dispatch(navigationSuccess(actualScreen));
-
+    goTo("/customers");
   }
 
   const toogleAddAppointment= () =>{
-    dispatch(navigationLoading());
-    actualScreen = "addappointment";
-    navigate("/addappointment",{replace: true});
-    dispatch(navigationSuccess(actualScreen));
+    goTo("/addappointment");
   }
 
   const toogleShowAppointment= () =>{
-    dispatch(navigationLoading());
-    actualScreen = "appointments";
-    navigate("/appointments",{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/appointments");
   }
 
   const toogleShowDeposits = () =>{
-    actualScreen = "deposits";
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/deposits");
   }
 
   const toogleShowReports= () =>{
-    actualScreen = "reports";
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/reports");
   }
   const toogleShowIntegrations= () =>{
-    actualScreen = "integrations";
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/integrations");
   }
-
-
-  
  
   return (
         <Drawer variant="permanent" open={open}>

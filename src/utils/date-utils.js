@@ -12,6 +12,12 @@ export function formatDate(date) {
     ].join('/');
   }
 
+export function toLocalDate2(date) {
+  console.log (typeof(date));
+  const result = new Date(date).toLocaleDateString();
+  return result;
+}
+
 export const timeDifference = (date) => {
   const date1 = new Date (date);
   const elapsedTime = date1 - Date.now();
@@ -65,7 +71,7 @@ export const addMinutesToDate = (date, minutes)=>{
 }
 
 export const addMonthtoDate= (date, months) =>{
-  var oldDate = new Date(date)
+  var oldDate = new Date()
   var newd = new Date(date);
   newd.setMonth(oldDate.getMonth()+Number(months));
   return newd

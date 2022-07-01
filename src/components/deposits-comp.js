@@ -11,53 +11,26 @@ function preventDefault(event) {
   event.preventDefault();
 }
 
-export default function Deposits(props) {
+export default function DepositsComponent() {
   const { t } = useTranslation();
-  console.log ("PROPS EN DEPOSITS", props)
-  const [startDate, setStartDate] = React.useState(new Date());
-  const [endDate, setEndDate] = React.useState(new Date());
-  const [titleTime, setTitleTime] = React.useState(t("month"))
-  var mode = "month";
-
-  React.useEffect(()=>{
-    if (props.month){
-      mode = "month";
-      setStartDate(addMonthtoDate(new Date(),-1))
-      setTitleTime(t("month"))
-    }
-    if (props.quarter){
-      mode = "quarter";
-      setStartDate(addMonthtoDate(new Date(),-4))
-      setTitleTime(t("quarter"))
-    }
-    if (props.year){
-      mode = "year";
-      setStartDate(addMonthtoDate(new Date(),-12))
-      setTitleTime(t("year"))
-    }
-
-  },[])
-
-  
-  
   var today = formatDate(new Date());
 
-  const ingresos = GetDepositsFromDate(startDate,endDate);
+  const ingresos = GetDepositsFromDate(addMonthtoDate(new Date(),-1),new Date());
   const deudas = GetDebtsToDate(new Date());
 
 
   return (
     <React.Fragment>
-      <Title>{t("deposits")} {t("last")} {titleTime}</Title>
+      <Title>{t("lastmonthdeposits")}</Title>
       <Typography component="p" variant="h5"style={{color:"#00adb5"}}>
-       {t("incomes")}: {ingresos} €
+       Ingresos: {ingresos} €
       </Typography>
       <Typography component="p" variant="h6" style={{color:"#FF0000"}}>
        Deudas: {deudas} €
       </Typography>
       <p></p>
       <Typography color="text.secondary" sx={{ flex: 1 }}>
-        del {formatDate(startDate)} a {today}.
+        del {formatDate(addMonthtoDate(new Date(),-1))} a {today}.
       </Typography>
       <div>
         <Link color="primary" href="#" onClick={preventDefault}>

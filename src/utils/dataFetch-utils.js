@@ -1,7 +1,6 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
-import { AttachEmail } from "@mui/icons-material";
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -13,6 +12,23 @@ export const getCustomer = (_id) =>{
         }
     }
     return found;
+}
+
+export const getCustomerNameFromId = (_id) =>{
+  let found = null;
+  for (let key in customerData){
+    
+      if (customerData[key].id === _id){
+          found = customerData[key];
+          break
+      }
+  }
+  if (found){
+  return found.firstname + " " + found.lastname;
+  }
+  else {
+    return("error");
+  }
 }
 
 export const getCustomerList = () =>{
@@ -78,7 +94,6 @@ export const GetAppointments = ()=>{
                 var closed = customerData[userKey].appointments[appoKey].closed;
                 var notes = customerData[userKey].appointments[appoKey].notes;
                 var attachment = customerData[userKey].appointments[appoKey].attachment;
-                console.log(attachment);
                 var item = {}
                 item["id"] = id;
                 item["customerId"] = customerId;
@@ -189,13 +204,54 @@ export const GetDepositsFromDate = (startdate, endDate) =>{
                 
                const eventDate = new Date(customerData[userKey].history[histoKey].date)
                if (customerData[userKey].history[histoKey].status==="paid" && eventDate > start && eventDate < end ){
-                accumulated = accumulated + Number(customerData[userKey].history[histoKey].price)
+                accumulated = accumulated + Number(customerData[userKey].history[histoKey].paid)
                }
             }
         }
     }
 
     return accumulated;
+}
+
+export const GetDepositsArrayFromDate = (startdate, endDate, status) =>{
+
+  var jsonObj = [];
+  const start = new Date (startdate);
+  const end = new Date (endDate);
+  var counter = 0;
+  console.log("DATE UTILS, Start:",start,". End:", end);
+
+  for (let userKey in customerData){
+      if(customerData[userKey].history.length >=0){
+          for (let histoKey in customerData[userKey].history){
+              
+             const eventDate = new Date(customerData[userKey].history[histoKey].date)
+             if (customerData[userKey].history[histoKey].status===status && eventDate > start && eventDate < end ){
+              console.log("ESTAMOS EN EL SITIO CORRECTO")
+                var item = {};
+                item["id"]= counter
+                item["histoId"] = customerData[userKey].history[histoKey].id
+                item["date"] =  customerData[userKey].history[histoKey].date;
+                item["duration"] = customerData[userKey].history[histoKey].duration;
+                item["service"] =  customerData[userKey].history[histoKey].service;
+                item["price"] =customerData[userKey].history[histoKey].price;
+                item["paid"] =customerData[userKey].history[histoKey].paid;
+                item["status"] = customerData[userKey].history[histoKey].status;
+                item["closed"] = customerData[userKey].history[histoKey].closed;
+                item["notes"] = customerData[userKey].history[histoKey].notes;
+                item["attachment"] = customerData[userKey].history[histoKey].attachment;
+                item["customerId"] = customerData[userKey].id;
+                item["periodStart"] = new Date (startdate).toISOString();
+                item["periodEnd"] =  new Date (endDate).toISOString();
+                
+                jsonObj.push(item)
+                counter = counter +1;
+             }
+          }
+      }
+  }
+  console.log("ESTE ES EL JSON DE RETURN",jsonObj)
+  return jsonObj;
 }
 
 export const GetDebtsToDate = (endDate) =>{
@@ -207,7 +263,7 @@ export const GetDebtsToDate = (endDate) =>{
             for (let histoKey in customerData[userKey].history){       
                const eventDate = new Date(customerData[userKey].history[histoKey].date)
                if (customerData[userKey].history[histoKey].status==="pending" && eventDate < end ){
-                accumulated = accumulated + Number(customerData[userKey].history[histoKey].price)
+                accumulated = accumulated + (Number(customerData[userKey].history[histoKey].price) -Number(customerData[userKey].history[histoKey].paid)) 
                }
             }
         }

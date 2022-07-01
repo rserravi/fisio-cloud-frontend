@@ -12,6 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { useDispatch } from 'react-redux';
 import { nc_birthdate_Commit, nc_firstName_Commit, nc_gender_Commit, nc_lastName_Commit } from '../../slices/newCustomer-slice';
+import { esES } from '@mui/x-data-grid';
 
 
 export const NameForm = (props) =>{
