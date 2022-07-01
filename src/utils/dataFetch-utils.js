@@ -1,7 +1,7 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
-import {nameInitial} from "./name-utils";
+import { AttachEmail } from "@mui/icons-material";
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -77,7 +77,8 @@ export const GetAppointments = ()=>{
                 var status = customerData[userKey].appointments[appoKey].status;
                 var closed = customerData[userKey].appointments[appoKey].closed;
                 var notes = customerData[userKey].appointments[appoKey].notes;
-
+                var attachment = customerData[userKey].appointments[appoKey].attachment;
+                console.log(attachment);
                 var item = {}
                 item["id"] = id;
                 item["customerId"] = customerId;
@@ -91,6 +92,7 @@ export const GetAppointments = ()=>{
                 item["status"] = status;
                 item["closed"] = closed;
                 item["notes"] = notes;
+                item["attachment"] = attachment;
 
                 jsonObj.push(item)
             }
@@ -115,6 +117,7 @@ export const GetAppointmentById = (props) =>{
                 item["status"] = customerData[userKey].appointments[appoKey].status;
                 item["closed"] = customerData[userKey].appointments[appoKey].closed;
                 item["notes"] = customerData[userKey].appointments[appoKey].notes;
+                item["attachment"] = customerData[userKey].appointments[appoKey].attachment;
 
                 jsonObj.push(item)
                 return jsonObj  
@@ -155,7 +158,8 @@ export const GetAppointmentsCalendarFormat = ()=>{
                 }
               
 
-                var resourceId = 1;
+                var resourceId = customerData[userKey].appointments[appoKey].id;
+                const customerId = customerData[userKey].id;
                 var item = {}
                 item["id"] = id;
                 item["title"] = title;
@@ -166,6 +170,7 @@ export const GetAppointmentsCalendarFormat = ()=>{
                 item["backgroundColor"]= backgroundColor;
                 item["color"] = color;
                 item["ispast"] = isPast;
+                item["customerId"] = customerId;
                 jsonObj.push(item)
             }
         }

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Alert, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, MenuItem, TextField, Typography } from '@mui/material';
+import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { useDispatch } from 'react-redux';
@@ -12,6 +12,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers';
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
+import styled from '@emotion/styled';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 var initAddService={
   service:"",
@@ -36,7 +38,8 @@ export default function AddAppointmentForm(props) {
     paid:"0",
     status: "pending",
     closed: "",
-    notes: ""
+    notes: "",
+    attachment:[]
   }
   const [appo, setAppo] = React.useState(initValidation);
 
@@ -83,9 +86,10 @@ export default function AddAppointmentForm(props) {
     event.preventDefault();
     console.log(appo)
     //CALL API TO PUT IN DATABASE
+    const actualScreen = "/appointments"
     dispatch(navigationLoading());
-    navigate("/appointments",{replace: true});
-    dispatch(navigationSuccess("Appointments"))
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
 
    }
    const closeAppointment = (event)=>{
@@ -97,11 +101,12 @@ export default function AddAppointmentForm(props) {
   const closeAppo = (event) =>{
     event.preventDefault();
     console.log(appo)
-    setAppo({...appo, ["closed"]: new Date().now})
+    setAppo({...appo, "closed": new Date().now})
     //CALL API TO PUT IN DATABASE
+    const actualScreen = "/appointments"
     dispatch(navigationLoading());
-    navigate("/appointments",{replace: true});
-    dispatch(navigationSuccess("Appointments"))
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
   }
 
   const closeAppoDialog = () =>{
@@ -120,27 +125,28 @@ export default function AddAppointmentForm(props) {
   }
 
   const handleDate= (value)=>{
-    setAppo({...appo, ["date"]: value})
+    setAppo({...appo, "date": value})
   }
   
   const handleDurationChange= (event)=>{
-    setAppo({...appo, ["duration"]: event.target.value})
+    setAppo({...appo, "duration": event.target.value})
   }
 
   const handlePriceChange = (event)=>{
-    setAppo({...appo, ["price"]: event.target.value})
+    setAppo({...appo, "price": event.target.value})
   }
 
   const handlePaidChange = (event)=>{
-    setAppo({...appo, ["price"]: event.target.value})
+    setAppo({...appo, "price": event.target.value})
   }
 
   const handleServicesChange= (event)=>{
-    setAppo({...appo, ["service"]: event.target.value,["price"]: getPriceForService(event.target.value) })
+    setAppo({...appo, "service": event.target.value,"price": getPriceForService(event.target.value) })
   }
 
   const handleNotesChange= (event)=>{
-    setAppo({...appo, ["notes"]: event.target.value})
+    console.log(appo);
+    setAppo({...appo, "notes": event.target.value})
   }
 
   const addService= () =>{
@@ -157,14 +163,38 @@ export default function AddAppointmentForm(props) {
   }
 
   const handleNewServiceService = (event)=>{
-    setNewService({...newService, ["service"]: event.target.value})
+    setNewService({...newService, "service": event.target.value})
   }
 
   const handleNewServicePrice = (event)=>{
-    setNewService({...newService, ["price"]: event.target.value})
+    setNewService({...newService, "price": event.target.value})
   }
 
+  const seeAppointment = (event)=>{
+    const actualScreen = "/appointments"
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
 
+  const Input = styled('input')({
+    display: 'none',
+  });
+
+  const handleAttachmentChange = (e)=>{
+    var attached = appo.attachment;
+    console.log ("Copia de Appo", attached)
+    var item = {}
+    item["id"] = attached.length;
+    item["file"] = URL.createObjectURL(e.target.files[0]);
+    item["name"] = e.target.files[0].name;
+    console.log("Objeto a empujar", item)
+    attached.push(item);
+
+    console.log("Objeto modificado",attached);
+
+    setAppo({...appo, "attachment": attached}); 
+  }
 
   const MainTitle = () =>{
     // Modes "add", "addToId", "edit"
@@ -184,7 +214,6 @@ export default function AddAppointmentForm(props) {
           return (
             <>Ha habido un error</>
           )
-        break;
     }
   }
 
@@ -204,6 +233,22 @@ export default function AddAppointmentForm(props) {
       )
 
       }
+    }
+
+    const ShowAttachments = ()=>{
+
+      const attached = appo.attachment;
+    
+      return (
+        <React.Fragment>
+         <p>{attached.map((item)=>{ return (
+          <Button size='small' href={item.file} target="_blank" >{item.name}</Button>
+         )
+            })}
+          
+          </p>
+        </React.Fragment>
+      )
     }
 
 
@@ -237,7 +282,7 @@ export default function AddAppointmentForm(props) {
                 <Card sx={{ display: 'flex',  width: '100%'  }}>
                   <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
                     <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-                    <Button onClick={addService} variant="outlined" sx={{mr:2, width:130}}>{t("calendar")}</Button>
+                    <Button onClick={seeAppointment} variant="outlined" sx={{mr:2, width:130}}>{t("calendar")}</Button>
                       <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             label={t("date")}
@@ -370,21 +415,34 @@ export default function AddAppointmentForm(props) {
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 
-              <Card sx={{ display: 'flex',  width: '100%', mt:2  }}>
+                <Card sx={{ display: 'flex',  width: '100%', mt:2  }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', mb:2, mt:1}}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%'}}>
+                  <label htmlFor="attachment">
+                    <Input id="attachment" type="file" onChange={handleAttachmentChange}/>
+                    <IconButton color="primary" aria-label="upload file" component="span" >
+                      <AttachFileIcon />
+                    </IconButton>
+                  </label>
 
-                <TextField
-                  id="outlined-multiline-flexible"
-                  label={t("notes")}
-                  multiline
-                  sx = {{m:2}}
-                  rows={6}
-                  fullWidth
-                  value={appo.notes}
-                  onChange={handleNotesChange}
-                />
+                  <TextField
+                    id="outlined-multiline-flexible"
+                    label={t("notes")}
+                    multiline
+                    sx = {{m:2}}
+                    rows={6}
+                    fullWidth
+                    value={appo.notes}
+                    onChange={handleNotesChange}
+                  />
+                </Box>
+
+                {/* ATTACHMENTS */}
+                  <ShowAttachments />
+                </Box>
                 </Card>
               </Grid>
-
+                          
             <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', m:2 }}>
             <Button
                 type="submit"

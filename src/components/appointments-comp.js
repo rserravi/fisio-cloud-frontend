@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 
 //CUSTOM IMPORTS
 import Title from './Title';
-import { navigationSuccess } from '../slices/navigation-slice';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
 import { GetAppointments } from '../utils/dataFetch-utils';
@@ -274,7 +274,7 @@ const RenderDateCell = (props) =>{
     price: row.price + "€",
     status: row.status,
     closed: row.closed,
-    notes: row.notes 
+    notes: row.notes
   })
   );
 
@@ -390,19 +390,20 @@ const RenderDateCell = (props) =>{
   // NAVIGATE FUNCTIONS
   const AddAppoButton= () =>{
     const actualScreen = "/addAppointment";
+    dispatch(navigationLoading())
     navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
   const seeCustomer = (customerId) => {
-    console.log("SEE CUSTOMER " + customerId);
+    dispatch(navigationLoading())
     const actualScreen = "/customer/"+customerId;
     navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
   const seeAppointment= (userId, appoId) => {
-    console.log("SEE APPOINTMENT", appoId, " OF CUSTOMER", userId );
+    dispatch(navigationLoading())
     const actualScreen = "/addappointment/"+ Number(userId) +"/"+ Number(appoId);
     navigate(actualScreen, {replace: true});
     dispatch(navigationSuccess(actualScreen))

@@ -12,6 +12,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { addMonthtoDate, getDateFromISOTime, getTimeFromISOTime } from '../utils/date-utils';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { TimePicker } from '@mui/x-date-pickers';
@@ -29,10 +30,13 @@ var initValidation={
   paid:"0",
   status:"pending",
   closed:"",
-  notes:""
+  notes:"",
+  attachment:[{}]
 }
 
 export default function CalendarComp(props) {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const compact =props.compact;
   const localizer = momentLocalizer(moment)
   const { t } = useTranslation();
@@ -69,12 +73,13 @@ export default function CalendarComp(props) {
   
   const handleSelectEvent = useCallback(
     (event) => {
-
-      console.log(event);
+      console.log(event)
       setSelectedvent(event);
+      setCustomerID(event.customerId);
+      setAppo({...appo, "id": event.resourceId})
       setOpen(true);
     },
-    []
+    [appo]
     
   )
  
@@ -96,22 +101,27 @@ export default function CalendarComp(props) {
   }
 
   const handleDate= (value)=>{
-    setAppo({...appo, ["date"]: value})
+    setAppo({...appo, "date": value})
   }
   const handleDurationChange= (event)=>{
-    setAppo({...appo, ["duration"]: event.target.value})
+    setAppo({...appo, "duration": event.target.value})
   }
 
   const handlePriceChange = (event)=>{
-    setAppo({...appo, ["price"]: event.target.value})
+    setAppo({...appo, "price": event.target.value})
   }
 
   const handleServicesChange= (event)=>{
-    setAppo({...appo, ["service"]: event.target.value,["price"]: getPriceForService(event.target.value) })
+    setAppo({...appo, "service": event.target.value,"price": getPriceForService(event.target.value) })
   }
 
   const handleWriteReport= (event)=>{
-
+   // console.log(event.target)
+    console.log("SEE APPOINTMENT", appo.id, " OF CUSTOMER", customerID );
+    dispatch(navigationLoading())
+    const actualScreen = "/addappointment/"+ Number(customerID) +"/"+ Number(appo.id);
+    navigate(actualScreen, {replace: true});
+    dispatch(navigationSuccess(actualScreen))
   }
 
   
