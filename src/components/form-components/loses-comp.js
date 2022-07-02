@@ -2,7 +2,7 @@ import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Title from '../Title';
 import { useTranslation } from 'react-i18next';
-import { addMonthtoDate, formatDate, toLocalDate2 } from '../../utils/date-utils';
+import { addMonthtoDate, formatDate, toLocalDate2, twoDigitsDateOptions } from '../../utils/date-utils';
 import { GetDepositsFromDate, GetDepositsArrayFromDate, getCustomer, getCustomerNameFromId } from '../../utils/dataFetch-utils';
 import { Box } from '@mui/system';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
@@ -11,23 +11,17 @@ import { Button, Container, TextField, Tooltip } from '@mui/material';
 import { LocalTextForDataGrid } from '../../utils/mui-custom-utils';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { locale } from 'moment';
+import configData from "../../assets/data/config-data.json"
+
+
 
 //ICONS
-import DeleteIcon from '@mui/icons-material/Delete';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import PhoneForwardedIcon from '@mui/icons-material/PhoneForwarded';
-import WhatsAppIcon from '@mui/icons-material/WhatsApp';
-import EmailIcon from '@mui/icons-material/Email';
-import PrintIcon from '@mui/icons-material/Print';
-import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import SendIcon from '@mui/icons-material/Send';
 import EditIcon from '@mui/icons-material/Edit';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import CampaignIcon from '@mui/icons-material/Campaign';
 
+const localization = configData[0].user[0].locales;
+locale(localization);
 
 
 function preventDefault(event) {
@@ -57,19 +51,16 @@ export default function Loses() {
 
   React.useEffect(()=>{
     const newInc = GetDepositsArrayFromDate(addMonthtoDate(today,-120),today, "pending")
-    console.log("EN USE EFFECT", newInc);
     setloses(newInc);
 
   },[])
 
   const handlePeriodStart = (value) =>{
-    console.log("VALUE en handleStart: ",value);
-    console.log("PERIODEND en handleStart", loses[0].periodEnd)
     setloses(GetDepositsArrayFromDate(new Date(value),new Date(loses[0].periodEnd), "paid"))
   }
 
   const handlePeriodEnd = (value) =>{
-    //setloses(GetDepositsArrayFromDate(new Date(loses.periodStart),new Date(value), "paid"))
+    setloses(GetDepositsArrayFromDate(new Date(loses[0].periodStart),new Date(value), "paid"))
     
   }
 
@@ -102,13 +93,13 @@ export default function Loses() {
       {
         id: row.id, 
         customerId:getCustomerNameFromId(row.customerId),
-        date: new Date(row.date).toLocaleDateString("es-ES"),
+        date: new Date(row.date).toLocaleDateString(localization, twoDigitsDateOptions),
         duration: row.duration + " m.",
         service: row.service, 
         price: row.price,
         paid: row.paid,
     
-        closed: new Date(row.closed).toLocaleDateString("es-ES")
+        closed: new Date(row.closed).toLocaleDateString(localization, twoDigitsDateOptions)
         
       }
     )
@@ -120,7 +111,7 @@ export default function Loses() {
     return(
       [
         { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'loses', headerName:t("debt"), width:80, valueGetter: getLoses, },
+        { field: 'loses', headerName:t("debt"), width:70, valueGetter: getLoses, },
         { field: 'customerId', headerName:t("Customer"), width:200 },
         { field: 'date', headerName: t("date"), width: 120},
         { field: 'service', headerName:t("service"), width:80 },
@@ -128,7 +119,7 @@ export default function Loses() {
         {
           field: 'actions',
           type: 'actions',
-          headerName: t("actions"),
+          headerName: "",
           width: 150,
           sortable: false,
           getActions: (params) => [
@@ -170,10 +161,10 @@ export default function Loses() {
     <React.Fragment>
       <Title>{t("loses")}</Title>
       <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-        <LocalizationProvider dateAdapter={AdapterMoment}>
+       <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
             <DatePicker
                 label={t("periodStart")}
-                value={loses[0].periodStart? loses[0].periodStart: new Date("15/01/20").toDateString()}
+                value={loses[0] && loses[0].periodStart? loses[0].periodStart: new Date("15/01/20").toDateString()}
                 variant="standard"
                 inputFormat="DD/MM/yyyy"
                 sx = {{mr:2}}
@@ -183,7 +174,7 @@ export default function Loses() {
             <DatePicker
                 label={t("periodEnd")}
                 inputFormat="DD/MM/yyyy"
-                value={loses[0].periodEnd? loses[0].periodEnd: new Date().toDateString()}
+                value={loses[0] && loses[0].periodEnd? loses[0].periodEnd: new Date().toDateString()}
                 variant="standard"
                 sx = {{mr:2}}
                 onChange={handlePeriodEnd}

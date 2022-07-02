@@ -12,7 +12,6 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
 import { useTranslation } from 'react-i18next';
-import DepositsComponent from '../../components/deposits-comp';
 import Deposits from '../../components/Deposits';
 import Income from '../../components/form-components/income-comp';
 import Loses from '../../components/form-components/loses-comp';
@@ -60,6 +59,9 @@ function DepositContent() {
                 </Paper>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', mt:2 }}>
                   <Deposits year={true}  />
+                </Paper>
+                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', mt:2 }}>
+                  <Deposits always={true}  />
                 </Paper>
               </Grid>
               <Grid item xs={9}>

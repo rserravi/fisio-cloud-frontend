@@ -1,4 +1,9 @@
 import PropTypes from 'prop-types';
+import { locale } from 'moment';
+import configData from "../assets/data/config-data.json"
+
+const localization = configData[0].user[0].locales;
+
 
 function padTo2Digits(num) {
     return num.toString().padStart(2, '0');
@@ -13,8 +18,9 @@ export function formatDate(date) {
   }
 
 export function toLocalDate2(date) {
+  locale(localization);
   console.log (typeof(date));
-  const result = new Date(date).toLocaleDateString();
+  const result = new Date(date).toLocaleDateString(localization);
   return result;
 }
 
@@ -28,13 +34,13 @@ export const timeDifference = (date) => {
 export const getDateFromISOTime = (date) =>{
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   const date1 = new Date (date);
-  const strDate = date1.toLocaleDateString(undefined,options);
+  const strDate = date1.toLocaleDateString(localization,options);
   return strDate;
 }
 
 export const getTimeFromISOTime = (date) =>{
   const date1 = new Date (date);
-  const strDate = date1.toLocaleTimeString(undefined, {hour12:false, hour: '2-digit', minute: '2-digit' });
+  const strDate = date1.toLocaleTimeString(localization, {hour12:false, hour: '2-digit', minute: '2-digit' });
   return strDate;
 }
 
@@ -75,6 +81,13 @@ export const addMonthtoDate= (date, months) =>{
   var newd = new Date(date);
   newd.setMonth(oldDate.getMonth()+Number(months));
   return newd
+}
+
+export const twoDigitsDateOptions = {
+  day : "2-digit",
+  month : "2-digit",
+  year : "numeric"
+
 }
 
 addMinutesToDate.propTypes = {

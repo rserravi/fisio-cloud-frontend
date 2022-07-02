@@ -2,9 +2,11 @@ import React, { useCallback } from 'react'
 import { useTranslation } from 'react-i18next';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
+import { locale } from 'moment';
 import { GetAppointmentsCalendarFormat, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 
+import configData from "../assets/data/config-data.json"
 
 
 import 'react-big-calendar/lib/sass/styles.scss'
@@ -20,6 +22,9 @@ import { TimePicker } from '@mui/x-date-pickers';
 require('moment/locale/es.js')
 require('moment/locale/ca.js')
 require('moment/locale/fr.js')
+
+const localization = configData[0].user[0].locales;
+locale(localization);
 
 var initValidation={
   id:"1",
@@ -53,12 +58,20 @@ export default function CalendarComp(props) {
 
   
 
-  moment.locale('es', {
-    week: {
-        dow: 1,
-        doy: 1,
-    },
-    });
+  moment.locale(
+    'es', {
+      week: {
+          dow: 1,
+          doy: 1,
+      },
+      },
+    'ca', {
+        week: {
+            dow: 1,
+            doy: 1,
+        },
+       },
+    );
 
   const SetCustomer = (data) =>{
       console.log (data);
@@ -138,20 +151,20 @@ export default function CalendarComp(props) {
         events={GetAppointmentsCalendarFormat()}
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
-        culture='es'
+        culture={localization}
         views={['agenda']}
         messages={{
-          week: 'Semana',
-          work_week: 'Semana de trabajo',
-          day: 'Día',
-          month: 'Mes',
-          previous: 'Atrás',
-          next: 'Después',
-          today: 'Hoy',
-          agenda: 'Agenda',
-          date: 'Fecha',
-          time: 'Hora',
-          event: 'Evento',
+          week: t("week"),
+          work_week: t("work_week"),
+          day: t("day"),
+          month: t("month"),
+          previous: t("previous"),
+          next: t("next"),
+          today: t("today"),
+          agenda: t("agenda"),
+          date: t("date"),
+          time: t("time"),
+          event: t("event"),
           showMore: (total) => `+${total} más`,
         }}
        
@@ -185,6 +198,7 @@ export default function CalendarComp(props) {
     <div>
     <Calendar
       localizer={localizer}
+      culture={localization}
       events={GetAppointmentsCalendarFormat()}
       onSelectSlot={handleSelectSlot}
       onSelectEvent={handleSelectEvent}
@@ -196,17 +210,17 @@ export default function CalendarComp(props) {
       selectable
       popup
       messages={{
-        week: 'Semana',
-        work_week: 'Semana de trabajo',
-        day: 'Día',
-        month: 'Mes',
-        previous: 'Atrás',
-        next: 'Después',
-        today: 'Hoy',
-        agenda: 'Agenda',
-        date: 'Fecha',
-        time: 'Hora',
-        event: 'Evento',
+        week: t("week"),
+        work_week: t("work_week"),
+        day: t("day"),
+        month: t("month"),
+        previous: t("previous"),
+        next: t("next"),
+        today: t("today"),
+        agenda: t("agenda"),
+        date: t("date"),
+        time: t("time"),
+        event: t("event"),
         showMore: (total) => `+${total} más`,
       }}
       eventPropGetter={
@@ -239,16 +253,16 @@ export default function CalendarComp(props) {
       <DialogContent>
         <DialogContentText id="alert-dialog-description">
         {selectedEvent? ""+getDateFromISOTime(selectedEvent.start) : <></>}
-        &nbsp;de {selectedEvent? ""+getTimeFromISOTime(selectedEvent.start) : <></>} a {selectedEvent? ""+getTimeFromISOTime(selectedEvent.end) : <></>}
-        {selectedEvent && selectedEvent.ispast ? <p  style={{color:"#FF0000"}}><strong> CITA PASADA</strong> </p>  : <></>}
+        &nbsp;{t("from")} {selectedEvent? ""+getTimeFromISOTime(selectedEvent.start) : <></>} {t("to")} {selectedEvent? ""+getTimeFromISOTime(selectedEvent.end) : <></>}
+        {selectedEvent && selectedEvent.ispast ? <p  style={{color:"#FF0000"}}><strong> {t("pastdate")}</strong> </p>  : <></>}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        {selectedEvent && selectedEvent.ispast ? <Button onClick={handleWriteReport}>{t("writereport")}</Button> :  <Button onClick={handleDialogClose}>Enviar Recordatorio</Button>}
-        <Button onClick={handleDialogClose}>Duplicar Cita</Button>
-        <Button onClick={handleDialogClose}>Cancelar Cita</Button>
+        {selectedEvent && selectedEvent.ispast ? <Button onClick={handleWriteReport}>{t("writereport")}</Button> :  <Button onClick={handleDialogClose}>{t("sendRequest")}</Button>}
+        <Button onClick={handleDialogClose}>{t("duplicateappointment")}</Button>
+        <Button onClick={handleDialogClose}>{t("deleteappointment")}</Button>
         <Button onClick={handleDialogClose} autoFocus>
-          Salir
+          {t("exit")}
         </Button>
       </DialogActions>
     </Dialog>
@@ -260,7 +274,7 @@ export default function CalendarComp(props) {
       aria-describedby="new-event-dialog-description"
     >
       <DialogTitle id="new-event-dialog-title">
-        Nueva cita el día {new Date(eventStart).toLocaleDateString()}
+        {t("newappointmenttheday")} {new Date(eventStart).toLocaleDateString()}
         <p>{customerName}</p>
           
       </DialogTitle>
@@ -320,8 +334,8 @@ export default function CalendarComp(props) {
         </DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={newEventDlgSubmit}>Aceptar</Button>
-        <Button onClick={newEventDlgClose}>Cancelar Cita</Button>
+        <Button onClick={newEventDlgSubmit}>{t("accept")}</Button>
+        <Button onClick={newEventDlgClose}>{t("cancelAppointment")}</Button>
       </DialogActions>
     </Dialog>
 

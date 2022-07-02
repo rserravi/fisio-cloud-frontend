@@ -73,7 +73,7 @@ function DashboardContent() {
                   }}
                 >
                 
-                  <Deposits month={true} />
+                  <Deposits month={true} dashboard={true} />
                  
                 </Paper>
               </Grid>

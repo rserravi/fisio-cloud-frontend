@@ -1,7 +1,66 @@
 [
     {
         "id":1,
-        "locales":"es-ES",
+        "user":[
+            {
+                "id":1,
+                "firstname":"Rubén",
+                "lastname":"Serra i Viusà",
+                "gender":"male",
+                "birhdate":"15/09/1974",
+                "locales":"ca-CA",
+                "role":"admin",
+                "image":"",
+                "email":
+                [
+                    {
+                      "type": "home",
+                      "emailAddress": "rserravi@gmail.com"
+                    },
+                    {
+                      "type": "work",
+                      "emailAddress": "rubotic1@gmail.com"
+                    }
+                ],
+                "address":
+                {
+                    "streetAddress": "Costa Rica n5",
+                    "city": "Las Gabias",
+                    "state": "Granada",
+                    "postalCode": "18010",
+                    "country":"spain"
+                },
+                "phoneNumber":
+                [
+                    {
+                      "type": "home",
+                      "number": "+34722303012"
+                    },
+                    {
+                      "type": "mobile",
+                      "number":  "+34722303012"
+                    }
+                ],
+                "whatsapp":  "+34722303012",
+                "socialMedia":
+                [
+                    {
+                        "media": "facebook",
+                        "user": "@rserravi"
+                    },
+                    {
+                        "media": "twitter",
+                        "user": "@rserravu"
+                    },
+                    {
+                        "media": "instagram",
+                        "user": "@rserravi"
+                    }
+        
+                ]
+            }
+        ],
+
         "services":[
             {
                 "id":1,

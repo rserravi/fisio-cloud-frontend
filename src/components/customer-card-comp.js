@@ -69,10 +69,6 @@ const PrintHistory= (props)=>{
     console.log("imprimir Historial de Citas")
 }
 
-const SeeAppointments= (props)=>{
-    console.log("Ver  Cita")
-}
-
 const EditAppointments= (props)=>{
     console.log("editar Cita")
 }
@@ -146,216 +142,7 @@ const RenderStatusCell=(props)=>{
 
 }
 
-const Columns = () => {
-    const { t } = useTranslation();
 
-    return(
-        [
-        { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'date', headerName: t("date"), width: 90},
-        { field: 'startingTime', headerName: t("startingTime"), width: 100 },
-        { field: 'duration', headerName: t("Duration"), width: 80 },
-        { field: 'service', headerName: t("Service"), width: 90},
-        { field: 'status', headerName: t("Status"), width: 120, renderCell:RenderStatusCell },
-        { field: 'notes', headerName: t("Notes"), width: 260},
-        {
-            field: 'actions',
-            type: 'actions',
-            headerName: t("actions"),
-            width: 80,
-            sortable: false,
-            getActions: (params) => [
-            <GridActionsCellItem
-            icon={<Tooltip title={t("seeappointment")}><VisibilityIcon /></Tooltip>}
-            label={t("seeappointment")}
-            
-            onClick={(event) => {
-                SeeHistory(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-                icon={<EditIcon />}
-                label={t("editappointment")}
-                showInMenu
-                onClick={(event) => {
-                EditHistory(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-            icon={<ContentCopyIcon />}
-            label={t("duplicateappointment")}
-            showInMenu
-            onClick={(event) => {
-                DuplicateHistory(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label={t("deleteappointment")}
-                showInMenu
-                onClick={(event) => {
-                DeleteHistory(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-            icon={<LocalPrintshopIcon />}
-            label={t("printappointment")}
-            showInMenu
-            onClick={(event) => {
-                PrintHistory(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            ],
-        },
-        ]
-    )
-} 
-
-
-const AppointmentColumns = () => {
-    const { t } = useTranslation();
-
-    return(
-        [
-        { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'date', headerName: t("date"), width: 90},
-        { field: 'startingTime', headerName: t("startingTime"), width: 100 },
-        { field: 'duration', headerName: t("Duration"), width: 80 },
-        { field: 'service', headerName: t("Service"), width: 90},
-        { field: 'price', headerName: t("Price"), width: 90},
-        { field: 'notes', headerName: t("Notes"), width: 290},
-        {
-            field: 'actions',
-            type: 'actions',
-            headerName: t("actions"),
-            width: 80,
-            sortable: false,
-            getActions: (params) => [
-            <GridActionsCellItem
-            icon={<Tooltip title={t("seeappointment")}><VisibilityIcon /></Tooltip>}
-            label={t("seeappointment")}
-            
-            onClick={(event) => {
-                SeeAppointments(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-                icon={<EditIcon />}
-                label={t("editappointment")}
-                showInMenu
-                onClick={(event) => {
-                EditAppointments(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-            icon={<ContentCopyIcon />}
-            label={t("duplicateappointment")}
-            showInMenu
-            onClick={(event) => {
-                DuplicateAppointments(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label={t("deleteappointment")}
-                showInMenu
-                onClick={(event) => {
-                DeleteAppointments(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-            icon={<LocalPrintshopIcon />}
-            label={t("printappointment")}
-            showInMenu
-            onClick={(event) => {
-                PrintAppointments(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            ],
-        },
-        ]
-    )
-} 
-
-const ColumnsContactHistory = () => {
-    const { t } = useTranslation();
-
-    return(
-        [
-        { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'date', headerName: t("date"), width: 90},
-        { field: 'type', headerName: t("Type"), width: 100 },
-        { field: 'duration', headerName: t("Duration"), width: 80 },
-        { field: 'subject', headerName: t("Subject"), width: 100},
-        { field: 'notes', headerName: t("Notes"), width: 270},
-        { field: 'follow', headerName: t("Follow"), width: 110},
-        {
-            field: 'actions',
-            type: 'actions',
-            headerName: t("actions"),
-            width: 80,
-            sortable: false,
-            getActions: (params) => [
-            <GridActionsCellItem
-            icon={<Tooltip title={t("seecontact")}><VisibilityIcon /></Tooltip>}
-            label={t("seecontact")}
-            
-            onClick={(event) => {
-                SeeComunications(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-                icon={<EditIcon />}
-                label={t("editcontact")}
-                showInMenu
-                onClick={(event) => {
-                EditComunications(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-            icon={<ContentCopyIcon />}
-            label={t("duplicatecontact")}
-            showInMenu
-            onClick={(event) => {
-                DuplicateComunications(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-                icon={<DeleteIcon />}
-                label={t("deletecontact")}
-                showInMenu
-                onClick={(event) => {
-                DeleteComunications(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            <GridActionsCellItem
-            icon={<LocalPrintshopIcon />}
-            label={t("printcontact")}
-            showInMenu
-            onClick={(event) => {
-                PrintComunications(params.id);
-                event.stopPropagation();
-            }}
-            />,
-            ],
-        },
-        ]
-    )
-} 
 
 export default function CustomerCard(props) {
     const _id = Number(props._id);
@@ -381,6 +168,217 @@ export default function CustomerCard(props) {
     const history = customer.history;
     const appointments = customer.appointments;
     const contacthistory = customer.contacthistory;
+
+    const Columns = () => {
+        const { t } = useTranslation();
+    
+        return(
+            [
+            { field: 'id', headerName: t("Id"), width: 20 },
+            { field: 'date', headerName: t("date"), width: 90},
+            { field: 'startingTime', headerName: t("startingTime"), width: 100 },
+            { field: 'duration', headerName: t("Duration"), width: 80 },
+            { field: 'service', headerName: t("Service"), width: 90},
+            { field: 'status', headerName: t("Status"), width: 120, renderCell:RenderStatusCell },
+            { field: 'notes', headerName: t("Notes"), width: 260},
+            {
+                field: 'actions',
+                type: 'actions',
+                headerName: t("actions"),
+                width: 80,
+                sortable: false,
+                getActions: (params) => [
+                <GridActionsCellItem
+                icon={<Tooltip title={t("seeappointment")}><VisibilityIcon /></Tooltip>}
+                label={t("seeappointment")}
+                
+                onClick={(event) => {
+                    SeeHistory(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                    icon={<EditIcon />}
+                    label={t("editappointment")}
+                    showInMenu
+                    onClick={(event) => {
+                    EditHistory(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                icon={<ContentCopyIcon />}
+                label={t("duplicateappointment")}
+                showInMenu
+                onClick={(event) => {
+                    DuplicateHistory(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label={t("deleteappointment")}
+                    showInMenu
+                    onClick={(event) => {
+                    DeleteHistory(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                icon={<LocalPrintshopIcon />}
+                label={t("printappointment")}
+                showInMenu
+                onClick={(event) => {
+                    PrintHistory(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                ],
+            },
+            ]
+        )
+    } 
+    
+    
+    const AppointmentColumns = () => {
+        const { t } = useTranslation();
+    
+        return(
+            [
+            { field: 'id', headerName: t("Id"), width: 20 },
+            { field: 'date', headerName: t("date"), width: 90},
+            { field: 'startingTime', headerName: t("startingTime"), width: 100 },
+            { field: 'duration', headerName: t("Duration"), width: 80 },
+            { field: 'service', headerName: t("Service"), width: 90},
+            { field: 'price', headerName: t("Price"), width: 90},
+            { field: 'notes', headerName: t("Notes"), width: 290},
+            {
+                field: 'actions',
+                type: 'actions',
+                headerName: t("actions"),
+                width: 80,
+                sortable: false,
+                getActions: (params) => [
+                <GridActionsCellItem
+                icon={<Tooltip title={t("seeappointment")}><VisibilityIcon /></Tooltip>}
+                label={t("seeappointment")}
+                
+                onClick={(event) => {
+                    SeeAppointments(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                    icon={<EditIcon />}
+                    label={t("editappointment")}
+                    showInMenu
+                    onClick={(event) => {
+                    EditAppointments(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                icon={<ContentCopyIcon />}
+                label={t("duplicateappointment")}
+                showInMenu
+                onClick={(event) => {
+                    DuplicateAppointments(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label={t("deleteappointment")}
+                    showInMenu
+                    onClick={(event) => {
+                    DeleteAppointments(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                icon={<LocalPrintshopIcon />}
+                label={t("printappointment")}
+                showInMenu
+                onClick={(event) => {
+                    PrintAppointments(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                ],
+            },
+            ]
+        )
+    } 
+    
+    const ColumnsContactHistory = () => {
+        const { t } = useTranslation();
+    
+        return(
+            [
+            { field: 'id', headerName: t("Id"), width: 20 },
+            { field: 'date', headerName: t("date"), width: 90},
+            { field: 'type', headerName: t("Type"), width: 100 },
+            { field: 'duration', headerName: t("Duration"), width: 80 },
+            { field: 'subject', headerName: t("Subject"), width: 100},
+            { field: 'notes', headerName: t("Notes"), width: 270},
+            { field: 'follow', headerName: t("Follow"), width: 110},
+            {
+                field: 'actions',
+                type: 'actions',
+                headerName: t("actions"),
+                width: 80,
+                sortable: false,
+                getActions: (params) => [
+                <GridActionsCellItem
+                icon={<Tooltip title={t("seecontact")}><VisibilityIcon /></Tooltip>}
+                label={t("seecontact")}
+                
+                onClick={(event) => {
+                    SeeComunications(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                    icon={<EditIcon />}
+                    label={t("editcontact")}
+                    showInMenu
+                    onClick={(event) => {
+                    EditComunications(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                icon={<ContentCopyIcon />}
+                label={t("duplicatecontact")}
+                showInMenu
+                onClick={(event) => {
+                    DuplicateComunications(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                    icon={<DeleteIcon />}
+                    label={t("deletecontact")}
+                    showInMenu
+                    onClick={(event) => {
+                    DeleteComunications(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                <GridActionsCellItem
+                icon={<LocalPrintshopIcon />}
+                label={t("printcontact")}
+                showInMenu
+                onClick={(event) => {
+                    PrintComunications(params.id);
+                    event.stopPropagation();
+                }}
+                />,
+                ],
+            },
+            ]
+        )
+    } 
 
     const handleHistoryExpandClick = (event) => {
         event.stopPropagation();
@@ -446,6 +444,19 @@ export default function CustomerCard(props) {
         }     
     }
 
+    const SeeAppointments= (event)=>{
+     
+        const actualScreen = "/addappointment/"+_id.toString()+"/"+event
+        try {
+            navigate(actualScreen, {replace: true});
+            dispatch(navigationSuccess(actualScreen))
+        } catch (error) {
+            dispatch(navigationFail(error))
+        }     
+        
+    }
+    
+
     const CheckPendingNotes=()=>{
 
         const count = history.reduce((accumulatos, obj)=>{
@@ -460,8 +471,8 @@ export default function CustomerCard(props) {
          return (
              <React.Fragment>
              
-             {count ?<Button color='error' sx={{ marginRight:2 }}> ¡{count}€ pendientes!</Button>:<Button color='success'> 
-             Sin Deudas</Button>}
+             {count ?<Button color='error' sx={{ marginRight:2 }}> ¡{count}€ {t("missing")}!</Button>:<Button color='success'> 
+             {t("nodebts")}</Button>}
             
             </React.Fragment>
          )
@@ -523,14 +534,14 @@ export default function CustomerCard(props) {
                 <Typography variant="h4" component="div" align='left' sx={{ flexGrow: 1 }}>
                     {customer.firstname} {customer.lastname} <GenderIcon name={customer.gender} />
                     <Button key={"editar nombre"} onClick={EditName} >
-                        Editar Nombre
+                        {t("edit")} {t("name")}
                     </Button>
                 </Typography>
               
                     {CheckPendingNotes()}
                     
                     <Button variant="contained" key={"todos los clientes"} onClick={SeeAllCustomers}>
-                        Todos los Clientes
+                        {t("allcustomers")}
                     </Button>
                     <IconButton color="primary" aria-label="backwards" component="span" onClick={SeePreviousCustomer}>
                         <ChevronLeftIcon />
@@ -578,13 +589,13 @@ export default function CustomerCard(props) {
                 <CardContent sx={{ flex: '1 0 auto' }}>
                     <Card >
                     <Typography component="div" variant="p" align='left'>
-                         <strong>Emails: </strong><Button size='small'  onClick={handleEmailClick}>Edit</Button>
+                         <strong>{t("emails")}: </strong><Button size='small'  onClick={handleEmailClick}>{t("edit")}</Button>
                     </Typography>
                     <Typography component="div" variant="p" align='left'>
-                        Home:{customer.email[0].emailAddress ? <a href={`mailto:${customer.email[0].emailAddress}`}> {customer.email[0].emailAddress} </a> :<></>}
+                        {t("home")}:{customer.email[0].emailAddress ? <a href={`mailto:${customer.email[0].emailAddress}`}> {customer.email[0].emailAddress} </a> :<></>}
                     </Typography>
                     <Typography component="div" variant="p" align='left'>
-                        Work:{customer.email[1] ? <a href={`mailto:${customer.email[1].emailAddress}`}> {customer.email[1].emailAddress} </a> :<></>}
+                        {t("home")}:{customer.email[1] ? <a href={`mailto:${customer.email[1].emailAddress}`}> {customer.email[1].emailAddress} </a> :<></>}
                     </Typography>
                     </Card>
                 </CardContent>
@@ -593,13 +604,13 @@ export default function CustomerCard(props) {
                 <CardContent sx={{ flex: '1 0 auto',  }}>
                     <Card sx={{}}>
                     <Typography component="div" variant="p" align='left'>
-                        <strong>Phones: </strong><Button size='small' onClick={handlePhoneClick}>Edit</Button>
+                        <strong> {t("PHONES")}: </strong><Button size='small' onClick={handlePhoneClick}> {t("edit")}</Button>
                     </Typography>
                     <Typography component="div" variant="p" align='left'>
-                        Home: <a href={`tel:${customer.phoneNumber[0].number}`}> {customer.phoneNumber[0].number} </a> 
+                        {t("home")}: <a href={`tel:${customer.phoneNumber[0].number}`}> {customer.phoneNumber[0].number} </a> 
                     </Typography>
                     <Typography component="div" variant="p" align='left'>
-                        Work: <a href={`tel:${customer.phoneNumber[1].number}`}> {customer.phoneNumber[1].number} </a>  
+                        {t("work")}: <a href={`tel:${customer.phoneNumber[1].number}`}> {customer.phoneNumber[1].number} </a>  
                     </Typography>
                     </Card>
                 </CardContent>
@@ -608,7 +619,7 @@ export default function CustomerCard(props) {
                 <CardContent sx={{ flex: '1 0 auto',  }} >
                     <Card sx={{}}>
                     <Typography component="div" variant="p" align='left' >
-                        <strong>Social Networks: </strong><Button size='small'  onClick={handleSocialNetworksClick}>Edit</Button>
+                        <strong> {t("SOCIALNETWORKS")}: </strong><Button size='small'  onClick={handleSocialNetworksClick}>{t("edit")}</Button>
                     </Typography>
                     <Typography component="div" variant="p" align='left' >
                     {customer.socialMedia[0] ? findSocialIcon(customer.socialMedia[0].media):<></>} {customer.socialMedia[0] ? customer.socialMedia[0].user : <></> } 
@@ -626,7 +637,7 @@ export default function CustomerCard(props) {
                  <CardContent sx={{ flex: '1 0 auto',  }}>
                     <Card sx={{}}>
                     <Typography component="div" variant="p" align='left' >
-                        <strong>Address: </strong> <a href='#'>Ver mapa</a> <Button size='small' onClick={handleAddressClick}>Edit</Button>
+                        <strong>Address: </strong> <a href='#'>{t("seemap")}</a> <Button size='small' onClick={handleAddressClick}>{t("edit")}</Button>
                     </Typography>
                     <Typography component="div" variant="p" align='left' >
                     {customer.address.streetAddress}
@@ -682,7 +693,7 @@ export default function CustomerCard(props) {
                     <Box sx={{ display: 'flex', flexDirection: 'row',  width:'100%'}}>
                     <Title>{t("contacthistory")}</Title>
                     <Button variant="outlined" size="small" sx={{ ml: 6, mb:1 }} key={"AñadirComunicación"} onClick={addNewCommunication}>
-                        Añadir Comunicación
+                        {t("addcomunication")}
                     </Button>
                     <ExpandMore
                         expand={contactsExpanded}
@@ -757,7 +768,7 @@ export default function CustomerCard(props) {
   )
   }else{return(
     <p>
-        Se ha producido un error
+       {t("anerrorocurred")}
     </p>
   )}
 }

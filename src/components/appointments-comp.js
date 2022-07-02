@@ -490,9 +490,9 @@ const RenderDateCell = (props) =>{
           <Toolbar variant='regular'>   
             <ButtonGroup variant="contained" aria-label="outlined primary button group">
               <Button variant='contained' size="small" onClick={AddAppoButton} startIcon={<ScheduleIcon />}>{t("addappointment")} </Button>
-              <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>Imprimir {select.length===0 ? "Todos" : "Seleccion"}</Button>
-              <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>Mail a {select.length===0 ? "Todos" : "Seleccion"} </Button>
-              <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>Whatsapp a {select.length===0 ? "Todos" : "Seleccion"} </Button>
+              <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>{t("print")} {select.length===0 ? t("everyone") : t("selection")}</Button>
+              <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>{t("mailto")} {select.length===0 ? t("everyone") : t("selection")} </Button>
+              <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>{t("whatsappto")} {select.length===0 ? t("everyone") : t("selection")} </Button>
             </ButtonGroup>
           </Toolbar>
         </Box>

@@ -219,15 +219,12 @@ export const GetDepositsArrayFromDate = (startdate, endDate, status) =>{
   const start = new Date (startdate);
   const end = new Date (endDate);
   var counter = 0;
-  console.log("DATE UTILS, Start:",start,". End:", end);
 
   for (let userKey in customerData){
       if(customerData[userKey].history.length >=0){
-          for (let histoKey in customerData[userKey].history){
-              
+          for (let histoKey in customerData[userKey].history){   
              const eventDate = new Date(customerData[userKey].history[histoKey].date)
              if (customerData[userKey].history[histoKey].status===status && eventDate > start && eventDate < end ){
-              console.log("ESTAMOS EN EL SITIO CORRECTO")
                 var item = {};
                 item["id"]= counter
                 item["histoId"] = customerData[userKey].history[histoKey].id
@@ -250,7 +247,6 @@ export const GetDepositsArrayFromDate = (startdate, endDate, status) =>{
           }
       }
   }
-  console.log("ESTE ES EL JSON DE RETURN",jsonObj)
   return jsonObj;
 }
 
