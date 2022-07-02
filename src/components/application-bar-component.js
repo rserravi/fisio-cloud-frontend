@@ -14,9 +14,8 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@mui/material/Avatar';
-import avatarPicture from "../assets/img/RubenSerra.jpg"
 import { useDispatch } from "react-redux";
-import {navigationDrawer } from '../slices/navigation-slice';
+import {navigationDrawer, navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
@@ -25,8 +24,7 @@ import Dialog from '@mui/material/Dialog';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
-
-
+import configData from "../assets/data/config-data.json"
 
 
 const drawerWidth = 240;
@@ -97,6 +95,13 @@ function ApplicationBar(boardState) {
     )
   }
 
+  const handleUserSetup = () =>{
+    const actualScreen ="/usersetup/1";
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
   const handleLogOut = () => {
     setOpenDialog(true);
   }
@@ -111,9 +116,8 @@ function ApplicationBar(boardState) {
     console.log("LOGGIN OUT");
     navigate("/",{replace: true});
   }
-
-
-
+  
+  const srcImage = configData[0].user[0].image;
 
   return (
         
@@ -193,7 +197,7 @@ function ApplicationBar(boardState) {
             
             <Tooltip title={t("openusersettings")}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Ruben Serra" src={avatarPicture} />
+                <Avatar alt="Ruben Serra" src={srcImage} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -212,7 +216,7 @@ function ApplicationBar(boardState) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleCloseUserMenu}>{t("profile")}</MenuItem>
+              <MenuItem onClick={handleUserSetup}>{t("profile")}</MenuItem>
               <MenuItem onClick={handleLogOut}>{t("logout")}</MenuItem>
             </Menu>
           </Toolbar>

@@ -27,6 +27,8 @@ const initialState = {
     socialUser2:"@",
     socialUser3:"@",
     countryPhoneCode:"+34",
+    locale:"es-ES",
+    role:"user"
 }
 
 const createCustomerSlice = createSlice({
@@ -113,7 +115,44 @@ const createCustomerSlice = createSlice({
         },
         nc_countryPhoneCode_Commit:(state, action)=>{
             state.countryPhoneCode = action.payload;
-        }
+        },
+        nc_locale_Commit:(state, action) =>{
+            state.locale = action.payload;
+        },
+        nc_role_Commit:(state, action) =>{
+            state.role = action.payload; 
+        },
+        nc_loadFromBackend:(state, action)=>{
+            state.isSubmited=action.payload.isSubmited
+            state.isValidated=action.payload.isValidated
+            state.error=action.payload.error
+            state.isEditing=action.payload.isEditing
+            state.firstname=action.payload.firstname
+            state.lastname=action.payload.lastname
+            state.image=action.payload.image
+            state.birthdate=action.payload.birthdate
+            state.gender=action.payload.gender
+            state.emailhome=action.payload.emailhome
+            state.emailwork=action.payload.emailwork
+            state.streetaddress=action.payload.streetaddress
+            state.city=action.payload.city
+            state.state=action.payload.state
+            state.postalCode=action.payload.postalCode
+            state.country=action.payload.country
+            state.homephone=action.payload.homephone
+            state.mobilephone=action.payload.mobilephone
+            state.whatsapp=action.payload.whatsapp
+            state.social1=action.payload.social1
+            state.social2=action.payload.social2
+            state.social3=action.payload.social3
+            state.socialUser1=action.payload.socialUser1
+            state.socialUser2=action.payload.socialUser2
+            state.socialUser3=action.payload.socialUser3
+            state.countryPhoneCode=action.payload.countryPhoneCode
+            state.locale=action.payload.locale
+            state.role=action.payload.role
+        },
+        nc_reset_slice:()=>initialState
     }
 });
 
@@ -144,6 +183,10 @@ export const {
     nc_socialUser1_Commit,
     nc_socialUser2_Commit,
     nc_socialUser3_Commit,
-    nc_countryPhoneCode_Commit
+    nc_countryPhoneCode_Commit,
+    nc_locale_Commit,
+    nc_role_Commit,
+    nc_loadFromBackend,
+    nc_reset_slice
     } = actions;
 export default reducer;

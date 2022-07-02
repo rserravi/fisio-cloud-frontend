@@ -3,11 +3,12 @@ import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
 import { Box } from '@mui/material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { nc_emailHome_Commit, nc_emailWork_Commit } from '../../slices/newCustomer-slice';
 
 
 export const EmailForm = (props) =>{
+  const newUserSelector =  useSelector(state => state.newCustomer);
     const InitData = {
         emailhome: props.emailhome,
         emailwork: props.emailwork,
@@ -18,15 +19,26 @@ export const EmailForm = (props) =>{
     const { t } = useTranslation();
 
     const handleChangeHomeMail = (event) => {
-        setEmailFrmData({...emailFrmDta, ["emailhome"]: event.target.value})
+        setEmailFrmData({...emailFrmDta, "emailhome": event.target.value})
         dispatch(nc_emailHome_Commit(event.target.value))
     
       };
     const handleChangeWorkEmail = (event) => {
-        setEmailFrmData({...emailFrmDta, ["emailwork"]: event.target.value})
+        setEmailFrmData({...emailFrmDta, "emailwork": event.target.value})
         dispatch(nc_emailWork_Commit(event.target.value))
 
       };
+    React.useEffect (()=>{
+        //console.log(props)
+        if (props.editUser){
+            const InitData2 = {
+                emailhome: newUserSelector.emailhome,
+                emailwork: newUserSelector.emailwork,
+            }
+            setEmailFrmData(InitData2)
+        }
+    
+      },[props, newUserSelector.emailhome,newUserSelector.emailwork])
 
 
     return (
@@ -44,6 +56,7 @@ export const EmailForm = (props) =>{
                       value={emailFrmDta.emailhome}
                       onChange={handleChangeHomeMail}
                       required
+                      focused
                       sx = {{mr:2}}
                       />
                     <TextField
@@ -53,6 +66,7 @@ export const EmailForm = (props) =>{
                       helperText={t("enteryour")+t("bestmail")+" ("+t("required")+")"}
                       variant="standard"
                       fullWidth
+                      focused
                       value={emailFrmDta.emailwork}
                       sx = {{mr:2}}
                       onChange={handleChangeWorkEmail}

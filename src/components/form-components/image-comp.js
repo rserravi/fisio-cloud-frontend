@@ -6,28 +6,43 @@ import IconButton from '@mui/material/IconButton';
 import Webcam from "react-webcam";
 import { styled } from '@mui/material/styles';
 
+import configData from "../../assets/data/config-data.json"
+
+
 //ICONS
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import UploadIcon from '@mui/icons-material/Upload';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { nc_image_Commit } from '../../slices/newCustomer-slice';
 
 
-export const ImageComponent = () =>{
-    const imageInit= "images/Portrait_Placeholder.png";
-    const dispatch = useDispatch();
+export const ImageComponent = (props) =>{
+  const dispatch = useDispatch();
+
+  const newUserSelector =  useSelector(state => state.newCustomer);
+  const imageInit= "images/Portrait_Placeholder.png";
+  const [image, setImage] = React.useState(imageInit);
     
-      const [image, setImage] = React.useState(imageInit);
-      const [webcamShow, setWebcamShow] = React.useState(false); 
-     
+    React.useEffect (()=>{
+        //console.log(props)
+        if (props.editUser){
+            const image2 = newUserSelector.image
+            console.log(image2)
+            setImage(image2)
+        }
     
-      const videoConstraints = {
+    },[props, newUserSelector.image])
+    const [webcamShow, setWebcamShow] = React.useState(false); 
+    
+  
+    const videoConstraints = {
         width: 160,
         height: 160,
         facingMode: "user"
-      };
-    
+    };
+      
+     
     const webcamRef = React.useRef(null);
     
     function handleFileChange(e) {
@@ -52,7 +67,7 @@ export const ImageComponent = () =>{
           dispatch(nc_image_Commit(imageSrc));
           return imageSrc
         },
-        [webcamRef]
+        [webcamRef, dispatch]
     );
     
     const deletePicture = () =>{

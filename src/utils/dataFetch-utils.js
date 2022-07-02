@@ -14,6 +14,48 @@ export const getCustomer = (_id) =>{
     return found;
 }
 
+export const getUserDataFromDb = (_id)=>{
+  let found = null;
+  for (let key in configData[0].user){
+    
+      if (configData[0].user[key].id === _id){
+          found = configData[0].user[key];
+          break
+      }
+  }
+  const item ={
+    isSubmited:false,
+    isValidated: false,
+    error: "",
+    isEditing:false,
+    firstname: found.firstname,
+    lastname: found.lastname,
+    image: found.image,
+    birthdate: found.birhdate,
+    gender: found.gender,
+    emailhome: found.email[0].emailAddress,
+    emailwork: found.email[1].emailAddress,
+    streetaddress: found.address.streetAddress,
+    city:found.address.city,
+    state:found.address.state,
+    postalCode:found.address.postalCode,
+    country:found.address.country,
+    homephone:found.phoneNumber[0].number,
+    mobilephone:found.phoneNumber[1].number,
+    whatsapp: found.whatsapp,
+    social1: found.socialMedia[0].media,
+    social2: found.socialMedia[1].media,
+    social3: found.socialMedia[2].media,
+    socialUser1:found.socialMedia[0].user,
+    socialUser2:found.socialMedia[1].user,
+    socialUser3:found.socialMedia[2].user,
+    countryPhoneCode:"+34",
+    locale:found.locales,
+    role:found.role
+  }
+  return item;
+}
+
 export const getCustomerNameFromId = (_id) =>{
   let found = null;
   for (let key in customerData){

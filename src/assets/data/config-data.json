@@ -7,10 +7,10 @@
                 "firstname":"Rubén",
                 "lastname":"Serra i Viusà",
                 "gender":"male",
-                "birhdate":"15/09/1974",
+                "birhdate":"1974-09-15T03:00:00.000Z",
                 "locales":"ca-CA",
                 "role":"admin",
-                "image":"",
+                "image":"images/RubenSerra.jpg",
                 "email":
                 [
                     {
@@ -28,7 +28,7 @@
                     "city": "Las Gabias",
                     "state": "Granada",
                     "postalCode": "18010",
-                    "country":"spain"
+                    "country":"Spain"
                 },
                 "phoneNumber":
                 [
@@ -38,22 +38,22 @@
                     },
                     {
                       "type": "mobile",
-                      "number":  "+34722303012"
+                      "number": "+34722303012"
                     }
                 ],
                 "whatsapp":  "+34722303012",
                 "socialMedia":
                 [
                     {
-                        "media": "facebook",
+                        "media": "Facebook",
                         "user": "@rserravi"
                     },
                     {
-                        "media": "twitter",
+                        "media": "Twitter",
                         "user": "@rserravu"
                     },
                     {
-                        "media": "instagram",
+                        "media": "Instagram",
                         "user": "@rserravi"
                     }
         
@@ -71,6 +71,33 @@
                 "id":2,
                 "serviceName":"Consulta",
                 "priceXHour":"30"
+            }
+        ],
+        "languages":[
+            {
+                "id":1,
+                "name":"English",
+                "code":"en-EN"
+            },
+            {
+                "id":2,
+                "name":"Español",
+                "code":"es-ES"
+            },
+            {
+                "id":3,
+                "name":"Català",
+                "code":"ca-CA"
+            }
+        ],
+        "roles":[
+            {
+                "id":1,
+                "role":"Admin"
+            },
+            {
+                "id":2,
+                "role":"User"
             }
         ]
         

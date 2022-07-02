@@ -8,7 +8,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import Card from '@mui/material/Card';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { nc_social1_Commit, nc_social2_Commit, nc_social3_Commit, nc_socialUser1_Commit, nc_socialUser2_Commit, nc_socialUser3_Commit } from '../../slices/newCustomer-slice';
 
 
@@ -23,6 +23,31 @@ export const SocialForm = (props) =>{
     }
     const dispatch = useDispatch();
     const [socialFrmData, setSocialFrmData] = React.useState(InitData);
+    const newUserSelector =  useSelector(state => state.newCustomer);
+
+    React.useEffect (()=>{
+      //console.log(props)
+      if (props.editUser){
+          const InitData2 = {
+            social1: newUserSelector.social1,
+            social2: newUserSelector.social2,
+            social3 :newUserSelector.social3,
+            socialUser1:newUserSelector.socialUser1,
+            socialUser2:newUserSelector.socialUser2,
+            socialUser3:newUserSelector.socialUser3,
+          }
+          setSocialFrmData(InitData2)
+      }
+  
+    },[
+      props.editUser,
+      newUserSelector.social1,
+      newUserSelector.social2,
+      newUserSelector.social3,
+      newUserSelector.socialUser1,
+      newUserSelector.socialUser2,
+      newUserSelector.socialUser3,
+    ])
 
     const { t } = useTranslation();
 
@@ -38,36 +63,36 @@ export const SocialForm = (props) =>{
   
 
     const handleChangeSocial1 = (event) => {
-      setSocialFrmData({...socialFrmData, ["social1"]: event.target.value})
+      setSocialFrmData({...socialFrmData, "social1": event.target.value})
       dispatch(nc_social1_Commit(event.target.value))
     
     };
     const handleChangeSocial2 = (event) => {
-      setSocialFrmData({...socialFrmData, ["social2"]: event.target.value})
+      setSocialFrmData({...socialFrmData, "social2": event.target.value})
       dispatch(nc_social2_Commit(event.target.value))
     
     };
     
     const handleChangeSocial3 = (event) => {
-      setSocialFrmData({...socialFrmData, ["social3"]: event.target.value})
+      setSocialFrmData({...socialFrmData, "social3": event.target.value})
       dispatch(nc_social3_Commit(event.target.value))
     
     };
 
     const handleChangeSocialUser1 = (event) => {
-      setSocialFrmData({...socialFrmData, ["socialUser1"]: event.target.value})
+      setSocialFrmData({...socialFrmData, "socialUser1": event.target.value})
       dispatch(nc_socialUser1_Commit(event.target.value))
     
     };
 
     const handleChangeSocialUser2 = (event) => {
-      setSocialFrmData({...socialFrmData, ["socialUser2"]: event.target.value})
+      setSocialFrmData({...socialFrmData, "socialUser2": event.target.value})
       dispatch(nc_socialUser2_Commit(event.target.value))
     
     };
 
     const handleChangeSocialUser3 = (event) => {
-      setSocialFrmData({...socialFrmData, ["socialUser3"]: event.target.value})
+      setSocialFrmData({...socialFrmData, "socialUser3": event.target.value})
       dispatch(nc_socialUser3_Commit(event.target.value))
     
     };

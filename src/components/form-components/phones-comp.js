@@ -8,37 +8,51 @@ import { nc_homephone_Commit, nc_mobilephone_Commit, nc_whatsapp_Commit } from '
 
 export const PhoneForm = (props) =>{
   const NcState = useSelector((state)=> state.newCustomer);
-  
+
     const InitData = {
-        phonehome:  props.phonehome,
+        homephone:  props.homephone,
         mobilephone: props.mobilephone,
         whatsapp: props.whatsapp
     }
     const dispatch = useDispatch();
     const [phoneFrmDta, setPhoneFrmData] = React.useState(InitData);
 
+    React.useEffect (()=>{
+      //console.log(props)
+      if (props.editUser){
+          const InitData2 = {
+            homephone:  NcState.homephone,
+            mobilephone: NcState.mobilephone,
+            whatsapp: NcState.whatsapp
+          }
+          setPhoneFrmData(InitData2)
+      }
+  
+    },[props,NcState.homephone, NcState.mobilephone, NcState.whatsapp])
+   
+
     const { t } = useTranslation();
 
     const handleChangeHomePhone = (event) => {
-      setPhoneFrmData({...phoneFrmDta, ["homephone"]: event.target.value})
+      setPhoneFrmData({...phoneFrmDta, "homephone": event.target.value})
       dispatch(nc_homephone_Commit(event.target.value))
     
     };
     const handleChangeMobilePhone = (event) => {
-      setPhoneFrmData({...phoneFrmDta, ["mobilephone"]: event.target.value})
+      setPhoneFrmData({...phoneFrmDta, "mobilephone": event.target.value})
       dispatch(nc_mobilephone_Commit(event.target.value))
 
     };
     
     const handleChangeWhatsapp = (event) => {
-      setPhoneFrmData({...phoneFrmDta, ["whatsapp"]: event.target.value})
+      setPhoneFrmData({...phoneFrmDta, "whatsapp": event.target.value})
       dispatch(nc_whatsapp_Commit(event.target.value))
 
     };
 
     const WhatsappPick = () => {
     
-      setPhoneFrmData({...phoneFrmDta, ["whatsapp"]:phoneFrmDta.mobilephone});
+      setPhoneFrmData({...phoneFrmDta, "whatsapp":phoneFrmDta.mobilephone});
       dispatch(nc_whatsapp_Commit(phoneFrmDta.mobilephone))
     }
 
@@ -55,6 +69,7 @@ export const PhoneForm = (props) =>{
                       helperText={t("enteravalidphone")}
                       variant="standard"
                       fullWidth
+                      focused
                       value={phoneFrmDta.homephone}
                       onChange={handleChangeHomePhone}
                       sx = {{mr:2}}
@@ -67,6 +82,7 @@ export const PhoneForm = (props) =>{
                       helperText={t("enteravalidphone")}
                       variant="standard"
                       fullWidth
+                      focused
                       value={phoneFrmDta.mobilephone}
                       sx = {{mr:2}}
                       onChange={handleChangeMobilePhone}
@@ -76,12 +92,12 @@ export const PhoneForm = (props) =>{
                       id="whatsapp"
                       name="whatsapp"
                       label="Whatsapp"
+                      focused
                       value = {phoneFrmDta.whatsapp}
                       helperText={t("enteravalidphone")}
                       variant="standard"
                       fullWidth
                       onChange={handleChangeWhatsapp}
-                      focused
                       InputProps={{
                         endAdornment: <InputAdornment position="start">
                         <Button size='small' onClick={WhatsappPick}>{t("pick form mobile")}</Button>

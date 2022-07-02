@@ -10,7 +10,7 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { nc_birthdate_Commit, nc_firstName_Commit, nc_gender_Commit, nc_lastName_Commit } from '../../slices/newCustomer-slice';
 import configData from "../../assets/data/config-data.json"
 import { locale } from 'moment';
@@ -21,34 +21,53 @@ locale(localization);
 
 
 export const NameForm = (props) =>{
+    const newUserSelector =  useSelector(state => state.newCustomer);
     const InitData = {
         firstname: props.firstname,
         lastname: props.lastname,
         birthdate: Date.now(),
         gender: props.gender
     }
+    
+
     const dispatch = useDispatch();
     const [nameFrmDta, setNameFrmData] = React.useState(InitData);
+
+
+    React.useEffect (()=>{
+        //console.log(props)
+        if (props.editUser){
+            const InitData2 = {
+                firstname: newUserSelector.firstname,
+                lastname: newUserSelector.lastname,
+                birthdate: newUserSelector.birthdate,
+                gender:  newUserSelector.gender
+            }
+            setNameFrmData(InitData2)
+        }
+    
+      },[props,newUserSelector.firstname,newUserSelector.lastname,newUserSelector.birthdate,newUserSelector.gender])
+     
 
     const { t } = useTranslation();
 
     const handleChangeName = (event) => {
-        setNameFrmData({...nameFrmDta, ["firstname"]: event.target.value})
+        setNameFrmData({...nameFrmDta, "firstname": event.target.value})
         dispatch(nc_firstName_Commit(event.target.value))
     
       };
     const handleChangeLastName= (event) => {
-        setNameFrmData({...nameFrmDta, ["lastname"]: event.target.value})
+        setNameFrmData({...nameFrmDta, "lastname": event.target.value})
         dispatch(nc_lastName_Commit(event.target.value))
 
       };
     const handleGender= (event) => {
-        setNameFrmData({...nameFrmDta, ["gender"]: event.target.value})
+        setNameFrmData({...nameFrmDta, "gender": event.target.value})
         dispatch(nc_gender_Commit(event.target.value))
 
       };
     const handleBirthdate= (value) => {
-        setNameFrmData({...nameFrmDta, ["birthdate"]: value})
+        setNameFrmData({...nameFrmDta, "birthdate": value})
         console.log(value)
         dispatch(nc_birthdate_Commit(new Date (value).toLocaleDateString()))
       };
@@ -65,6 +84,7 @@ export const NameForm = (props) =>{
                       helperText={t("enterthe")+ " " +t("name")+" ("+t("required")+")"}
                       variant="standard"
                       width={600}
+                      focused
                       value={nameFrmDta.firstname}
                       onChange={handleChangeName}
                       required
@@ -77,6 +97,7 @@ export const NameForm = (props) =>{
                       helperText={t("enterthePlural")+ " " +t("lastname")+" ("+t("required")+")"}
                       variant="standard"
                       fullWidth
+                      focused
                       value={nameFrmDta.lastname}
                       sx = {{mr:2}}
                       onChange={handleChangeLastName}

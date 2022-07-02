@@ -16,7 +16,7 @@
     "forgotPassword": "Has oblidat la teva contrasenya?",
     "donthaveanaccount": "¿No tens un compte?",
     "passwordRecovery": "Recuperació de contrasenya",
-    "sendyouremailtorecover": "Envían la teva direcció email para recuperar la teva contrasenya.",
+    "sendyouremailtorecover": "Envíans la teva direcció email para recuperar la teva contrasenya.",
     "recover":"Recuperar Contrasenya",
     "today": "Avuí",
     "sales": "Vendes",
@@ -278,6 +278,15 @@
     "home":"Casa",
     "work":"Feina",
     "seemap":"Veure Mapa",
-    "addcomunication":"Afegir communicació"
+    "addcomunication":"Afegir communicació",
+    "usersetup":"Configuració Usuari",
+    "LOCANDROLE":"IDIOMA I ROL",
+    "language": "Idioma",
+    "role": "Rol",
+    "english":"English",
+    "español":"Español",
+    "catala":"Català",
+    "admin":"Admin",
+    "user": "User"
 
 }

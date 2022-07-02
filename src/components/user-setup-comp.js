@@ -1,18 +1,20 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Alert, Button, Typography } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { ImageComponent } from './form-components/image-comp';
 import { NameForm } from './form-components/name-comp';
 import { useDispatch, useSelector } from 'react-redux';
-import { nc_editingStart, nc_reset_slice } from '../slices/newCustomer-slice';
+import { nc_editingStart, nc_loadFromBackend } from '../slices/newCustomer-slice';
 import { EmailForm } from './form-components/emails-comp';
 import { AddressForm } from './form-components/address-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { SocialForm } from './form-components/social-comp';
 import { CustomerValidation } from '../utils/verification-utils';
 import { useParams } from 'react-router-dom';
+import { LocAndRoleForm } from './form-components/loc-and-role';
+import { getUserDataFromDb } from '../utils/dataFetch-utils';
 
 var initValidation={
   firstname: true,
@@ -21,8 +23,9 @@ var initValidation={
   phone: true
 }
 
-export default function CustomerForm() {
+export default function UserSetupForm() {
   const NcState = useSelector((state)=> state.newCustomer);
+
   const _id = Number(useParams().tid);
   const [validation, setValidation] = React.useState(initValidation);
   const { t } = useTranslation();
@@ -30,9 +33,9 @@ export default function CustomerForm() {
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
-   const addedAt = new Date().toLocaleDateString();
+  const addedAt = new Date().toLocaleDateString();
   
-   const frm = {
+  const frm = {
     firstname: NcState.firstname,
     lastname: NcState.lastname,
     birthdate: NcState.birthdate,
@@ -54,10 +57,12 @@ export default function CustomerForm() {
     socialUser1:NcState.socialUser1,
     socialUser2:NcState.socialUser2,
     socialUser3:NcState.socialUser3,
-    addedAt: addedAt
-   }
+    language: NcState.locale,
+    role: NcState.role,
+    addedAt: addedAt,
+    }
 
-    const validation2 = CustomerValidation(frm);
+  const validation2 = CustomerValidation(frm);
     setValidation(validation2);
     console.log(frm);
     console.log(validation)
@@ -68,10 +73,12 @@ export default function CustomerForm() {
   }
 
   React.useEffect (()=>{
-    dispatch(nc_reset_slice())
+    const loadedfrmData = getUserDataFromDb(_id);
+  
+    dispatch(nc_loadFromBackend(loadedfrmData))
     dispatch(nc_editingStart());
 
-  },[dispatch])
+  },[dispatch, _id])
  
 
   const resetData= ()=>{
@@ -82,62 +89,39 @@ export default function CustomerForm() {
     <React.Fragment>
        
         <Box component="form" noValidate onSubmit={HandleSubmit} >
-            <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
-             <Grid item xs={12}>
-                
-                     <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
-                
-              </Grid>
-            </Grid>
-            <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-              {t("NAMEANDIMAGE")}
-            </Typography>
-         
+                   
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
-              <Grid item xs={12} md={10} sm={10} marginTop={3}>
-                <NameForm gender={"none"} />
+              <Grid item xs={12} md={5} sm={5} marginTop={3}>
+                <NameForm gender={"none"} editUser={true}/>
                 {!validation.firstname ? <Alert severity="error">{t("introduceaname")}</Alert>: <></>}
                 {!validation.lastname ? <Alert severity="error">{t("introducealastname")}</Alert>: <></>} 
               </Grid>
-              
+              <Grid item xs={12} md={5} sm={5} marginTop={3}>
+                <LocAndRoleForm editUser={true}/>
+              </Grid>
               <Grid item xs={2} md={2} sm={2} marginTop={3}>
-                <ImageComponent />
+                <ImageComponent editUser={true} />
               </Grid>
             </Grid>
-              
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("EMAILS")}
-              </Typography>
 
+            
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <EmailForm  />
+                <EmailForm editUser={true}/>
                 {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
               </Grid>
 
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("ADDRESS")}
-              </Typography>
-
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <AddressForm />
+                <AddressForm  editUser={true} />
               </Grid>
              
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("PHONES")}
-              </Typography>
-             
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <PhoneForm />
+                <PhoneForm  editUser={true} />
                 {!validation.phone ? <Alert severity="error">{t("introduceavelidmobile")}</Alert>: <></>}
               </Grid>
-
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("SOCIALNETWORKS")}
-              </Typography>
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <SocialForm />
+                <SocialForm editUser={true} />
               </Grid>
 
             <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', m:2 }}>

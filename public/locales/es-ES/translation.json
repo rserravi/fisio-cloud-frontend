@@ -272,5 +272,19 @@
     "mailto":"mail a",
     "whatsappto":"whatsapp a",
     "everyone":"todos",
-    "selection": "seleción"
+    "selection": "seleción",
+    "missing":"pendientes",
+    "nodebts":"sin deudas",
+    "home":"Casa",
+    "work":"Trabajo",
+    "seemap":"Veu Mapa",
+    "addcomunication":"Añadir comuniación",
+    "LOCANDROLE":"IDIOMA Y ROL",
+    "language": "Idioma",
+    "role": "Rol",
+    "english":"English",
+    "español":"Español",
+    "catala":"Català",
+    "admin":"Admin",
+    "user": "User"
 }
