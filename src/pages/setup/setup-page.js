@@ -12,18 +12,13 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router-dom';
-import UserSetupForm from '../../components/user-setup-comp';
-
-
+import SetupForm from '../../components/setup-comp';
 
 const mdTheme = createTheme();
 
-function UserSetupContent() {
+function SetupContent() {
 
   const boardState = useSelector((state)=> state.navigator);
-  const _id = Number(useParams().tid);
-
   const { t } = useTranslation();
 
   
@@ -53,7 +48,7 @@ function UserSetupContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <UserSetupForm customerId={_id} />
+                  <SetupForm />
                 </Paper>
               </Grid>
             </Grid>
@@ -68,6 +63,6 @@ function UserSetupContent() {
 
 }
 
-export default function UserSetup() {
-  return <UserSetupContent />;
+export default function Setup() {
+  return <SetupContent />;
 }

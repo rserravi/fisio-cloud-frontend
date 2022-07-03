@@ -287,6 +287,21 @@
     "español":"Español",
     "catala":"Català",
     "admin":"Admin",
-    "user": "User"
+    "user": "User",
+    "updateuser":"Actualitzar Usuari",
+    "companyName":"Nom de l'empresa",
+    "enterthecompany":"Entra l'Empresa",
+    "nifCif":"Nif/Cif",
+    "enteravalidnifcif":"Entra un Nif/Cif vàlid",
+    "type": "Tipus",
+    "entercompanytype":"Entra el tipus d'empresa (autònom, S.L, etc.)",
+    "companydata":"Dades de l'empresa",
+    "company":"Empresa",
+    "users":"Usuaris",
+    "usersroles":"Rols d'usuari",
+    "physicalspace":"Espais físics",
+    "services":"Serveis",
+    "updatecompany":"Actualitzar empresa"
+
 
 }

@@ -12,9 +12,10 @@ import { AddressForm } from './form-components/address-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { SocialForm } from './form-components/social-comp';
 import { CustomerValidation } from '../utils/verification-utils';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { LocAndRoleForm } from './form-components/loc-and-role';
 import { getUserDataFromDb } from '../utils/dataFetch-utils';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 
 var initValidation={
   firstname: true,
@@ -30,46 +31,53 @@ export default function UserSetupForm() {
   const [validation, setValidation] = React.useState(initValidation);
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+ 
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
-  const addedAt = new Date().toLocaleDateString();
-  
-  const frm = {
-    firstname: NcState.firstname,
-    lastname: NcState.lastname,
-    birthdate: NcState.birthdate,
-    gender: NcState.gender,
-    image: NcState.image,
-    emailhome: NcState.emailhome,
-    emailwork:NcState.emailwork,
-    streetaddress: NcState.streetaddress,
-    city: NcState.city,
-    state: NcState.state,
-    postalCode: NcState.postalCode,
-    country:NcState.country,
-    homephone: NcState.homephone,
-    mobilephone:NcState.mobilephone,
-    whatsapp: NcState.whatsapp,
-    social1: NcState.social1,
-    social2: NcState.social2,
-    social3: NcState.social3,
-    socialUser1:NcState.socialUser1,
-    socialUser2:NcState.socialUser2,
-    socialUser3:NcState.socialUser3,
-    language: NcState.locale,
-    role: NcState.role,
-    addedAt: addedAt,
-    }
+    const addedAt = new Date().toLocaleDateString();
+    
+    const frm = {
+      firstname: NcState.firstname,
+      lastname: NcState.lastname,
+      birthdate: NcState.birthdate,
+      gender: NcState.gender,
+      image: NcState.image,
+      emailhome: NcState.emailhome,
+      emailwork:NcState.emailwork,
+      streetaddress: NcState.streetaddress,
+      city: NcState.city,
+      state: NcState.state,
+      postalCode: NcState.postalCode,
+      country:NcState.country,
+      homephone: NcState.homephone,
+      mobilephone:NcState.mobilephone,
+      whatsapp: NcState.whatsapp,
+      social1: NcState.social1,
+      social2: NcState.social2,
+      social3: NcState.social3,
+      socialUser1:NcState.socialUser1,
+      socialUser2:NcState.socialUser2,
+      socialUser3:NcState.socialUser3,
+      language: NcState.locale,
+      role: NcState.role,
+      addedAt: addedAt,
+      }
 
-  const validation2 = CustomerValidation(frm);
-    setValidation(validation2);
-    console.log(frm);
-    console.log(validation)
+    const validation2 = CustomerValidation(frm);
+      setValidation(validation2);
+      console.log(frm);
+      console.log(validation)
 
-    /// API PARA ENVIAR EL FORMULARIO AL BACKEND
+      /// API PARA ENVIAR EL FORMULARIO AL BACKEND
 
-    // NAVIGATE TO SEECUSTOMER(_id);
+      // NAVIGATE TO SEECUSTOMER(_id);
+
+      const actualScreen = "/dashboard";
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
   }
 
   React.useEffect (()=>{
@@ -82,7 +90,9 @@ export default function UserSetupForm() {
  
 
   const resetData= ()=>{
-    //setFrmData(frmDataInit);
+    const loadedfrmData = getUserDataFromDb(_id);
+    dispatch(nc_loadFromBackend(loadedfrmData))
+    dispatch(nc_editingStart());
   }
 
   return (
@@ -133,7 +143,7 @@ export default function UserSetupForm() {
                 onClick={HandleSubmit}
                 sx={{ m:3}}
               >
-               {t("createcustomer")}
+               {t("updateuser")}
               </Button>
               <Button
                

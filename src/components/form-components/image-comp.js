@@ -6,8 +6,6 @@ import IconButton from '@mui/material/IconButton';
 import Webcam from "react-webcam";
 import { styled } from '@mui/material/styles';
 
-import configData from "../../assets/data/config-data.json"
-
 
 //ICONS
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
@@ -21,27 +19,26 @@ export const ImageComponent = (props) =>{
   const dispatch = useDispatch();
 
   const newUserSelector =  useSelector(state => state.newCustomer);
-  const imageInit= "images/Portrait_Placeholder.png";
+  const imageInit= "/images/Portrait_Placeholder.png";
   const [image, setImage] = React.useState(imageInit);
     
-    React.useEffect (()=>{
-        //console.log(props)
-        if (props.editUser){
-            const image2 = newUserSelector.image
-            console.log(image2)
-            setImage(image2)
-        }
+  React.useEffect (()=>{
+      //console.log(props)
+      if (props.editUser){
+          const image2 = newUserSelector.image
+          console.log(image2)
+          setImage(image2)
+      }
     
     },[props, newUserSelector.image])
+    
     const [webcamShow, setWebcamShow] = React.useState(false); 
     
-  
     const videoConstraints = {
         width: 160,
         height: 160,
         facingMode: "user"
     };
-      
      
     const webcamRef = React.useRef(null);
     
@@ -81,7 +78,7 @@ export const ImageComponent = (props) =>{
     return(
         <React.Fragment>
             <Paper>
-                <ButtonBase maxWidth="160" height="160" width="160">
+                <ButtonBase height="160" width="160">
                     
                     {webcamShow ? <Webcam
                         audio={false}
@@ -91,7 +88,7 @@ export const ImageComponent = (props) =>{
                         width={160}
                         videoConstraints={videoConstraints}
                     /> :
-                    <img maxWidth="155" width={155} height={155} src={image} alt="Upload"></img>
+                    <img width={155} height={155} src={image} alt="Upload"></img>
                     }
                 </ButtonBase>
                 <Stack direction="row" alignItems="center" spacing={2}>

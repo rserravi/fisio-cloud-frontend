@@ -10,7 +10,7 @@
                 "birhdate":"1974-09-15T03:00:00.000Z",
                 "locales":"ca-CA",
                 "role":"admin",
-                "image":"images/RubenSerra.jpg",
+                "image":"/images/RubenSerra.jpg",
                 "email":
                 [
                     {
@@ -60,7 +60,61 @@
                 ]
             }
         ],
-
+        "company":
+            {
+                "name":"Rubotic S.A.",
+                "logo":"/images/ruboticLogo.png",
+                "nifCif":"43527458G",
+                "type":"Autonomo",
+                "email":
+                [
+                    {
+                      "type": "home",
+                      "emailAddress": "rserravi@gmail.com"
+                    },
+                    {
+                      "type": "work",
+                      "emailAddress": "rubotic1@gmail.com"
+                    }
+                ],
+                "address":
+                {
+                    "streetAddress": "Costa Rica n5",
+                    "city": "Las Gabias",
+                    "state": "Granada",
+                    "postalCode": "18010",
+                    "country":"Spain"
+                },
+                "phoneNumber":
+                [
+                    {
+                      "type": "home",
+                      "number": "+34722303012"
+                    },
+                    {
+                      "type": "mobile",
+                      "number": "+34722303012"
+                    }
+                ],
+                "whatsapp":  "+34722303012",
+                "socialMedia":
+                [
+                    {
+                        "media": "Facebook",
+                        "user": "@rserravi"
+                    },
+                    {
+                        "media": "Twitter",
+                        "user": "@rserravu"
+                    },
+                    {
+                        "media": "Instagram",
+                        "user": "@rserravi"
+                    }
+        
+                ]
+            },
+        
         "services":[
             {
                 "id":1,

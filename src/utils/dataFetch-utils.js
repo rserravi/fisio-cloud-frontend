@@ -14,6 +14,33 @@ export const getCustomer = (_id) =>{
     return found;
 }
 
+export const getCompanyData = ()=>{
+  const data = {
+    name: configData[0].company.name,
+    logo: configData[0].company.logo,
+    nifCif: configData[0].company.nifCif,
+    type: configData[0].company.type,
+    emailhome: configData[0].company.email[0].emailAddress,
+    emailwork: configData[0].company.email[1].emailAddress,
+    streetaddress: configData[0].company.address.streetAddress,
+    city: configData[0].company.address.city,
+    state: configData[0].company.address.state,
+    postalCode: configData[0].company.address.postalCode,
+    country: configData[0].company.address.country,
+    homephone: configData[0].company.phoneNumber[0].number,
+    mobilephone: configData[0].company.phoneNumber[1].number,
+    whatsapp: configData[0].company.whatsapp,
+    social1: configData[0].company.socialMedia[0].media,
+    social2: configData[0].company.socialMedia[1].media,
+    social3: configData[0].company.socialMedia[2].media,
+    socialUser1:configData[0].company.socialMedia[0].user,
+    socialUser2:configData[0].company.socialMedia[1].user,
+    socialUser3:configData[0].company.socialMedia[2].user,
+  }
+
+  return (data);
+}
+
 export const getUserDataFromDb = (_id)=>{
   let found = null;
   for (let key in configData[0].user){

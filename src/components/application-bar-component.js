@@ -59,7 +59,7 @@ function ApplicationBar(boardState) {
 
   const [anchorElUser, setAnchorElUser] = React.useState("");
   const [anchorElBadges, setAnchorElBadges] = React.useState("");
-  const [anchorElNewCustomer, setAnchorElNewCustomer] = React.useState("");
+  // const [anchorElNewCustomer, setAnchorElNewCustomer] = React.useState("");
 
   const toggleDrawer = () => {
     open = (!open);
@@ -67,6 +67,12 @@ function ApplicationBar(boardState) {
   };
 
   const [openDialog, setOpenDialog]= React.useState(false);
+
+  const goTo = (actualScreen) =>{
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
 
   const handleOpenUserMenu = (event) => {
   setAnchorElUser(event.currentTarget);
@@ -96,10 +102,11 @@ function ApplicationBar(boardState) {
   }
 
   const handleUserSetup = () =>{
-    const actualScreen ="/usersetup/1";
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    goTo("/usersetup/1")
+  }
+
+  const handleSetupClick = () =>{
+   goTo("/setup");
   }
 
   const handleLogOut = () => {
@@ -114,7 +121,7 @@ function ApplicationBar(boardState) {
   const doLogOut = () => {
     // API CALL FOR LOGGIN OUT
     console.log("LOGGIN OUT");
-    navigate("/",{replace: true});
+    goTo("/");
   }
   
   const srcImage = configData[0].user[0].image;
@@ -159,7 +166,7 @@ function ApplicationBar(boardState) {
             </Typography>
             
              <Tooltip title={t("settings")}>
-              <IconButton color="inherit">
+              <IconButton color="inherit"  onClick={handleSetupClick}>
                   <SettingsIcon />
               </IconButton>
             </Tooltip> 
