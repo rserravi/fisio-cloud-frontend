@@ -41,8 +41,50 @@ export const getCompanyData = ()=>{
   return (data);
 }
 
+export const getUserList = (props) =>{
+  return configData[0].user
+
+}
+
+export const getNewUsersId = ()=>{
+  const lastId = configData[0].user[configData[0].user.length-1].id;
+  return lastId+1;
+  
+}
+
 export const getUserDataFromDb = (_id)=>{
   let found = null;
+  var item = {
+    isSubmited:false,
+    isValidated: false,
+    error: "",
+    isEditing:false,
+    isNew: true,
+    firstname:"",
+    lastname:"",
+    image: "images/Portrait_Placeholder.png",
+    birthdate: "",
+    gender:"none",
+    emailhome:"",
+    emailwork:"",
+    streetaddress: "",
+    city:"",
+    state:"",
+    postalCode:"",
+    country:"Spain",
+    homephone:"",
+    mobilephone:"+34",
+    whatsapp:"+34",
+    social1: "Facebook",
+    social2: "Twitter",
+    social3: "Instagram",
+    socialUser1:"@",
+    socialUser2:"@",
+    socialUser3:"@",
+    countryPhoneCode:"+34",
+    locale:"es-ES",
+    role:"user"
+  }
   for (let key in configData[0].user){
     
       if (configData[0].user[key].id === _id){
@@ -50,11 +92,13 @@ export const getUserDataFromDb = (_id)=>{
           break
       }
   }
-  const item ={
+  if (found){
+  item ={
     isSubmited:false,
     isValidated: false,
     error: "",
     isEditing:false,
+    isNew:false,
     firstname: found.firstname,
     lastname: found.lastname,
     image: found.image,
@@ -80,6 +124,9 @@ export const getUserDataFromDb = (_id)=>{
     locale:found.locales,
     role:found.role
   }
+}
+
+  
   return item;
 }
 

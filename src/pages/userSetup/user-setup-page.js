@@ -53,6 +53,7 @@ function UserSetupContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                  Configuració usuari {_id}
                   <UserSetupForm customerId={_id} />
                 </Paper>
               </Grid>

@@ -54,7 +54,6 @@ const printCustomer = (customerId) => {
   console.log("PRINT CUSTOMER " + customerId);
 }
 
-
 const callUser = (firstname, lastname, number) =>{
   console.log("Calling to " + nameInitial(firstname) + " "+ lastname + " at " + number )
 }

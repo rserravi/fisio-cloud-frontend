@@ -52,7 +52,7 @@ export const LocAndRoleForm = (props) =>{
         <React.Fragment>
             <Card sx={{ display: 'flex',  width: '100%'  }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mb:14 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
                     <FormControl variant="standard" sx={{  minWidth: 120, mr:2, width:300, 
                         display: "flex",
                         flexDirection: "row",

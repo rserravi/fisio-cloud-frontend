@@ -62,6 +62,7 @@ export default function UserSetupForm() {
       socialUser3:NcState.socialUser3,
       language: NcState.locale,
       role: NcState.role,
+      isNew: NcState.isNew,
       addedAt: addedAt,
       }
 
@@ -99,7 +100,7 @@ export default function UserSetupForm() {
     <React.Fragment>
        
         <Box component="form" noValidate onSubmit={HandleSubmit} >
-                   
+             {NcState.isNew?t("NEWUSER"):<></>}
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
@@ -109,26 +110,24 @@ export default function UserSetupForm() {
               </Grid>
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
                 <LocAndRoleForm editUser={true}/>
+                <EmailForm editUser={true}/>
+                {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
               </Grid>
               <Grid item xs={2} md={2} sm={2} marginTop={3}>
                 <ImageComponent editUser={true} />
               </Grid>
             </Grid>
-
-            
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <EmailForm editUser={true}/>
-                {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
+           
+            <Grid item xs={12} md={12} sm={12} marginTop={3}>
+                <PhoneForm  editUser={true} />
+                {!validation.phone ? <Alert severity="error">{t("introduceavelidmobile")}</Alert>: <></>}
               </Grid>
 
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <AddressForm  editUser={true} />
               </Grid>
              
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <PhoneForm  editUser={true} />
-                {!validation.phone ? <Alert severity="error">{t("introduceavelidmobile")}</Alert>: <></>}
-              </Grid>
+              
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <SocialForm editUser={true} />
@@ -143,7 +142,7 @@ export default function UserSetupForm() {
                 onClick={HandleSubmit}
                 sx={{ m:3}}
               >
-               {t("updateuser")}
+               {NcState.isNew?t("createuser"):t("updateuser")}
               </Button>
               <Button
                

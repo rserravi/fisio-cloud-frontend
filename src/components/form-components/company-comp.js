@@ -373,24 +373,6 @@ export default function CompanyForm() {
                       </MenuItem>
                     ))}  
                 </TextField>
-              
-    
-                <TextField
-                    id="socialUser1"
-                    name="socialUser1"
-                    label={t("socialmediauser")}
-                    helperText={t("selectauser")}
-                    variant="standard"
-                    value={companyFrmDt.socialUser1}
-                    fullWidth
-                    onChange={handleTextChange}
-                    focused
-                    
-                    />
-   
-              </Box>
-             
-              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
                 <TextField
                     id="social2"
                     label="Social Media 2"
@@ -413,22 +395,7 @@ export default function CompanyForm() {
                       </MenuItem>
                     ))}  
                 </TextField>
-              
                 <TextField
-                    id="socialUser2"
-                    name="socialUser2"
-                    label={t("socialmediauser")}
-                    helperText={t("selectauser")}
-                    variant="standard"
-                    value={companyFrmDt.socialUser2}
-                    fullWidth
-                    onChange={handleTextChange}
-                    focused
-                    />
-              </Box>
-               
-              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
-                 <TextField
                     id="social3"
                     label="Social Media 3"
                     name= "social3"
@@ -450,7 +417,37 @@ export default function CompanyForm() {
                       </MenuItem>
                     ))}  
                    </TextField>
-            
+        
+   
+              </Box>
+             
+              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
+               
+              
+                <TextField
+                    id="socialUser2"
+                    name="socialUser2"
+                    label={t("socialmediauser")}
+                    helperText={t("selectauser")}
+                    variant="standard"
+                    value={companyFrmDt.socialUser2}
+                    fullWidth
+                    onChange={handleTextChange}
+                    focused
+                    />
+                        <TextField
+                    id="socialUser1"
+                    name="socialUser1"
+                    label={t("socialmediauser")}
+                    helperText={t("selectauser")}
+                    variant="standard"
+                    value={companyFrmDt.socialUser1}
+                    fullWidth
+                    onChange={handleTextChange}
+                    focused
+                    
+                    />
+
                 <TextField
                     id="socialUser3"
                     name="socialUser3"
@@ -462,6 +459,7 @@ export default function CompanyForm() {
                     onChange={handleTextChange}
                     focused
                     />
+            
                 </Box>
               </Box>
             </Card>

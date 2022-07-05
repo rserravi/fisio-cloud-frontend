@@ -13,12 +13,15 @@ import { PhoneForm } from './form-components/phones-comp';
 import { SocialForm } from './form-components/social-comp';
 import { CustomerValidation } from '../utils/verification-utils';
 import { useParams } from 'react-router-dom';
+import { DniForm } from './form-components/dni-form';
+import ReleaseFormComp from './form-components/release-form-comp';
 
 var initValidation={
   firstname: true,
   lastname: true,
   email: true,
-  phone: true
+  phone: true,
+  dni: true
 }
 
 export default function CustomerForm() {
@@ -36,6 +39,7 @@ export default function CustomerForm() {
     firstname: NcState.firstname,
     lastname: NcState.lastname,
     birthdate: NcState.birthdate,
+    dni: NcState.dni,
     gender: NcState.gender,
     image: NcState.image,
     emailhome: NcState.emailhome,
@@ -83,61 +87,45 @@ export default function CustomerForm() {
        
         <Box component="form" noValidate onSubmit={HandleSubmit} >
             <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
-             <Grid item xs={12}>
-                
-                     <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
-                
+             
+             <Grid item xs={12}>         
+               <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
               </Grid>
             </Grid>
-            <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-              {t("NAMEANDIMAGE")}
-            </Typography>
-         
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
-              <Grid item xs={12} md={10} sm={10} marginTop={3}>
+              <Grid item xs={12} md={5} sm={5} marginTop={3}>
                 <NameForm gender={"none"} />
                 {!validation.firstname ? <Alert severity="error">{t("introduceaname")}</Alert>: <></>}
                 {!validation.lastname ? <Alert severity="error">{t("introducealastname")}</Alert>: <></>} 
               </Grid>
-              
+              <Grid item xs={12} md={5} sm={5} marginTop={3}>
+                <DniForm />
+                {!validation.dni ? <Alert severity="error">{t("youmustintroduceavalidId")}</Alert>: <></>}
+                <EmailForm  />
+                {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
+               
+              </Grid>
               <Grid item xs={2} md={2} sm={2} marginTop={3}>
                 <ImageComponent />
               </Grid>
-            </Grid>
               
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("EMAILS")}
-              </Typography>
-
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <EmailForm  />
-                {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
-              </Grid>
-
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("ADDRESS")}
-              </Typography>
-
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
-                <AddressForm />
-              </Grid>
-             
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("PHONES")}
-              </Typography>
-             
+            </Grid>
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <PhoneForm />
                 {!validation.phone ? <Alert severity="error">{t("introduceavelidmobile")}</Alert>: <></>}
               </Grid>
 
-              <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("SOCIALNETWORKS")}
-              </Typography>
-              
+              <Grid item xs={12} md={12} sm={12} marginTop={3}>
+                <AddressForm />
+              </Grid>
+  
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <SocialForm />
+              </Grid>
+
+              <Grid item xs={12} md={12} sm={12} marginTop={3}>
+                <ReleaseFormComp />
               </Grid>
 
             <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', m:2 }}>

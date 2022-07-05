@@ -31,6 +31,7 @@ export const SignUpValidator = (frmdata) =>{
             "message": "Incorrect email and Passwords dont match"
         }
     }
+    return message
 }
 
 export const EmailValidation = (email) =>{
@@ -59,11 +60,11 @@ export const CustomerValidation = (frmData) =>{
         phone: false,
     }
 
-    required.firstname = frmData.firstname !="";
-    required.lastname = frmData.lastname !="";
+    required.firstname = frmData.firstname !=="";
+    required.lastname = frmData.lastname !=="";
     required.email = (validator.isEmail(frmData.emailhome) || validator.isEmail(frmData.emailwork));
-    const homephone= (frmData.homephone !="" && validator.isMobilePhone(frmData.homephone));
-    const mobilephone= (frmData.mobilephone !="" && validator.isMobilePhone(frmData.mobilephone));
+    const homephone= (frmData.homephone !=="" && validator.isMobilePhone(frmData.homephone));
+    const mobilephone= (frmData.mobilephone !=="" && validator.isMobilePhone(frmData.mobilephone));
     required.phone = homephone || mobilephone;
     return required;
 }

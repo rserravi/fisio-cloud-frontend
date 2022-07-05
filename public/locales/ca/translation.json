@@ -301,7 +301,23 @@
     "usersroles":"Rols d'usuari",
     "physicalspace":"Espais físics",
     "services":"Serveis",
-    "updatecompany":"Actualitzar empresa"
+    "updatecompany":"Actualitzar empresa",
+    "communications":"Comunicacions",
+    "addcommunication":"Afegir comm.",
+    "seecommunications":"Veure comm.",
+    "dni": "DNI",
+    "enteravalidId":"Entra un DNI con letra válido",
+    "releaseform":"Consentiment informat",
+    "see": "veure",
+    "sendbyemail":"Enviar per email",
+    "interactivesignature":"Signar interactivament",
+    "selecttheconsentform":"Sel·leciona el consentiment adequat",
+    "consentsigned":"Consentiment firmat",
+    "consentnotsigned":"Consentiment encara sense firmar",
+    "youmustintroduceavalidId":"Introduex un DNI vàlid, amb lletra (sense -)",
+    "adduser":"Afegir Usuari",
+    "NEWUSER":"NOU USUARI",
+    "createuser": "Crear Usuari"
 
 
 }

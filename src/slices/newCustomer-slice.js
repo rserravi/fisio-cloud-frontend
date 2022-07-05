@@ -5,9 +5,11 @@ const initialState = {
     isValidated: false,
     error: "",
     isEditing:false,
+    isNew: true,
     firstname:"",
     lastname:"",
     image: "images/Portrait_Placeholder.png",
+    dni: "",
     birthdate: "",
     gender:"none",
     emailhome:"",
@@ -27,6 +29,9 @@ const initialState = {
     socialUser2:"@",
     socialUser3:"@",
     countryPhoneCode:"+34",
+    releaseformFile:"",
+    releaseformGenerated:"",
+    releaseformSigned:"",
     locale:"es-ES",
     role:"user"
 }
@@ -46,6 +51,9 @@ const createCustomerSlice = createSlice({
         nc_submmitedSucceed:(state)=>{
             state = initialState;
             state.isSubmited = true;
+        },
+        nc_isNewCommit:(state, action)=>{
+            state.isNew = action.payload;
         },
         nc_isValidated:(state)=>{
             state.isValidated = true;
@@ -122,6 +130,19 @@ const createCustomerSlice = createSlice({
         nc_role_Commit:(state, action) =>{
             state.role = action.payload; 
         },
+        nc_dni_Commit:(state, action) =>{
+            state.dni = action.payload; 
+        },
+        nc_releaseformFile:(state, action)=>{
+            state.releaseformFile = action.payload;
+        },
+        nc_releaseformGenerated:(state, action)=>{
+            state.releaseformGenerated = action.payload;
+        },
+        nc_releaseformSigned:(state, action)=>{
+            state.releaseformSigned = action.payload;
+        },
+        
         nc_loadFromBackend:(state, action)=>{
             state.isSubmited=action.payload.isSubmited
             state.isValidated=action.payload.isValidated
@@ -151,6 +172,7 @@ const createCustomerSlice = createSlice({
             state.countryPhoneCode=action.payload.countryPhoneCode
             state.locale=action.payload.locale
             state.role=action.payload.role
+            state.isNew=action.payload.isNew
         },
         nc_reset_slice:()=>initialState
     }
@@ -164,6 +186,7 @@ export const {
     nc_isValidated,
     nc_firstName_Commit,
     nc_lastName_Commit,
+    nc_dni_Commit,
     nc_image_Commit,
     nc_birthdate_Commit,
     nc_gender_Commit,
@@ -186,7 +209,11 @@ export const {
     nc_countryPhoneCode_Commit,
     nc_locale_Commit,
     nc_role_Commit,
+    nc_releaseformFile,
+    nc_releaseformGenerated,
+    nc_releaseformSigned,
     nc_loadFromBackend,
-    nc_reset_slice
+    nc_reset_slice,
+    nc_isNewCommit
     } = actions;
 export default reducer;

@@ -113,24 +113,6 @@ export const SocialForm = (props) =>{
                       </MenuItem>
                     ))}  
                 </TextField>
-              
-    
-                <TextField
-                    id="socialUser1"
-                    name="socialUser1"
-                    label={t("socialmediauser")}
-                    helperText={t("selectauser")}
-                    variant="standard"
-                    value={socialFrmData.socialUser1}
-                    fullWidth
-                    onChange={handleChangeSocialUser1}
-                   
-                    
-                    />
-   
-              </Box>
-             
-              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
                 <TextField
                     id="social2"
                     label="Social Media 2"
@@ -152,22 +134,7 @@ export const SocialForm = (props) =>{
                       </MenuItem>
                     ))}  
                 </TextField>
-              
                 <TextField
-                    id="socialUser2"
-                    name="socialUser2"
-                    label={t("socialmediauser")}
-                    helperText={t("selectauser")}
-                    variant="standard"
-                    value={socialFrmData.socialUser2}
-                    fullWidth
-                    onChange={handleChangeSocialUser2}
-                  
-                    />
-              </Box>
-               
-              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
-                 <TextField
                     id="social3"
                     label="Social Media 3"
                     name= "social3"
@@ -187,8 +154,37 @@ export const SocialForm = (props) =>{
                           </ListItemIcon>
                       </MenuItem>
                     ))}  
-                   </TextField>
-            
+                   </TextField>    
+               
+   
+              </Box>
+             
+              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
+                
+                <TextField
+                    id="socialUser1"
+                    name="socialUser1"
+                    label={t("socialmediauser")}
+                    helperText={t("selectauser")}
+                    variant="standard"
+                    value={socialFrmData.socialUser1}
+                    fullWidth
+                    onChange={handleChangeSocialUser1}
+                   
+                    
+                    />
+                <TextField
+                    id="socialUser2"
+                    name="socialUser2"
+                    label={t("socialmediauser")}
+                    helperText={t("selectauser")}
+                    variant="standard"
+                    value={socialFrmData.socialUser2}
+                    fullWidth
+                    onChange={handleChangeSocialUser2}
+                  
+                    />
+
                 <TextField
                     id="socialUser3"
                     name="socialUser3"
@@ -200,7 +196,8 @@ export const SocialForm = (props) =>{
                     onChange={handleChangeSocialUser3}
                     
                     />
-                </Box>
+              </Box>
+
               </Box>
             </Card>
         

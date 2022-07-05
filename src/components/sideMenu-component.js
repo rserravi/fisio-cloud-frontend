@@ -5,6 +5,19 @@ import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import { useTranslation } from 'react-i18next';
+import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { Collapse } from '@mui/material';
+import { 
+  navigationClientPanel,
+  navigationAppointmentPanel, 
+  navigationDrawer, 
+  navigationLoading,
+  navigationSuccess,
+   navigationCommunicationsPanel } from '../slices/navigation-slice';
+
+//ICONS
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -24,11 +37,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import CalendarViewWeekIcon from '@mui/icons-material/CalendarViewWeek';
 import EuroIcon from '@mui/icons-material/Euro';
 import ScheduleIcon from '@mui/icons-material/Schedule';
-import { useTranslation } from 'react-i18next';
-import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { Collapse } from '@mui/material';
-import { navigationClientPanel,navigationAppointmentPanel, navigationDrawer, navigationLoading, navigationSuccess } from '../slices/navigation-slice';
+import CellTowerIcon from '@mui/icons-material/CellTower';
+import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 
 
 const drawerWidth = 240;
@@ -66,14 +76,15 @@ function SideMenu(boardState) {
   const navigate = useNavigate();
 
   
-  const {screen, drawerOpen, customerOpen, appointmentsOpen} = boardState.boardState;
+  const {screen, drawerOpen, customerOpen, appointmentsOpen, communicationsOpen} = boardState.boardState;
   let actualScreen = screen;
   let open = drawerOpen;
   let expandClients = customerOpen;
   let expandCal  =appointmentsOpen;
+  let expandCom = communicationsOpen;
 
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const goTo = (actualScreen) =>{
     dispatch(navigationLoading());
@@ -95,7 +106,11 @@ function SideMenu(boardState) {
   const toggleCal = () =>{
     expandCal = !expandCal;
     dispatch(navigationAppointmentPanel(expandCal));
+  }
 
+  const toggleCom = () =>{
+    expandCom = !expandCom;
+    dispatch(navigationCommunicationsPanel(expandCom));
   }
 
   const toggleDashboad = () =>{
@@ -128,6 +143,15 @@ function SideMenu(boardState) {
   const toogleShowIntegrations= () =>{
     goTo("/integrations");
   }
+
+  const toogleAddCommunication = ()=>{
+    goTo("/communications")
+  }
+
+  const toogleSeeCommunication = ()=>{
+    goTo("/communications")
+  }
+ 
  
   return (
         <Drawer variant="permanent" open={open}>
@@ -203,12 +227,38 @@ function SideMenu(boardState) {
                 </ListItemButton>
             </Collapse>
 
+
             <ListItemButton onClick={toogleShowDeposits}>
                 <ListItemIcon >
                 <EuroIcon />
                 </ListItemIcon>
                 <ListItemText primary={t("deposits")} />
             </ListItemButton>
+
+            {/* Comunications */}
+            <ListItemButton onClick={toggleCom}>
+                <ListItemIcon>
+                  <CellTowerIcon />
+                </ListItemIcon>
+                <ListItemText primary={t("communications")} />
+                {expandCom ? <ExpandLess /> : <ExpandMore />}
+            </ListItemButton>
+
+            <Collapse in={expandCom} timeout="auto" unmountOnExit>
+                <ListItemButton sx={{ pl:4}} onClick={toogleAddCommunication}>
+                  <ListItemIcon>
+                    <ContactPhoneIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("addcommunication")} />
+                </ListItemButton>
+                
+                <ListItemButton sx={{ pl:4}} onClick={toogleSeeCommunication}>
+                  <ListItemIcon>
+                    <CalendarViewWeekIcon />
+                  </ListItemIcon>
+                  <ListItemText primary={t("seecommunications")} />
+                </ListItemButton>
+            </Collapse>
             
             <ListItemButton onClick={toogleShowReports}>
                 <ListItemIcon>

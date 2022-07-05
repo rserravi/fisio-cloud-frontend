@@ -4,6 +4,7 @@
         "addedAt": "1-10-2021",
         "firstname": "Juanjo",
         "lastname": "Rubio Burguillos",
+        "dni":"43444444G",
         "image": "juanjorubio.jpg",
         "gender": "male",
         "inbound": "customer",
@@ -169,6 +170,11 @@
                 ]
             }
         ],
+        "releaseForm":{
+                "file":"",
+                "generated":"false",
+                "signed":"false"
+        },
         "contacthistory":[
             {
                 "id":"1",
@@ -186,6 +192,7 @@
         "addedAt": "1-10-2018",
         "firstname": "Adel",
         "lastname": "Khader",
+        "dni":"43444444G",
         "image": "adelkader.jpg",
         "gender": "male",
         "inbound": "passive",
@@ -292,6 +299,11 @@
                 ]
             }
         ],
+        "releaseForm":{
+            "file":"",
+            "generated":"false",
+            "signed":"false"
+        },
         "contacthistory":[
             {
                 "id":"1",
@@ -308,6 +320,7 @@
         "addedAt": "1-10-2015",
         "firstname": "Maria",
         "lastname": "Lapuerta",
+        "dni":"",
         "image": "marialapuerta.jpg",
         "gender": "female",
         "inbound": "lead",
@@ -350,6 +363,11 @@
         "appointments":[
             
         ],
+        "releaseForm":{
+            "file":"",
+            "generated":"false",
+            "signed":"false"
+        },
         "contacthistory":[
             {   
                 "id":"1",
@@ -410,6 +428,11 @@
         "appointments":[
             
         ],
+        "releaseForm":{
+            "file":"",
+            "generated":"false",
+            "signed":"false"
+        },
         "contacthistory":[
             {
                 "id": "1",
@@ -427,6 +450,7 @@
         "addedAt": "1-10-2015",
         "firstname": "Ana",
         "lastname": "Torroja",
+        "dni":"",
         "image": "marialapuerta.jpg",
         "gender": "female",
         "inbound": "lead",
@@ -469,6 +493,11 @@
         "appointments":[
             
         ],
+        "releaseForm":{
+            "file":"",
+            "generated":"false",
+            "signed":"false"
+        },
         "contacthistory":[
             {
                 "id": "1",
@@ -486,6 +515,7 @@
         "addedAt": "1-10-2015",
         "firstname": "Bo",
         "lastname": "Derek",
+        "dni":"",
         "image": "marialapuerta.jpg",
         "gender": "female",
         "inbound": "lead",
@@ -528,6 +558,11 @@
         "appointments":[
             
         ],
+        "releaseForm":{
+            "file":"",
+            "generated":"false",
+            "signed":"false"
+        },
         "contacthistory":[
             {
                 "id": "1",

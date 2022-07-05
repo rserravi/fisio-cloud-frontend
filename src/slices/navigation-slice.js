@@ -6,6 +6,7 @@ const initialState = {
     drawerOpen: true,
     customerOpen: false,
     appointmentsOpen: false,
+    communicationsOpen: false,
     isLoading: false,
     error: ""
 }
@@ -34,11 +35,22 @@ const navigationSlice = createSlice({
         },
         navigationDrawer:(state, action) =>{
             state.drawerOpen = action.payload;
+        },
+        navigationCommunicationsPanel:(state, action) =>{
+            state.communicationsOpen = action.payload;
         }
         
     }
 });
 
 const {reducer, actions} = navigationSlice;
-export const {navigationLoading, navigationSuccess, navigationFail, navigationClientPanel, navigationAppointmentPanel, navigationDrawer} = actions;
+export const {
+    navigationLoading, 
+    navigationSuccess, 
+    navigationFail, 
+    navigationClientPanel, 
+    navigationAppointmentPanel, 
+    navigationDrawer,
+    navigationCommunicationsPanel,
+} = actions;
 export default reducer;

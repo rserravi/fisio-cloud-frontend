@@ -58,6 +58,63 @@
                     }
         
                 ]
+            },
+            {
+                "id":2,
+                "firstname":"Leo",
+                "lastname":"Messi",
+                "gender":"male",
+                "birhdate":"1987-06-24T03:00:00.000Z",
+                "locales":"es-ES",
+                "role":"admin",
+                "image":"/images/leomessi.jpg",
+                "email":
+                [
+                    {
+                      "type": "home",
+                      "emailAddress": "messi@gmail.com"
+                    },
+                    {
+                      "type": "work",
+                      "emailAddress": "messi2@gmail.com"
+                    }
+                ],
+                "address":
+                {
+                    "streetAddress": "Passeig de la Creu",
+                    "city": "Castelldefels",
+                    "state": "Barcelona",
+                    "postalCode": "08860",
+                    "country":"Spain"
+                },
+                "phoneNumber":
+                [
+                    {
+                      "type": "home",
+                      "number": "+34722303012"
+                    },
+                    {
+                      "type": "mobile",
+                      "number": "+34722303012"
+                    }
+                ],
+                "whatsapp":  "+34722303012",
+                "socialMedia":
+                [
+                    {
+                        "media": "Facebook",
+                        "user": "@leomessi"
+                    },
+                    {
+                        "media": "Twitter",
+                        "user": "@leomessi"
+                    },
+                    {
+                        "media": "Instagram",
+                        "user": "@rserravi"
+                    }
+        
+                ]
             }
         ],
         "company":
