@@ -26,7 +26,7 @@ export default function PasswordReset() {
     });
   };
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={theme}>

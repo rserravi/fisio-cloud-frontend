@@ -12,7 +12,6 @@ import { AddressForm } from './form-components/address-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { SocialForm } from './form-components/social-comp';
 import { CustomerValidation } from '../utils/verification-utils';
-import { useParams } from 'react-router-dom';
 import { DniForm } from './form-components/dni-form';
 import ReleaseFormComp from './form-components/release-form-comp';
 
@@ -26,7 +25,6 @@ var initValidation={
 
 export default function CustomerForm() {
   const NcState = useSelector((state)=> state.newCustomer);
-  const _id = Number(useParams().tid);
   const [validation, setValidation] = React.useState(initValidation);
   const { t } = useTranslation();
   const dispatch = useDispatch();

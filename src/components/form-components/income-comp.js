@@ -6,18 +6,13 @@ import { GetDepositsFromDate, GetDepositsArrayFromDate, getCustomer, getCustomer
 import { Box } from '@mui/system';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Button, Container, TextField, Tooltip } from '@mui/material';
+import { Button, Container, Grid, TextField, Tooltip } from '@mui/material';
 import { LocalTextForDataGrid } from '../../utils/mui-custom-utils';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { locale } from 'moment';
 import configData from "../../assets/data/config-data.json"
 import EditIcon from '@mui/icons-material/Edit';
 
-
-
-function preventDefault(event) {
-  event.preventDefault();
-}
 
 const localization = configData[0].user[0].locales;
 locale(localization);
@@ -134,7 +129,9 @@ export default function Income() {
     <React.Fragment>
       <Title>{t("incomes")}</Title>
       <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-        <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
+      <Grid container >
+        <Grid item xs={12} sm={4} md={4}>
+          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}> 
             <DatePicker
                 label={t("periodStart")}
                 value={income[0] && income[0].periodStart? income[0].periodStart: new Date("15/01/20").toDateString()}
@@ -144,6 +141,10 @@ export default function Income() {
                 onChange={handlePeriodStart}
                 renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
             />
+            </LocalizationProvider>
+        </Grid>
+        <Grid item xs={12} sm={4} md={4}>
+          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
             <DatePicker
                 label={t("periodEnd")}
                 inputFormat="DD/MM/yyyy"
@@ -153,12 +154,23 @@ export default function Income() {
                 onChange={handlePeriodEnd}
                 renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
             />
-        </LocalizationProvider>
-        <Button onClick={alwaysClick} variant='outlined'sx={{mr:1}}>{t("always")}</Button>
-        <Button onClick={monthClick} variant='outlined'sx={{mr:1}}>{t("month")}</Button>
-        <Button onClick={quarterClick} variant='outlined'sx={{mr:1}}>{t("quarter")}</Button>
-        <Button onClick={yearClick} variant='outlined'sx={{mr:1}}>{t("year")}</Button>
-        
+          </LocalizationProvider>
+        </Grid>
+        <Grid container alignItems="stretch" justifyContent="flex-start" direction="row" sx={{mt:2}}>  
+          <Grid item xs={6} sm={3} md={3}>
+              <Button onClick={alwaysClick} variant='outlined'sx={{mr:1}}>{t("always")}</Button>
+          </Grid>
+          <Grid item xs={6} sm={3} md={3}>
+              <Button onClick={monthClick} variant='outlined'sx={{mr:1}}>{t("month")}</Button>
+          </Grid>
+          <Grid item xs={6} sm={3} md={3}>
+              <Button onClick={quarterClick} variant='outlined'sx={{mr:1}}>{t("quarter")}</Button>
+          </Grid>
+          <Grid item xs={6} sm={3} md={3}>
+            <Button onClick={yearClick} variant='outlined'sx={{mr:1}}>{t("year")}</Button>
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
     <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2  }}>
     <Container sx={{height:320}}>

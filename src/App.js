@@ -9,7 +9,6 @@ import SignUp from './pages/sign-up/sign-up';
 import Customers from './pages/customers/customers-page';
 import AddCustomer from './pages/customers/add-customer-page';
 import SeeCustomer from './pages/customers/seecustomer-page';
-import MyMap from './utils/tests/googlemaps-test';
 import FourOuFour from './pages/404/404';
 import Appointments from './pages/appointments/appointments-page';
 import AddAppointment from './pages/appointments/add-appointment-page';
@@ -34,7 +33,6 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/addcustomer" element={<AddCustomer />} />
           <Route path='/customer/:tid' element={<SeeCustomer />} />
-          <Route path='/test' element={<MyMap/>} />
           <Route path='/404' element={<FourOuFour/>} /> 
           <Route path='/appointments' element={<Appointments />} />
           <Route path='/addappointment' element={<AddAppointment />} />

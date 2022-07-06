@@ -31,7 +31,7 @@ function SeeCustomerContent() {
     if (!customer){
      navigate("/404")   
     }
-  },[])
+  },[customer,navigate])
 
   if (!customer){
     console.log("NO HAY CLIENTE");

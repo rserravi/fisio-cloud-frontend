@@ -65,39 +65,46 @@ export default function ReleaseFormComp(props) {
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 
                 <Card sx={{ display: 'flex',  width: '100%', mt:2, p:1  }}>
-                <TextField
-                    id="select-consent-form"
-                    select
-                    label={t("selecttheconsentform")}
-                    value={releaseFrm.blueprint}
-                    onChange={handleConsentFormChange}
-                    helperText={t("selecttheconsentform")}
-                    variant="standard"
-                    sx={{mr:2, width:"40%"}}
-                    
-                    >
-                    {getDocumentList().map((option) => (
-                        <MenuItem key={option} value={option}>
-                        {option}
-                        </MenuItem>
-                    ))}
-                </TextField>
-                <Button variant='outlined' onClick={handleSeeConsentClick} sx={{mr:2}}>
-                    {t("see")}
-                </Button>
-                <Button variant='outlined' onClick={handlePrintConsentClick} sx={{mr:2}}> 
-                    {t("print")}
-                </Button>
-                <Button variant='outlined' onClick={handleSendByEmailClick} sx={{mr:2}}>
-                    {t("sendbyemail")}
-                </Button>
-                <Button variant='outlined' onClick={handleSignConsentClick} sx={{mr:2}}>
-                    {t("interactivesignature")}
-                </Button>
-                
-                </Card>
-                {releaseFrm.signed? <Alert severity="success">{t("consentsigned")}</Alert>:<Alert severity="warning">{t("consentnotsigned")}</Alert>}
-                {releaseFrm.file? <p>Archivo de consentimiento: {releaseFrm.file}</p>:<></>}
+                  <Grid container justifyContent="flex-start" alignItems="flex-end">
+                  <Grid item xs={12} sm={4} md={4} sx={{mt:2, mr:2}}>
+                    <TextField
+                        id="select-consent-form"
+                        select
+                        label={t("selecttheconsentform")}
+                        value={releaseFrm.blueprint}
+                        onChange={handleConsentFormChange}
+                        helperText={t("selecttheconsentform")}
+                        variant="standard"
+                        fullWidth
+                        sx={{mr:2}}
+                        
+                        >
+                        {getDocumentList().map((option) => (
+                            <MenuItem key={option} value={option}>
+                            {option}
+                            </MenuItem>
+                        ))}
+                    </TextField>
+                   </Grid>
+                   <Grid container justifyContent="flex-start" alignItems="flex-end"sx={{mt:1, mb:1}}>
+                    <Button variant='outlined' onClick={handleSeeConsentClick} sx={{mr:2, mt:1}}>
+                        {t("see")}
+                    </Button>
+                    <Button variant='outlined' onClick={handlePrintConsentClick} sx={{mr:2, mt:1}}> 
+                        {t("print")}
+                    </Button>
+                    <Button variant='outlined' onClick={handleSendByEmailClick} sx={{mr:2, mt:1}}>
+                        {t("sendbyemail")}
+                    </Button>
+                    <Button variant='outlined' onClick={handleSignConsentClick} sx={{mr:2, mt:1}}>
+                        {t("interactivesignature")}
+                    </Button>
+                    </Grid>
+                    </Grid>  
+                    </Card>
+                    {releaseFrm.signed? <Alert severity="success">{t("consentsigned")}</Alert>:<Alert severity="warning">{t("consentnotsigned")}</Alert>}
+                    {releaseFrm.file? <p>Archivo de consentimiento: {releaseFrm.file}</p>:<></>}
+              
               </Grid>
              
         </Box>

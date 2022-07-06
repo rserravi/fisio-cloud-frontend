@@ -8,6 +8,7 @@ import { Box } from '@mui/system';
 import Card from '@mui/material/Card';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_social1_Commit, nc_social2_Commit, nc_social3_Commit, nc_socialUser1_Commit, nc_socialUser2_Commit, nc_socialUser3_Commit } from '../../slices/newCustomer-slice';
+import { Grid } from '@mui/material';
 
 
 export const SocialForm = (props) =>{
@@ -89,9 +90,9 @@ export const SocialForm = (props) =>{
         <React.Fragment>
             <Card sx={{ display: 'flex',  width: '100%'  }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-           
-            <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
-              
+            
+            <Grid container direction="row">
+                <Grid item xs={12} sm={3.6} md={3.6} sx={{mt:2, mr:0.5}}>
                 <TextField
                     id="social1"
                     label="Social Media 1"
@@ -113,54 +114,8 @@ export const SocialForm = (props) =>{
                       </MenuItem>
                     ))}  
                 </TextField>
-                <TextField
-                    id="social2"
-                    label="Social Media 2"
-                    name= "social2"
-                    select
-                    helperText={t("selectasocialnetwork")}
-                    variant="standard"
-                    value={socialFrmData.social2}
-                    fullWidth
-                    onChange={handleChangeSocial2}
-                    sx = {{mr:2, textAlign:'left'}}
-                    >
-                    {socialNetworks.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                          <ListItemIcon>
-                            {option.icon}
-                            {option.value}
-                          </ListItemIcon>
-                      </MenuItem>
-                    ))}  
-                </TextField>
-                <TextField
-                    id="social3"
-                    label="Social Media 3"
-                    name= "social3"
-                    helperText={t("selectasocialnetwork")}
-                    variant="standard"
-                    value={socialFrmData.social3}
-                    fullWidth
-                    select
-                    onChange={handleChangeSocial3}
-                    sx = {{mr:2, textAlign:'left'}}
-                    >
-                    {socialNetworks.map((option) => (
-                      <MenuItem key={option.value} value={option.value}>
-                          <ListItemIcon>
-                            {option.icon}
-                            {option.value}
-                          </ListItemIcon>
-                      </MenuItem>
-                    ))}  
-                   </TextField>    
-               
-   
-              </Box>
-             
-              <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
-                
+              
+              
                 <TextField
                     id="socialUser1"
                     name="socialUser1"
@@ -173,6 +128,31 @@ export const SocialForm = (props) =>{
                    
                     
                     />
+               </Grid>
+               <Grid item xs={12} sm={3.6} md={3.6} sx={{mt:2, mr:0.5}}>
+                <TextField
+                    id="social2"
+                    label="Social Media 2"
+                    name= "social2"
+                    select
+                    helperText={t("selectasocialnetwork")}
+                    variant="standard"
+                    value={socialFrmData.social2}
+                    onChange={handleChangeSocial2}
+                    fullWidth
+                    sx = {{mr:2, textAlign:'left'}}
+                    >
+                    {socialNetworks.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                          <ListItemIcon>
+                            {option.icon}
+                            {option.value}
+                          </ListItemIcon>
+                      </MenuItem>
+                    ))}  
+                </TextField>
+              
+              
                 <TextField
                     id="socialUser2"
                     name="socialUser2"
@@ -182,23 +162,45 @@ export const SocialForm = (props) =>{
                     value={socialFrmData.socialUser2}
                     fullWidth
                     onChange={handleChangeSocialUser2}
-                  
                     />
-
+               </Grid>
+               <Grid item xs={12} sm={3.6} md={3.6} sx={{mt:2}}>
+                <TextField
+                    id="social3"
+                    label="Social Media 3"
+                    name= "social3"
+                    select
+                    helperText={t("selectasocialnetwork")}
+                    variant="standard"
+                    value={socialFrmData.social3}
+                    onChange={handleChangeSocial3}
+                    fullWidth
+                    sx = {{mr:2, textAlign:'left'}}
+                    >
+                    {socialNetworks.map((option) => (
+                      <MenuItem key={option.value} value={option.value}>
+                          <ListItemIcon>
+                            {option.icon}
+                            {option.value}
+                          </ListItemIcon>
+                      </MenuItem>
+                    ))}  
+                </TextField>
+              
+              
                 <TextField
                     id="socialUser3"
                     name="socialUser3"
                     label={t("socialmediauser")}
                     helperText={t("selectauser")}
-                    value={socialFrmData.socialUser3}
                     variant="standard"
+                    value={socialFrmData.socialUser3}
                     fullWidth
                     onChange={handleChangeSocialUser3}
-                    
                     />
-              </Box>
-
-              </Box>
+               </Grid>
+            </Grid>
+            </Box>
             </Card>
         
         </React.Fragment>

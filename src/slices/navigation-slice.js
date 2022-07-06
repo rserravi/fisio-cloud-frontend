@@ -4,6 +4,7 @@ const initialState = {
     screen :"Dashboard",
     previousScreen:"",
     drawerOpen: true,
+    showMenu: true,
     customerOpen: false,
     appointmentsOpen: false,
     communicationsOpen: false,
@@ -38,7 +39,10 @@ const navigationSlice = createSlice({
         },
         navigationCommunicationsPanel:(state, action) =>{
             state.communicationsOpen = action.payload;
-        }
+        },
+        navigationMenu:(state, action) =>{
+            state.showMenu = action.payload;
+        },
         
     }
 });
@@ -52,5 +56,6 @@ export const {
     navigationAppointmentPanel, 
     navigationDrawer,
     navigationCommunicationsPanel,
+    navigationMenu,
 } = actions;
 export default reducer;

@@ -5,7 +5,6 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Copyright } from '../../components/copyright-component';
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 
@@ -13,7 +12,7 @@ const theme = createTheme();
 
 export default function FourOuFour() {
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={theme}>

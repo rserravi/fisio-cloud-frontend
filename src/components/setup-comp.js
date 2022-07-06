@@ -26,18 +26,21 @@ export default function SetupForm() {
 
     return (
         <React.Fragment>
+            
+            <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row', mb:2 }}>
             <Grid container spacing={1}>
              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'row', mb:2 }}>
-                  <Button name='company' onClick={buttonClick} variant='outlined' sx={{mr:2}}>{t("company")}</Button>
-                  <Button name='users' onClick={buttonClick} variant='outlined' sx={{mr:2}}>{t("users")}</Button>
-                  <Button name='roles' onClick={buttonClick} variant='outlined' sx={{mr:2}}>{t("usersroles")}</Button>
-                  <Button name='cabins' onClick={buttonClick} variant='outlined' sx={{mr:2}}>{t("physicalspace")}</Button>
-                  <Button name='services' onClick={buttonClick} variant='outlined' sx={{mr:2}}>{t("services")}</Button>
-                  
-                </Paper>
-              </Grid>
-            </Grid>
+             
+                  <Button name='company' onClick={buttonClick} variant='outlined' sx={{mr:2, mt:2}}>{t("company")}</Button>
+                  <Button name='users' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("users")}</Button>
+                  <Button name='roles' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("usersroles")}</Button>
+                  <Button name='cabins' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("physicalspace")}</Button>
+                  <Button name='services' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("services")}</Button>
+                  </Grid>  
+             </Grid>    
+             </Paper>
+             
+           
            {selected.company? <CompanyForm />:<></>}
            {selected.users? <UsersForm />:<></>}
            {selected.services? <ServicesForm />:<></>}

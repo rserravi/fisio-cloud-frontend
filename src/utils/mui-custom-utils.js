@@ -48,6 +48,9 @@ export const StatusColor = (status) =>{
       case "pending":
         frontColor = red[500]
       break;
+      default:
+        frontColor = green[500]
+        break;
     }
     return  frontColor
 }

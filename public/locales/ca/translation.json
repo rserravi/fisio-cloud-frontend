@@ -79,7 +79,7 @@
     "ADDRESS": "DIRECCIÓ",
     "street": "Carrer",
     "andnumber": "i Portal/Pis",
-    "cityortown": "Ciudat o Municipi",
+    "cityortown": "Ciutat o Municipi",
     "state": "Provincia",
     "postalcode": "Codi Postal",
     "country": "País",
@@ -108,7 +108,7 @@
     "Comfortable": "Còmode",
     "noRows": "No hi ha línies",
     "noResultsFound": "No he trobat resultats",
-    "anerrorocurred": "S'ha produït un error.",
+    "anerrorocurred": "S'ha produït un error. Refresca el navegador",
     "Filters": "Filtres",
     "Filter": "Filtre",
     "Showfilters": "Mostrar filtres",
@@ -306,7 +306,7 @@
     "addcommunication":"Afegir comm.",
     "seecommunications":"Veure comm.",
     "dni": "DNI",
-    "enteravalidId":"Entra un DNI con letra válido",
+    "enteravalidId":"DNI en format número + lletra (sense guió)",
     "releaseform":"Consentiment informat",
     "see": "veure",
     "sendbyemail":"Enviar per email",
@@ -317,7 +317,11 @@
     "youmustintroduceavalidId":"Introduex un DNI vàlid, amb lletra (sense -)",
     "adduser":"Afegir Usuari",
     "NEWUSER":"NOU USUARI",
-    "createuser": "Crear Usuari"
+    "createuser": "Crear Usuari",
+    "selectaprice": "Sel·lecioni un preu",
+    "amountpaid":"Quantitat pagada",
+    "enteryourFEM":"Entra la teva",
+    "correctDNI":"DNI Correcte"
 
 
 }

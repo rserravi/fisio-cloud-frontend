@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
-import { ButtonBase } from '@mui/material';
-import Stack from '@mui/material/Stack';
+import { ButtonBase, Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Webcam from "react-webcam";
 import { styled } from '@mui/material/styles';
@@ -77,37 +76,45 @@ export const ImageComponent = (props) =>{
 
     return(
         <React.Fragment>
-            <Paper>
-                <ButtonBase height="160" width="160">
-                    
-                    {webcamShow ? <Webcam
-                        audio={false}
-                        height={160}
-                        ref={webcamRef}
-                        screenshotFormat="image/jpeg"
-                        width={160}
-                        videoConstraints={videoConstraints}
-                    /> :
-                    <img width={155} height={155} src={image} alt="Upload"></img>
-                    }
-                </ButtonBase>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <label htmlFor="upload-button">
-                    <Input accept="image/*" id="upload-button" type="file" onChange={handleFileChange}/>
-                    <IconButton color="primary" aria-label="upload picture" component="span">
-                      <UploadIcon />
+           
+              <Grid container direction="column">
+              <Paper>
+                <Grid item xs={12} sm={12} md={12} >
+                  <ButtonBase height="150" width="150" sx={{m:2}}>
+                      
+                      {webcamShow ? <Webcam
+                          audio={false}
+                          height={160}
+                          ref={webcamRef}
+                          screenshotFormat="image/jpeg"
+                          width={160}
+                          videoConstraints={videoConstraints}
+                      /> :
+                      <img width={145} height={165} src={image} alt="Upload"></img>
+                      }
+                  </ButtonBase>
+                </Grid>
+               
+                <Grid container direction="row" justifyContent="space-around" alignItems="flex-end">
+                    <label htmlFor="upload-button">
+                      <Input accept="image/*" id="upload-button" type="file" onChange={handleFileChange}/>
+                      <IconButton color="primary" aria-label="upload picture" component="span">
+                        <UploadIcon />
+                      </IconButton>
+                    </label>
+                    <label htmlFor="camera-button">
+                      <IconButton color={!webcamShow?"primary":"success"} aria-label="make picture" component="span" onClick={getWebcamShot}>
+                        <PhotoCamera />
+                      </IconButton>
+                    </label>
+                    <IconButton color="primary" aria-label="make picture" component="span" onClick={deletePicture}>
+                        <DeleteIcon />
                     </IconButton>
-                  </label>
-                  <label htmlFor="camera-button">
-                    <IconButton color={!webcamShow?"primary":"success"} aria-label="make picture" component="span" onClick={getWebcamShot}>
-                      <PhotoCamera />
-                    </IconButton>
-                  </label>
-                  <IconButton color="primary" aria-label="make picture" component="span" onClick={deletePicture}>
-                      <DeleteIcon />
-                  </IconButton>
-                 </Stack>
-            </Paper>
+                  </Grid>
+                  </Paper>
+              </Grid>
+
+            
      </React.Fragment>
     )
   }

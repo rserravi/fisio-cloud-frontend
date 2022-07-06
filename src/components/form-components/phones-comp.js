@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
-import { Box, Button, InputAdornment } from '@mui/material';
+import { Box, Button, Grid, InputAdornment } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_homephone_Commit, nc_mobilephone_Commit, nc_whatsapp_Commit } from '../../slices/newCustomer-slice';
 
@@ -61,7 +61,8 @@ export const PhoneForm = (props) =>{
             <Card sx={{ display: 'flex',  width: '100%'  }}>
            
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+                <Grid container>
+                <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}} >
                   <TextField
                       id="homephone"
                       name="homephone"
@@ -75,6 +76,8 @@ export const PhoneForm = (props) =>{
                       sx = {{mr:2}}
                       
                     />
+                    </Grid>
+                     <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}} >
                     <TextField
                       id="mobilephone"
                       name="mobilephone"
@@ -88,6 +91,8 @@ export const PhoneForm = (props) =>{
                       onChange={handleChangeMobilePhone}
                       required
                       />
+                    </Grid>
+                    <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:1}} >
                     <TextField
                       id="whatsapp"
                       name="whatsapp"
@@ -104,8 +109,9 @@ export const PhoneForm = (props) =>{
                         </InputAdornment>,
                     }}
                     />
-                </Box>
-                </Box> 
+                    </Grid>
+                </Grid>
+              </Box> 
                 
             </Card>
          

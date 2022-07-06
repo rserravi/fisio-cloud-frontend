@@ -21,7 +21,7 @@ const theme = createTheme();
 
 export default function SignInSide() {
 
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [isPassword, setIsPassword] = useState(true);
   const [isEmail, setIsEmail] = useState(true);
 

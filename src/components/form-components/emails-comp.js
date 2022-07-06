@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_emailHome_Commit, nc_emailWork_Commit } from '../../slices/newCustomer-slice';
 
@@ -45,7 +45,8 @@ export const EmailForm = (props) =>{
         <React.Fragment>
             <Card sx={{ display: 'flex',  width: '100%'  }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+                <Grid container>
+                <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:4}} >
                     <TextField
                       id="emailhome"
                       name='emailhome'
@@ -59,6 +60,8 @@ export const EmailForm = (props) =>{
                       focused
                       sx = {{mr:2}}
                       />
+                    </Grid>
+                 <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:1}} >
                     <TextField
                       id="emailwork"
                       name="emailwork"
@@ -72,7 +75,8 @@ export const EmailForm = (props) =>{
                       onChange={handleChangeWorkEmail}
                       required
                       />
-                </Box>
+                    </Grid>
+                </Grid>
 
                 </Box> 
             </Card>

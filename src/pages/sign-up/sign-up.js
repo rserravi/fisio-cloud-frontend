@@ -22,7 +22,7 @@ import Dialog from '@mui/material/Dialog';
 const theme = createTheme();
 
 export default function SignUp() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
 
   const dataVerificationInit = {
     hasName: false,
@@ -66,11 +66,11 @@ export default function SignUp() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
 
-    const hasName = !data.get("firstName")=="";
-    const hasLastName = !data.get("lastName")=="";
-    const hasEmail = !data.get("email")=="";
-    const hasPassword = !data.get("password")=="";
-    const hasConfirmPass = !data.get("confirmPass")=="";
+    const hasName = !data.get("firstName")==="";
+    const hasLastName = !data.get("lastName")==="";
+    const hasEmail = !data.get("email")==="";
+    const hasPassword = !data.get("password")==="";
+    const hasConfirmPass = !data.get("confirmPass")==="";
     const hasAccepted = data.get("acceptConditions");
     const submitted = true;
     setDataVerification({...dataVerification, hasName, hasLastName, hasEmail, hasPassword, hasConfirmPass, hasAccepted, submitted});

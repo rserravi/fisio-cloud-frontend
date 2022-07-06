@@ -113,7 +113,7 @@ export default function UserSetupForm() {
                 <EmailForm editUser={true}/>
                 {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
               </Grid>
-              <Grid item xs={2} md={2} sm={2} marginTop={3}>
+              <Grid item xs={12} md={2} sm={2} marginTop={3}>
                 <ImageComponent editUser={true} />
               </Grid>
             </Grid>

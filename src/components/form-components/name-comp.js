@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -76,13 +76,15 @@ export const NameForm = (props) =>{
         <React.Fragment>
             <Card sx={{ display: 'flex',  width: '100%'  }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+                <Grid container justifyContent="flex-start" alignItems="flex-start"> 
+                  <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:1}} >
                     <TextField
                       id="firstname"
                       name='firstname'
                       label={t("name")}
                       helperText={t("enterthe")+ " " +t("name")+" ("+t("required")+")"}
                       variant="standard"
+                      fullWidth
                       width={600}
                       focused
                       value={nameFrmDta.firstname}
@@ -90,6 +92,8 @@ export const NameForm = (props) =>{
                       required
                       sx = {{mr:2}}
                       />
+                </Grid>
+                <Grid item xs={12} sm={6} md={6} sx={{mt:2, mr:1}} >
                     <TextField
                       id="lastname"
                       name="lastname"
@@ -103,8 +107,9 @@ export const NameForm = (props) =>{
                       onChange={handleChangeLastName}
                       required
                       />
-                </Box>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
+                    </Grid>
+               
+                <Grid item xs={12} sm={6} md={6} sx={{mt:2, mr:1}} >
                     <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             label={t("birthdate")}
@@ -112,10 +117,12 @@ export const NameForm = (props) =>{
                             variant="standard"
                             sx = {{mr:2}}
                             onChange={handleBirthdate}
-                            renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
+                            renderInput={(params) => <TextField variant="standard" fullWidth sx = {{mr:2}} {...params} />}
                         />
                     </LocalizationProvider>
-                    <FormControl variant="standard" sx={{  minWidth: 120 }}>
+                </Grid>
+                <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:1}} >
+                    <FormControl variant="standard" fullWidth sx={{  minWidth: 120 } }>
                     <InputLabel id="gender">{t("gender")}</InputLabel>
                         <Select
                             labelId="gender"
@@ -130,7 +137,8 @@ export const NameForm = (props) =>{
                             <MenuItem value={"other"}>{t("other")}</MenuItem>
                         </Select>
                         </FormControl>
-                 </Box>
+                </Grid>
+                </Grid>
                 </Box> 
             </Card>
         

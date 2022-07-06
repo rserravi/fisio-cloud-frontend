@@ -15,7 +15,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@mui/material/Avatar';
 import { useDispatch } from "react-redux";
-import {navigationDrawer, navigationLoading, navigationSuccess } from '../slices/navigation-slice';
+import {navigationDrawer, navigationLoading, navigationMenu, navigationSuccess } from '../slices/navigation-slice';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
@@ -47,23 +47,45 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+
 function ApplicationBar(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const [width, setWidth] = React.useState(Number(window.innerWidth));
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+    }
+  React.useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
+  const isMobile = width <= 768;
   
-  const {drawerOpen, customerOpen, appointmentsOpen} = boardState.boardState;
+  const {drawerOpen} = boardState.boardState;
   const title = boardState.title;
 
   let open = drawerOpen;
-  const { t, i18n } = useTranslation();
+  let showMenu =  boardState.boardState.showMenu;
+  const { t } = useTranslation();
 
   const [anchorElUser, setAnchorElUser] = React.useState("");
   const [anchorElBadges, setAnchorElBadges] = React.useState("");
-  // const [anchorElNewCustomer, setAnchorElNewCustomer] = React.useState("");
 
   const toggleDrawer = () => {
+    if(!isMobile){
     open = (!open);
     dispatch(navigationDrawer(open));
+    dispatch(navigationMenu(true));
+    }
+    else{
+      showMenu = !showMenu;
+      dispatch(navigationMenu(showMenu));
+    }
   };
 
   const [openDialog, setOpenDialog]= React.useState(false);

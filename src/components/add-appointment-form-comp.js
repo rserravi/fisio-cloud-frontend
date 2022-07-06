@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, TextField, Typography } from '@mui/material';
+import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { useDispatch } from 'react-redux';
@@ -258,16 +258,11 @@ export default function AddAppointmentForm(props) {
         <Box component="form" noValidate onSubmit={HandleSubmit} >
           
          
-            <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
+            <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="center">
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
-              {/* {customerID?<h1>{t("addingdateto")} {data().firstname} {data().lastname} </h1>:
-                <><CustomerSearchBar customerFunc={SetCustomer}/></>
-              } */}
-              <MainTitle />
-
-              <h1>{customerName}</h1>
-             
+                <MainTitle />
+                <h1>{customerName}</h1>
               </Grid>
             </Grid>
               
@@ -275,15 +270,17 @@ export default function AddAppointmentForm(props) {
                 {t("appointment")}
               </Typography>
 
-              <Grid item xs={12} md={12} sm={12} marginTop={3}>
+              
 
               {/* DATE AND TIME CARD */}
 
-                <Card sx={{ display: 'flex',  width: '100%'  }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-                    <Button onClick={seeAppointment} variant="outlined" sx={{mr:2, width:130}}>{t("calendar")}</Button>
-                      <LocalizationProvider dateAdapter={AdapterMoment}>
+             <Paper sx={{p:1, mb:2}}>
+              <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
+                  <Grid item xs={12} sm={1} md={1} sx={{mt:2, mr:1}}>
+                    <Button fullWidth onClick={seeAppointment} variant="outlined" sx={{mr:2}}>{t("calendar")}</Button>
+                  </Grid>
+                  <Grid item xs={12} sm={4} md={4} sx={{mt:2, mr:1}}>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             label={t("date")}
                             value={appo.date}
@@ -291,72 +288,78 @@ export default function AddAppointmentForm(props) {
                             sx = {{mr:2}}
                             onChange={handleDate}
                             
-                            renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
+                            renderInput={(params) => <TextField fullWidth variant="standard" sx = {{mr:2}} {...params} />}
                         />
+                         </LocalizationProvider> 
+                  </Grid>
+                  <Grid item xs={12} sm={4} md={4} sx={{mt:2, mr:1}}>
+                         <LocalizationProvider dateAdapter={AdapterMoment}>
                         <TimePicker
                           label={t("Time")}
                           value={appo.date}
                           variant="standard"
                           
                           onChange={handleDate}
-                          renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
+                          renderInput={(params) => <TextField fullWidth variant="standard" sx = {{mr:2}} {...params} />}
                         />
-                       </LocalizationProvider>
+                        </LocalizationProvider>
                       
+                    </Grid>
+                    <Grid item xs={12} sm={2} md={2} sx={{mt:2}}>
                         <TextField
                             label={t("duration")}
                             value={appo.duration}
                             variant="standard"
-                            
+                            fullWidth
                             sx = {{mr:2}}
                             onChange={handleDurationChange}
                         />
-                    </Box>
-                  </Box>
-                </Card>
+                    </Grid>
+                 </Grid>
+                </Paper>
 
                  {/* SERVICE AND PRICE */}
 
-                 <Card sx={{ display: 'flex',  width: '100%', mt:2  }}>
-                  <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-                      
-                    <Button onClick={addService} variant="outlined" sx={{mr:2, width:400}}>{t("addservice")}</Button>
-                        <Dialog open={dialogOpen} onClose={closeAddServiceDialog}>
-                          <DialogTitle>{t("addservice")}</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                            {t("addaservicetothelistandusualprice")}
-                            </DialogContentText>
-                            <TextField
-                              autoFocus
-                              margin="dense"
-                              id="service"
-                              label={t("service")}
-                              type="email"
-                              fullWidth
-                              variant="standard"
-                              onChange={handleNewServiceService}
-                              value = {newService.service}
-                            />
-                            <TextField
-                              autoFocus
-                              margin="dense"
-                              id="price"
-                              label={t("price")}
-                              type="number"
-                              fullWidth
-                              variant="standard"
-                              onChange={handleNewServicePrice}
-                              value= {newService.price}
-                            />
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={newServiceFormCommit}>{t("add")}</Button>
-                            <Button onClick={closeAddServiceDialog}>{t("cancel")}</Button>
-                          </DialogActions>
-                        </Dialog>
-
+                 <Paper sx={{p:1}}>
+                 <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
+                    <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>   
+                       <Button fullWidth onClick={addService} variant="outlined" sx={{mr:2}}>{t("addservice")}</Button>
+                    </Grid>
+                      <Dialog open={dialogOpen} onClose={closeAddServiceDialog}>
+                        <DialogTitle>{t("addservice")}</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                          {t("addaservicetothelistandusualprice")}
+                          </DialogContentText>
+                          <TextField
+                            autoFocus
+                            margin="dense"
+                            id="service"
+                            label={t("service")}
+                            type="email"
+                            fullWidth
+                            variant="standard"
+                            onChange={handleNewServiceService}
+                            value = {newService.service}
+                          />
+                          <TextField
+                            autoFocus
+                            margin="dense"
+                            id="price"
+                            label={t("price")}
+                            type="number"
+                            fullWidth
+                            variant="standard"
+                            onChange={handleNewServicePrice}
+                            value= {newService.price}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={newServiceFormCommit}>{t("add")}</Button>
+                          <Button onClick={closeAddServiceDialog}>{t("cancel")}</Button>
+                        </DialogActions>
+                      </Dialog>
+                    <Grid item xs={12} sm={3} md={3} sx={{mr:1}}>
                         <TextField
                             label={t("service")}
                             value={appo.service}
@@ -375,7 +378,8 @@ export default function AddAppointmentForm(props) {
                           })}
                          
                         </TextField>
-                        
+                    </Grid>
+                    <Grid item xs={12} sm={2} md={2} sx={{mr:1}}>  
                         <TextField
                           label={t("price")}
                           value={appo.price}
@@ -383,11 +387,13 @@ export default function AddAppointmentForm(props) {
                           sx = {{mr:2}}
                           fullWidth
                           onChange={handlePriceChange}
+                          helperText= {t("selectaprice")}
                           InputProps={{
                             startAdornment: <InputAdornment position="start">€</InputAdornment>,
                           }}
                         />
-
+                    </Grid>
+                    <Grid item xs={12} sm={4} md={4} >
                         <TextField
                           label={t("paid")}
                           value={appo.paid}
@@ -395,17 +401,16 @@ export default function AddAppointmentForm(props) {
                           sx = {{mr:2}}
                           fullWidth
                           onChange={handlePaidChange}
+                          helperText= {t("amountpaid")}
                           InputProps={{
                             startAdornment: <InputAdornment position="start">€</InputAdornment>,
                             endAdornment: <InputAdornment position="end"><Button size="small">{t("printrecipe")}</Button></InputAdornment>
                           }}
                         />
-
-
-                    </Box>
-                  </Box>
-                </Card>
-              </Grid>
+                    </Grid>
+                  </Grid>
+                </Paper>
+              
 
                 {/* NOTAS */}
 

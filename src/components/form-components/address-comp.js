@@ -2,7 +2,7 @@ import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
-import { Autocomplete, Box } from '@mui/material';
+import { Autocomplete, Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_city_Commit, nc_countryPhoneCode_Commit, nc_country_Commit, nc_postalCode_Commit, nc_state_Commit, nc_streetaddress_Commit } from '../../slices/newCustomer-slice';
 import { countries} from '../../utils/dataFetch-utils'
@@ -86,12 +86,13 @@ export const AddressForm = (props) =>{
                     />
                 </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
+               <Grid container>
+               <Grid item xs={12} sm={3.5} md={3.5} sx={{mt:2, mr:0.5}}>
                 <TextField
                     id="city"
                     name="city"
                     label={t("cityortown")}
-                    helperText={t("enteryour") + t("cityortown")}
+                    helperText={t("enteryourFEM")+ " " + t("cityortown")}
                     variant="standard"
                     fullWidth
                     focused
@@ -100,12 +101,13 @@ export const AddressForm = (props) =>{
                     onChange={handleChangeCity}
                     
                     />
-             
+                 </Grid>
+                <Grid item xs={12} sm={3} md={3} sx={{mt:2,mr:0.5}}>
                 <TextField
                     id="state"
                     name="state"
                     label={t("state")}
-                    helperText={t("enteryour")+" "+t("state")}
+                    helperText={t("enteryourFEM")+" "+t("state")}
                     variant="standard"
                     fullWidth
                     focused
@@ -114,7 +116,8 @@ export const AddressForm = (props) =>{
                     onChange={handleChangeState}
                     
                     />
-              
+                  </Grid>
+                <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:0.5}}>
                 <TextField
                     id="postalCode"
                     name="postalCode"
@@ -128,7 +131,8 @@ export const AddressForm = (props) =>{
                     onChange={handleChangePostalCode}
                     
                     />
-              
+                  </Grid>
+                <Grid item xs={12} sm={3} md={3} sx={{mt:2}}>
                 <Autocomplete
                     id="country"
                     fullWidth
@@ -166,7 +170,8 @@ export const AddressForm = (props) =>{
                         />
                     )}
                     />
-                </Box>
+                  </Grid>
+               </Grid>
               </Box>
 
               </Card>

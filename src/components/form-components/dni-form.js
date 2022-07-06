@@ -1,12 +1,12 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
 import { useTranslation } from 'react-i18next';
-import Card from '@mui/material/Card';
-import { Box } from '@mui/material';
+import { Alert, Grid, Paper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_dni_Commit } from '../../slices/newCustomer-slice';
 import configData from "../../assets/data/config-data.json"
 import { locale } from 'moment';
+import { validateDNI } from '../../utils/verification-utils';
 
 
 const localization = configData[0].user[0].locales;
@@ -22,6 +22,7 @@ export const DniForm = (props) =>{
 
     const dispatch = useDispatch();
     const [dniFrmData, setDniFrmData] = React.useState(InitData);
+    const [validated, setValidated] = React.useState(false);
 
 
     React.useEffect (()=>{
@@ -41,30 +42,34 @@ export const DniForm = (props) =>{
     const handleChangeDNI = (event) => {
         setDniFrmData({...dniFrmData, "dni": event.target.value})
         dispatch(nc_dni_Commit(event.target.value))
+        setValidated(validateDNI(event.target.value))
     
       };
 
     return (
         <React.Fragment>
-            <Card sx={{ display: 'flex',  width: '100%'  }}>
-            <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+            <Paper>
+                <Grid container sx={{m:2}}>
+                    <Grid xs={11} sm={11} md={11} item sx={{mr:2}}>
                     <TextField
                       id="dni"
                       name='dni'
                       label={t("dni")}
-                      helperText={t("enteravalidId")}
                       variant="standard"
                       fullWidth
                       focused
                       value={dniFrmData.dni}
                       onChange={handleChangeDNI}
                       required
-                      sx = {{mr:2}}
+                      sx={{mr:2}}
                       />
-                </Box>
-            </Box> 
-            </Card>
+                    </Grid>
+                    <Grid xs={11} sm={11} md={11} item sx={{mt:2, mb:2}}>
+                    {validated?<Alert severity='success'>{t("correctDNI")}</Alert>:<Alert severity='error'>{t("enteravalidId")}</Alert>}
+                    </Grid>
+                </Grid>
+               
+            </Paper>
         
         </React.Fragment>
 

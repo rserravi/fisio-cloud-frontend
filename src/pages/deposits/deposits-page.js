@@ -17,13 +17,25 @@ import Income from '../../components/form-components/income-comp';
 import Loses from '../../components/form-components/loses-comp';
 
 
-
-const mdTheme = createTheme();
-
 function DepositContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const { t } = useTranslation();
+
+  const [width, setWidth] = React.useState(Number(window.innerWidth));
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+    }
+  React.useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
+  const isMobile = width <= 768;
+  const mdTheme = createTheme();
 
   
   return (
@@ -49,8 +61,8 @@ function DepositContent() {
           
             <Container sx={{ mt: 4, mb: 4 }}>
 
-            <Grid container spacing={2}>
-             <Grid item xs={3}>
+            <Grid container spacing={2} >
+             <Grid item xs={12} sm={3} md={3}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   <Deposits month={true} />
                 </Paper>
@@ -64,7 +76,7 @@ function DepositContent() {
                   <Deposits always={true}  />
                 </Paper>
               </Grid>
-              <Grid item xs={9}>
+              <Grid item xs={12} sm={9} md={9}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
                   <Income />
                 </Paper>

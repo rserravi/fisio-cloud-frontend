@@ -44,6 +44,7 @@ import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 const drawerWidth = 240;
 
 
+
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
     '& .MuiDrawer-paper': {
@@ -61,7 +62,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
           easing: theme.transitions.easing.sharp,
           duration: theme.transitions.duration.leavingScreen,
         }),
-        width: theme.spacing(7),
+        width: theme.spacing(8),
         [theme.breakpoints.up('sm')]: {
           width: theme.spacing(9),
         },
@@ -75,13 +76,31 @@ function SideMenu(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const [width, setWidth] = React.useState(Number(window.innerWidth));
+
+  function handleWindowSizeChange() {
+    setWidth(window.innerWidth);
+    }
+  React.useEffect(() => {
+        window.addEventListener('resize', handleWindowSizeChange);
+        return () => {
+            window.removeEventListener('resize', handleWindowSizeChange);
+        }
+    }, []);
+
+  const isMobile = width <= 768;
   
-  const {screen, drawerOpen, customerOpen, appointmentsOpen, communicationsOpen} = boardState.boardState;
-  let actualScreen = screen;
+  const {showMenu, drawerOpen, customerOpen, appointmentsOpen, communicationsOpen} = boardState.boardState;
+  //let actualScreen = screen;
   let open = drawerOpen;
   let expandClients = customerOpen;
   let expandCal  =appointmentsOpen;
   let expandCom = communicationsOpen;
+
+  if (isMobile){
+    open = false;
+    dispatch(navigationDrawer(false))
+  }
 
 
   const { t } = useTranslation();
@@ -93,8 +112,10 @@ function SideMenu(boardState) {
   }
 
   const toggleDrawer = () => {
+    if (!isMobile){
     open = !open;
     dispatch(navigationDrawer(open));
+    }
      
   };
 
@@ -152,7 +173,7 @@ function SideMenu(boardState) {
     goTo("/communications")
   }
  
- 
+  if(showMenu){
   return (
         <Drawer variant="permanent" open={open}>
           <Toolbar
@@ -304,7 +325,10 @@ function SideMenu(boardState) {
           </List>
         </Drawer>
         
-  );
+  );}
+  else {
+    return <></>
+  }
 }
 
 export default SideMenu;

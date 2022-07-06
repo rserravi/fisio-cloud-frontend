@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import Card from '@mui/material/Card';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
@@ -52,17 +52,18 @@ export const LocAndRoleForm = (props) =>{
         <React.Fragment>
             <Card sx={{ display: 'flex',  width: '100%'  }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%' }}>
-                    <FormControl variant="standard" sx={{  minWidth: 120, mr:2, width:300, 
-                        display: "flex",
+                <Grid container>
+                <Grid item xs={12} sm={6} md={6} sx={{mt:2, mr:1}} >
+                    <FormControl variant="standard" fullWidth sx={{ minWidth: 120,                         display: "flex",
                         flexDirection: "row",
                         alignItems: "left" }}>
-                    <InputLabel sx={{mr:2}} id="language">{t("language")}</InputLabel>
+                    <InputLabel fullWidth sx={{mr:2}} id="language">{t("language")}</InputLabel>
                         <Select
                             labelId="language"
                             id="language"
                             value={locAndRoleFrmData.locale}
                             onChange={handleLocaleChange}
+                            fullWidth
                             label={t("language")}
                             >
                                 {configData[0].languages.map((option) => (
@@ -72,24 +73,28 @@ export const LocAndRoleForm = (props) =>{
                                 ))}
                         </Select>
                         </FormControl>
-                    <FormControl variant="standard"sx={{  minWidth: 120, mr:2, width:300,
+                    </Grid>
+                    <Grid item xs={12} sm={5} md={5} sx={{mt:2}} >
+                    <FormControl fullWidth variant="standard"sx={{  minWidth: 120, 
                          display: "flex",
                          flexDirection: "row",
                          alignItems: "left"}}>
-                    <InputLabel sx={{mr:2}} id="role">{t("role")}</InputLabel>
+                    <InputLabel id="role">{t("role")}</InputLabel>
                         <Select
                             labelId="role"
                             id="role"
                             value={locAndRoleFrmData.role}
                             onChange={handleRoleChange}
                             label={t("role")}
+                            fullWidth
                             >
                             <MenuItem value={"admin"}>{t("admin")}</MenuItem>
                             <MenuItem value={"user"}>{t("user")}</MenuItem>
                             <MenuItem value={"other"}>{t("other")}</MenuItem>
                         </Select>
                         </FormControl>
-                 </Box>
+                    </Grid>
+                    </Grid>
                 </Box> 
             </Card>
         

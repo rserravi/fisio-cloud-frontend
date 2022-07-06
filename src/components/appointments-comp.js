@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 //MUI IMPORTS
-import { Button, IconButton, Toolbar } from '@mui/material';
+import { Button, Grid, IconButton, Toolbar } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import Box from '@mui/material/Box';
@@ -486,16 +486,20 @@ const RenderDateCell = (props) =>{
     else {
     return (
       <React.Fragment>
-        <Box sx={{ flexGrow: 1 }}>
-          <Toolbar variant='regular'>   
-            <ButtonGroup variant="contained" aria-label="outlined primary button group">
+        <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" sx={{mb:4}}>
+            <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
               <Button variant='contained' size="small" onClick={AddAppoButton} startIcon={<ScheduleIcon />}>{t("addappointment")} </Button>
+            </Grid>
+            <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
               <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>{t("print")} {select.length===0 ? t("everyone") : t("selection")}</Button>
+            </Grid>
+            <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
               <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>{t("mailto")} {select.length===0 ? t("everyone") : t("selection")} </Button>
+            </Grid>
+            <Grid item xs={6} sm={3} md={3}sx={{mt:2}}>
               <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>{t("whatsappto")} {select.length===0 ? t("everyone") : t("selection")} </Button>
-            </ButtonGroup>
-          </Toolbar>
-        </Box>
+            </Grid>         
+        </Grid>
       </React.Fragment>
     )
     }

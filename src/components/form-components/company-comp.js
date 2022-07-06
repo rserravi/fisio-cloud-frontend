@@ -81,7 +81,8 @@ export default function CompanyForm() {
                 <Card sx={{ display: 'flex',  width: '100%'  }}>
                 
                     <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+                        <Grid container >
+                          <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}} >
                             <TextField
                             id="companyName"
                             name='name'
@@ -95,6 +96,8 @@ export default function CompanyForm() {
                             required
                             sx = {{mr:2}}
                             />
+                         </Grid>
+                         <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
                             <TextField
                             id="nifCif"
                             name='nifCif'
@@ -108,6 +111,8 @@ export default function CompanyForm() {
                             required
                             sx = {{mr:2}}
                             />
+                        </Grid>
+                         <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
                              <TextField
                             id="type"
                             name='type'
@@ -121,12 +126,13 @@ export default function CompanyForm() {
                             required
                             sx = {{mr:2}}
                             />
-                        </Box>
+                         </Grid>
+                        </Grid>
                     </Box> 
                 </Card>
              </Grid>
             {/*  image CARD */}
-            <Grid item xs={12} md={2} sm={2} marginTop={3}>
+            <Grid item xs={12} md={2} sm={12} marginTop={3}>
                 <Paper>
                     <ButtonBase height="160" width="160">   
                         <img width={155} height={155} src={companyFrmDt.logo} alt="Upload"></img>
@@ -152,7 +158,8 @@ export default function CompanyForm() {
             <Grid item xs={12} md={12} sm={12} marginTop={0.5}>
                 <Card sx={{ display: 'flex',  width: '100%'  }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+                        <Grid container>
+                          <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:2}}>
                             <TextField
                             id="emailhome"
                             name='emailhome'
@@ -166,6 +173,8 @@ export default function CompanyForm() {
                             focused
                             sx = {{mr:2}}
                             />
+                            </Grid>
+                             <Grid item xs={12} sm={5} md={5} sx={{mt:2}}>
                             <TextField
                             id="emailwork"
                             name="emailwork"
@@ -179,7 +188,8 @@ export default function CompanyForm() {
                             onChange={handleTextChange}
                             required
                             />
-                        </Box>
+                            </Grid>
+                        </Grid>
 
                         </Box> 
                     </Card>
@@ -190,7 +200,8 @@ export default function CompanyForm() {
             <Grid item xs={12} md={12} sm={12} marginTop={0.5}>
                 <Card sx={{ display: 'flex',  width: '100%'  }}>
                     <Box sx={{ display: 'flex', flexDirection: 'column', width:'100%', m:2 }}>
-                        <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%',  }}>
+                        <Grid container >
+                        <Grid item xs={12} sm={3} md={3}sx={{mt:2, mr:2}}>
                         <TextField
                             id="homephone"
                             name="homephone"
@@ -204,6 +215,8 @@ export default function CompanyForm() {
                             sx = {{mr:2}}
                             
                             />
+                            </Grid>
+                             <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:2}}>
                             <TextField
                             id="mobilephone"
                             name="mobilephone"
@@ -217,6 +230,8 @@ export default function CompanyForm() {
                             onChange={handleTextChange}
                             required
                             />
+                            </Grid>
+                             <Grid item xs={12} sm={5} md={5} sx={{mt:2, mr:2}}>
                             <TextField
                             id="whatsapp"
                             name="whatsapp"
@@ -233,7 +248,8 @@ export default function CompanyForm() {
                                 </InputAdornment>,
                             }}
                             />
-                        </Box>
+                        </Grid>
+                        </Grid>
 
                     </Box> 
                 </Card>
@@ -258,7 +274,9 @@ export default function CompanyForm() {
                     />
                 </Box>
 
-                <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
+                <Grid container>
+                <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
+
                 <TextField
                     id="city"
                     name="city"
@@ -272,6 +290,8 @@ export default function CompanyForm() {
                     onChange={handleTextChange}
                     
                     />
+                </Grid>
+                <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
              
                 <TextField
                     id="state"
@@ -286,7 +306,8 @@ export default function CompanyForm() {
                     onChange={handleTextChange}
                     
                     />
-              
+                  </Grid>
+                <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
                 <TextField
                     id="postalCode"
                     name="postalCode"
@@ -300,7 +321,8 @@ export default function CompanyForm() {
                     onChange={handleTextChange}
                     
                     />
-              
+                  </Grid>
+                <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
                 <Autocomplete
                     id="country"
                     fullWidth
@@ -337,7 +359,8 @@ export default function CompanyForm() {
                         />
                     )}
                     />
-                </Box>
+                    </Grid>
+                </Grid>
               </Box>
 
               </Card>

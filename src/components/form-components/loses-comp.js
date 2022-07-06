@@ -1,19 +1,16 @@
 import * as React from 'react';
-import Typography from '@mui/material/Typography';
 import Title from '../Title';
 import { useTranslation } from 'react-i18next';
-import { addMonthtoDate, formatDate, toLocalDate2, twoDigitsDateOptions } from '../../utils/date-utils';
-import { GetDepositsFromDate, GetDepositsArrayFromDate, getCustomer, getCustomerNameFromId } from '../../utils/dataFetch-utils';
+import { addMonthtoDate,  twoDigitsDateOptions } from '../../utils/date-utils';
+import { GetDepositsArrayFromDate, getCustomerNameFromId } from '../../utils/dataFetch-utils';
 import { Box } from '@mui/system';
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Button, Container, TextField, Tooltip } from '@mui/material';
+import { Button, Container, Grid, TextField, Tooltip } from '@mui/material';
 import { LocalTextForDataGrid } from '../../utils/mui-custom-utils';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { locale } from 'moment';
 import configData from "../../assets/data/config-data.json"
-
-
 
 //ICONS
 import EditIcon from '@mui/icons-material/Edit';
@@ -22,11 +19,6 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 
 const localization = configData[0].user[0].locales;
 locale(localization);
-
-
-function preventDefault(event) {
-  event.preventDefault();
-}
 
 const initData = [{
     id: "0",
@@ -53,7 +45,7 @@ export default function Loses() {
     const newInc = GetDepositsArrayFromDate(addMonthtoDate(today,-120),today, "pending")
     setloses(newInc);
 
-  },[])
+  },[today])
 
   const handlePeriodStart = (value) =>{
     setloses(GetDepositsArrayFromDate(new Date(value),new Date(loses[0].periodEnd), "paid"))
@@ -161,7 +153,9 @@ export default function Loses() {
     <React.Fragment>
       <Title>{t("loses")}</Title>
       <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-       <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
+      <Grid container >
+        <Grid item xs={12} sm={4} md={4}>
+          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
             <DatePicker
                 label={t("periodStart")}
                 value={loses[0] && loses[0].periodStart? loses[0].periodStart: new Date("15/01/20").toDateString()}
@@ -171,6 +165,10 @@ export default function Loses() {
                 onChange={handlePeriodStart}
                 renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
             />
+            </LocalizationProvider>
+          </Grid>
+          <Grid item xs={12} sm={4} md={4}>
+          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
             <DatePicker
                 label={t("periodEnd")}
                 inputFormat="DD/MM/yyyy"
@@ -180,10 +178,15 @@ export default function Loses() {
                 onChange={handlePeriodEnd}
                 renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
             />
-        </LocalizationProvider>
-        <Button onClick={alwaysClick} variant='outlined'sx={{mr:1}}>{t("always")}</Button>
-        <Button onClick={lastYearClick} variant='outlined'sx={{mr:1}}>{t("last")} {t("year")}</Button>
-        
+          </LocalizationProvider>
+          </Grid>
+          <Grid item xs={6} sm={2} md={2} sx={{mt:2}}>
+            <Button onClick={alwaysClick} variant='outlined'sx={{mr:1}}>{t("always")}</Button>
+          </Grid>
+          <Grid item xs={6} sm={2} md={2} sx={{mt:2}}>
+            <Button onClick={lastYearClick} variant='outlined'sx={{mr:1}}>{t("last")} {t("year")}</Button>
+          </Grid>
+      </Grid>
     </Box>
     <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2  }}>
     <Container sx={{height:320}}>

@@ -151,7 +151,7 @@ export default function CustomerCard(props) {
     const dispatch = useDispatch();
     
     var compact = false;
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const [historyExpanded, setHistoryExpanded] = React.useState(true);
     const [appointmentsExpanded, setAppointmentsExpanded] = React.useState(true);
