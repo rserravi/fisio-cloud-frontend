@@ -1,6 +1,8 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
+import { useTranslation } from 'react-i18next';
+
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -9,6 +11,20 @@ export const getCustomer = (_id) =>{
         if (customerData[key].id === _id){
             found = customerData[key];
             break
+        }
+    }
+    return found;
+}
+
+export const getCustomerMailFromId=(_id)=>{
+  let found = "";
+    for (let key in customerData){
+        if (customerData[key].email){
+          for (let emailKey  in customerData[key].email){
+            if(customerData[key].email[emailKey])
+              found = customerData[key].email[emailKey].emailAddress;
+              return found;
+          }
         }
     }
     return found;
@@ -41,9 +57,56 @@ export const getCompanyData = ()=>{
   return (data);
 }
 
+export const GetCommunications = (props)=>{
+  var jsonObj = [];
+  var newIdCount =0;
+  if (!props){
+    for (let key in customerData){
+      if (customerData[key].contacthistory){
+        for (let histoKey in customerData[key].contacthistory){
+          newIdCount = newIdCount + 1;
+          var item = {};
+          item["id"]= newIdCount;
+          item["customerId"]= customerData[key].id;
+          item["userId"]= customerData[key].contacthistory[histoKey].user;
+          item["direction"]= customerData[key].contacthistory[histoKey].direction;
+          item["communicationId"]= customerData[key].contacthistory[histoKey].id;
+          item["date"] = customerData[key].contacthistory[histoKey].date;
+          item["type"] =  customerData[key].contacthistory[histoKey].type;
+          item["duration"] = customerData[key].contacthistory[histoKey].duration;
+          item["subject"] =  customerData[key].contacthistory[histoKey].subject;
+          item["notes"] =customerData[key].contacthistory[histoKey].notes;
+          item["follow"] =customerData[key].contacthistory[histoKey].follow;
+          item["thread"] = customerData[key].contacthistory[histoKey].thread;
+          
+          jsonObj.push(item)
+        }
+      }
+    }
+  }
+  return jsonObj;
+}
+
 export const getUserList = (props) =>{
   return configData[0].user
 
+}
+
+export const getUserById = (_id) =>{
+  let found = null;
+  for (let key in configData[0].user){
+    
+      if (Number(configData[0].user[key].id) === Number(_id)){
+          found = configData[0].user[key]
+          break
+      }
+  }
+  if (found){
+  return found.firstname + " " + found.lastname;
+  }
+  else {
+    return("error");
+  }
 }
 
 export const getNewUsersId = ()=>{
@@ -204,6 +267,7 @@ export const GetAppointments = ()=>{
                 var startingTime = customerData[userKey].appointments[appoKey].startingTime;
                 var duration = customerData[userKey].appointments[appoKey].duration;
                 var service = customerData[userKey].appointments[appoKey].service;
+                var cabin = customerData[userKey].appointments[appoKey].cabin;
                 var price = customerData[userKey].appointments[appoKey].price;
                 var paid = customerData[userKey].appointments[appoKey].paid;
                 var status = customerData[userKey].appointments[appoKey].status;
@@ -218,6 +282,7 @@ export const GetAppointments = ()=>{
                 item["startingTime"] = startingTime;
                 item["duration"] = duration;
                 item["service"] = service;
+                item["cabin"]= cabin;
                 item["price"] = price;
                 item["paid"] = paid;
                 item["status"] = status;
@@ -243,6 +308,7 @@ export const GetAppointmentById = (props) =>{
                 item["date"] =  customerData[userKey].appointments[appoKey].date;
                 item["duration"] = customerData[userKey].appointments[appoKey].duration;
                 item["service"] =  customerData[userKey].appointments[appoKey].service;
+                item["cabin"]=   customerData[userKey].appointments[appoKey].cabin;
                 item["price"] =customerData[userKey].appointments[appoKey].price;
                 item["paid"] =customerData[userKey].appointments[appoKey].paid;
                 item["status"] = customerData[userKey].appointments[appoKey].status;
@@ -386,6 +452,94 @@ export const GetDebtsToDate = (endDate) =>{
 
 export const GetAllData = () =>{
   return customerData;
+}
+
+export const GetCabins = () =>{
+  return configData[0].cabins
+}
+
+export const GetCabinNameById =(_id)=>{
+  const data = configData[0].cabins;
+  let found = null;
+    for (let key in data){
+        if (Number(data[key].id) === Number(_id)){
+            found = data[key].localization;
+            break
+        }
+    }
+    return found +"";
+}
+
+export const GetSenderName = (customerId, userId, direction) =>{
+  switch (direction) {
+      case "send":
+          return getCustomerNameFromId(customerId);
+      case "receive":
+          return getUserById(userId); 
+  
+      default:
+          break;
+  }
+}
+
+export const GetReceiverName = (customerId, userId, direction) =>{
+
+  switch (direction) {
+      case "receive":
+          return getCustomerNameFromId(customerId);
+      case "send":
+          return getUserById(userId); 
+      default:
+          break;
+  }
+}
+
+export const GetLocales = ()=>{
+  return configData[0].user[0].locales;
+}
+
+export const GetRowById = (row,_id)=>{
+  var found = {}
+  for (let key in row){
+    if (Number(row[key].id) === Number(_id)){
+        found = row[key];
+        break
+    }
+}
+return found;
+}
+
+export const GetThread = (data)=>{
+  const customerID = data.customerId;
+  const thread = data.thread;
+  var jsonObj = [];
+  for (let key in customerData){
+    if (Number(customerData[key].id) === Number(customerID)){
+      for (let commKey in customerData[key].contacthistory){
+        if (Number(customerData[key].contacthistory[commKey].thread) === Number(thread)){
+          var item = {};
+          item["id"]= customerData[key].contacthistory[commKey].id
+          item["senderName"] = GetSenderName(customerData[key].id,  customerData[key].contacthistory[commKey].user, customerData[key].contacthistory[commKey].direction);
+          item["receiverName"] =  GetReceiverName( customerData[key].id,  customerData[key].contacthistory[commKey].user,  customerData[key].contacthistory[commKey].direction);
+          item["customerId"] = customerData[key].id
+          item["userId"] =  customerData[key].contacthistory[commKey].user
+          item["communicationId"] =customerData[key].contacthistory[commKey].id
+          item["direction"] =customerData[key].contacthistory[commKey].direction;
+          item["date"] = customerData[key].contacthistory[commKey].date;
+          item["type"] = customerData[key].contacthistory[commKey].type;
+          item["duration"] = customerData[key].contacthistory[commKey].duration;
+          item["subject"] =customerData[key].contacthistory[commKey].subject;
+          item["notes"] = customerData[key].contacthistory[commKey].notes;
+          item["follow"] = customerData[key].contacthistory[commKey].follow;
+          item["alertfollow"]= customerData[key].contacthistory[commKey].alertfollow;
+          item["thread"] =  customerData[key].contacthistory[commKey].thread;
+          
+          jsonObj.push(item)
+        }
+      }
+    }
+  }
+  return jsonObj.reverse();
 }
 
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js

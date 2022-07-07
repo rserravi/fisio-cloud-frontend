@@ -4,29 +4,28 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-
 import { useTranslation } from 'react-i18next';
-import SetupForm from '../../components/setup-comp';
+import { CommunicationsComponent } from '../../components/communications-comp';
+
 
 const mdTheme = createTheme();
 
-function SetupContent() {
+function CommunicactionsContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const { t } = useTranslation();
 
-  
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("usersetup")} />
+        <ApplicationBar boardState={boardState} title={t("communications")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -48,7 +47,7 @@ function SetupContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <SetupForm />
+                  <CommunicationsComponent compact={false}/>
                 </Paper>
               </Grid>
             </Grid>
@@ -60,10 +59,8 @@ function SetupContent() {
       </Box>
     </ThemeProvider>
   );
-  
-
 }
 
-export default function Setup() {
-  return <SetupContent />;
+export default function Communications() {
+  return <CommunicactionsContent />;
 }

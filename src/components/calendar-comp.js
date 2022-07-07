@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { locale } from 'moment';
-import { GetAppointmentsCalendarFormat, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
+import { GetAppointmentsCalendarFormat, GetCabins, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 
 import configData from "../assets/data/config-data.json"
@@ -31,6 +31,7 @@ var initValidation={
   date: new Date(Date.now()),
   duration: "60", 
   service: "Masaje",
+  cabin:"3",
   price:"0",
   paid:"0",
   status:"pending",
@@ -55,6 +56,7 @@ export default function CalendarComp(props) {
   const [eventStart, setEventStart] = React.useState("00:00");
   const [appo, setAppo] = React.useState(initValidation);
   const services = getServices();
+  const cabins = GetCabins();
 
   
 
@@ -126,6 +128,10 @@ export default function CalendarComp(props) {
 
   const handleServicesChange= (event)=>{
     setAppo({...appo, "service": event.target.value,"price": getPriceForService(event.target.value) })
+  }
+
+  const handleCabinChange= (event)=>{
+    setAppo({...appo, "cabin": event.target.value })
   }
 
   const handleWriteReport= (event)=>{
@@ -300,35 +306,51 @@ export default function CalendarComp(props) {
                 onChange={handleDurationChange}
             />
             <TextField
-                            label={t("service")}
-                            value={appo.service}
-                            variant="standard"
-                            sx = {{mr:2, textAlign:'left'}}
-                            fullWidth
-                            select
-                            helperText= {t("pleaseselectaserviceoraddnew")}
-                            onChange={handleServicesChange}
-                        >
-                          {services.map((option) =>{ return (
-                            <MenuItem key={option.id} value={option.serviceName}>
-                              {option.serviceName}
-                            </MenuItem>
-                            )
-                          })}
-                         
-                        </TextField>
-                        
-                        <TextField
-                          label={t("price")}
-                          value={appo.price}
-                          variant="standard"
-                          sx = {{mr:2}}
-                          fullWidth
-                          onChange={handlePriceChange}
-                          InputProps={{
-                            startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                          }}
-                        />
+                label={t("service")}
+                value={appo.service}
+                variant="standard"
+                sx = {{mr:2, mt:2, textAlign:'left'}}
+                
+                select
+                helperText= {t("pleaseselectaserviceoraddnew")}
+                onChange={handleServicesChange}
+            >
+              {services.map((option) =>{ return (
+                <MenuItem key={option.id} value={option.serviceName}>
+                  {option.serviceName}
+                </MenuItem>
+                )
+              })}
+            </TextField>
+            <TextField
+                label={t("cabin")}
+                value={appo.cabin}
+                variant="standard"
+                sx = {{mr:2, mt:2, textAlign:'left'}}
+                
+                select
+                helperText= {t("selectacabin")}
+                onChange={handleCabinChange}
+            >
+              {cabins.map((option) =>{ return (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.localization}
+                </MenuItem>
+                )
+              })}
+            </TextField>
+            
+            <TextField
+              label={t("price")}
+              value={appo.price}
+              variant="standard"
+              sx = {{mr:2, mt:2, mb:1}}
+              
+              onChange={handlePriceChange}
+              InputProps={{
+                startAdornment: <InputAdornment position="start">€</InputAdornment>,
+              }}
+            />
           <CustomerSearchBar customerFunc={SetCustomer}></CustomerSearchBar>
           
         </DialogContentText>

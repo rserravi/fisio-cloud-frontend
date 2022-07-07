@@ -321,7 +321,16 @@
     "selectaprice": "Sel·lecioni un preu",
     "amountpaid":"Quantitat pagada",
     "enteryourFEM":"Entra la teva",
-    "correctDNI":"DNI Correcte"
+    "correctDNI":"DNI Correcte",
+    "lastlogin":"Última connexió",
+    "cabin":"Consultori",
+    "selectacabin":"Sel·lecciona un consultori",
+    "subject":"assumpte",
+    "sendat":"enviat el",
+    "answer":"respondre",
+    "nextaction":"Següent acció",
+    "follow":"Segueix",
+    "newaction":"Nova Acció"
 
 
 }

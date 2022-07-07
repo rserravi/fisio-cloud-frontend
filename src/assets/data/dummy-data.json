@@ -61,6 +61,7 @@
                 "date": "2019-04-02T17:30:00.000Z",
                 "duration": "60",
                 "service": "Masaje",
+                "cabin":"1",
                 "price":"50",
                 "paid":"50",
                 "status":"paid",
@@ -77,6 +78,7 @@
                 "date": "2022-01-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"1",
                 "price":"50",
                 "paid":"0",
                 "status":"pending",
@@ -92,6 +94,7 @@
                 "date": "2020-04-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"2",
                 "price":"50",
                 "paid":"0",
                 "status":"pending",
@@ -107,6 +110,7 @@
                 "date": "2022-04-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"3",
                 "price":"50",
                 "paid":"50",
                 "status":"paid",
@@ -122,6 +126,7 @@
                 "date": "2022-06-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"1",
                 "price":"50",
                 "paid":"50",
                 "status":"paid",
@@ -139,6 +144,7 @@
                 "startingTime": "17:00",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"3",
                 "price":"50",
                 "status":"pending",
                 "closed":"",
@@ -161,6 +167,7 @@
                 "startingTime": "10:00",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"2",
                 "price":"50",
                 "status":"pending",
                 "closed":"",
@@ -178,12 +185,16 @@
         "contacthistory":[
             {
                 "id":"1",
-                "date": "14-2-2018",
+                "user":"1",
+                "direction":"send",
+                "date": "2018-02-12T17:30:00.000Z",
                 "type": "email",
                 "duration": "50",
                 "subject": "Información",
                 "notes": "Preguntó por horarios. Debo devolver la llamada cuanto antes.",
-                "follow": "nothing"
+                "follow": "call",
+                "alertfollow": "2018-03-13T16:30:00.000Z",
+                "thread":"1"
             }
         ]
     },
@@ -243,6 +254,7 @@
                 "date": "2020-09-20T11:00:00.000Z",     
                 "duration": "60",
                 "service": "Masaje",
+                "cabin":"1",
                 "price":"50",
                 "paid":"50",
                 "status":"paid",
@@ -257,6 +269,7 @@
                 "date": "2020-11-02T17:30:00.000Z",
                 "duration": "60",
                 "service": "Masaje",
+                "cabin":"3",
                 "price":"50",
                 "paid":"50",
                 "status":"paid",
@@ -274,6 +287,7 @@
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"2",
                 "price":"50",
                 "paid":"0",
                 "status":"pending",
@@ -289,6 +303,7 @@
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "Masaje",
+                "cabin":"2",
                 "price":"50",
                 "paid":"0",
                 "status":"pending",
@@ -307,12 +322,30 @@
         "contacthistory":[
             {
                 "id":"1",
-                "date": "14-2-2018",
+                "date": "2018-02-14T17:30:00.000Z",
+                "user":"1",
+                "direction":"send",
                 "type": "call",
                 "duration": "80",
                 "subject": "Información",
-                "notes": "Preguntó por horarios pero no le iba bien"
-            }
+                "notes": "Preguntó por horarios pero no le iba bien",
+                "follow": "call",
+                "alertfollow": "2018-03-13T16:30:00.000Z",
+                "thread":"1"
+            },
+            {
+                "id":"2",
+                "user":"1",
+                "direction":"receive",
+                "date": "2018-02-15T17:30:00.000Z",
+                "type": "call",
+                "duration": "20",
+                "subject": "Contestación",
+                "notes": "Informado sobre horarios:si no llama le envio un recordatorio en un més",
+                "follow": "mail",
+                "alertfollow":"2018-03-14T16:30:00.000Z",
+                "thread":"1"
+            }        
         ]
     },
     {
@@ -371,12 +404,16 @@
         "contacthistory":[
             {   
                 "id":"1",
-                "date": "14-2-2018",
+                "user":"1",
+                "direction":"send",
+                "date": "2022-02-13T17:30:00.000Z",
                 "type": "call",
-                "duration": "80",
+                "duration": "10",
                 "subject": "Información",
-                "notes": "Preguntó por horarios pero no le iba bien",
-                "follow": "incalendar"
+                "notes": "Pregunta donde estamos",
+                "follow": "mail",
+                "alertfollow": "2022-05-13T16:30:00.000Z",
+                "thread":"1"
             }
         ]
     },
@@ -436,12 +473,16 @@
         "contacthistory":[
             {
                 "id": "1",
-                "date": "14-2-2018",
+                "user":"1",
+                "direction":"send",
+                "date": "2021-07-10T17:30:00.000Z",
                 "type": "call",
-                "duration": "80",
+                "duration": "5",
                 "subject": "Información",
                 "notes": "Preguntó por horarios pero no le iba bien",
-                "follow": "incalendar"
+                "follow": "",
+                "alertfollow": "",
+                "thread":"1"
             }
         ]
     },
@@ -501,12 +542,16 @@
         "contacthistory":[
             {
                 "id": "1",
-                "date": "14-2-2018",
+                "user":"1",
+                "direction":"send",
+                "date": "2022-05-11T11:30:00.000Z",
                 "type": "call",
                 "duration": "80",
                 "subject": "Información",
-                "notes": "Preguntó por horarios pero no le iba bien",
-                "follow": "incalendar"
+                "notes": "Preguntó por horarios. Ya se pasará",
+                "follow": "call",
+                "alertfollow": "2022-05-13T16:30:00.000Z",
+                "thread":"1"
             }
         ]
     },
@@ -566,12 +611,55 @@
         "contacthistory":[
             {
                 "id": "1",
-                "date": "14-2-2018",
+                "user":"1",
+                "direction":"send",
+                "date": "2021-10-02T17:30:00.000Z",
                 "type": "call",
                 "duration": "80",
                 "subject": "Información",
-                "notes": "Preguntó por horarios pero no le iba bien",
-                "follow": "incalendar"
+                "notes": "Preocupada por la mascarilla",
+                "follow": "",
+                "alertfollow": "",
+                "thread":"1"
+            },
+            {
+                "id": "2",
+                "user":"1",
+                "direction":"receive",
+                "date": "2021-10-05T20:30:00.000Z",
+                "type": "email",
+                "duration": "0",
+                "subject": "Respuesta",
+                "notes": "Detallamos medidas que usamos, y parace convencida",
+                "follow": "",
+                "alertfollow": "",
+                "thread":"1"
+            },
+            {
+                "id": "3",
+                "user":"1",
+                "direction":"send",
+                "date":"2022-04-15T11:30:00.000Z",
+                "type": "email",
+                "duration": "0",
+                "subject": "reserva",
+                "notes": "Pregunta si puede reservar cita, concedida.",
+                "follow": "",
+                "alertfollow": "",
+                "thread":"1"
+            },
+            {
+                "id": "4",
+                "user":"1",
+                "direction":"send",
+                "date": "2022-05-15T17:30:00.000Z",
+                "type": "call",
+                "duration": "5",
+                "subject": "Cancelación",
+                "notes": "Cancelación de cita",
+                "follow": "email",
+                "alertfollow": "2022-08-13T16:30:00.000Z",
+                "thread":"1"
             }
         ]
     }

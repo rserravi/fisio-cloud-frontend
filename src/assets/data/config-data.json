@@ -210,7 +210,20 @@
                 "id":2,
                 "role":"User"
             }
-        ]
-        
+        ],
+        "cabins":[
+            {
+                "id":1,
+                "localization":"Sala 1"
+            },
+            {
+                "id":2,
+                "localization":"Sala 2"
+            },
+            {
+                "id":3,
+                "localization":"Visita"
+            }
+        ]    
     }
 ]

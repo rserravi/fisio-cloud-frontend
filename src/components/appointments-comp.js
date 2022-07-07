@@ -7,8 +7,6 @@ import { useNavigate } from 'react-router-dom';
 //MUI IMPORTS
 import { Button, Grid, IconButton, Toolbar } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -18,7 +16,7 @@ import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
-import { GetAppointments } from '../utils/dataFetch-utils';
+import { GetAppointments, GetCabinNameById } from '../utils/dataFetch-utils';
 import { getDateFromISOTime, getTimeFromISOTime, getWeekInYear, timeDifference } from '../utils/date-utils';
 
 
@@ -271,6 +269,7 @@ const RenderDateCell = (props) =>{
     startingTime: getTimeFromISOTime(row.date) + " h.",
     duration: row.duration +" m.",
     service: row.service,
+    cabin: GetCabinNameById(row.cabin),
     price: row.price + "€",
     status: row.status,
     closed: row.closed,
@@ -334,7 +333,7 @@ const RenderDateCell = (props) =>{
         { field: 'service', headerName: t("Service"), width: 80
        },
         { field: 'price', headerName: t("Price"), width: 80 },
-        { field: 'notes', headerName: t("Notes"), width: 75 },
+        { field: 'cabin', headerName: t("cabin"), width: 75 },
         {
           field: 'actions',
           type: 'actions',

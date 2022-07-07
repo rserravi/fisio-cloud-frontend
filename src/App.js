@@ -15,6 +15,7 @@ import AddAppointment from './pages/appointments/add-appointment-page';
 import DepositsPage from './pages/deposits/deposits-page';
 import UserSetup from './pages/userSetup/user-setup-page';
 import Setup from './pages/setup/setup-page';
+import Communications from './pages/communications/communications-page';
 
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
           <Route path='/addappointment/:tid' element={<AddAppointment />} />
           <Route path='/addappointment/:tid/:aid' element={<AddAppointment />} />
           <Route path='/deposits' element={<DepositsPage/>} /> 
+          <Route path='/communications' element={<Communications />} />
           <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
           <Route path='/setup' element={<Setup/>} />
           {/* 

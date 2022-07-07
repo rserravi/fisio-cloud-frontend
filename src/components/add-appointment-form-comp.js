@@ -4,7 +4,7 @@ import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, 
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { useDispatch } from 'react-redux';
-import { GetAllData, GetAppointmentById, getCustomer, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
+import { GetAllData, GetAppointmentById, GetCabins, getCustomer, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -28,12 +28,14 @@ export default function AddAppointmentForm(props) {
   // const _appoId = props.appoId
   
   const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "edit"
+  const cabinsData = GetCabins();
     
   var initValidation={
     id:"1",
     date: new Date(Date.now()),
     duration: "60", 
     service:"Masaje",
+    cabin:"3",
     price: "50",
     paid:"0",
     status: "pending",
@@ -130,6 +132,10 @@ export default function AddAppointmentForm(props) {
   
   const handleDurationChange= (event)=>{
     setAppo({...appo, "duration": event.target.value})
+  }
+
+  const handleCabinChange = (event)=>{
+    setAppo({...appo, "cabin": event.target.value})
   }
 
   const handlePriceChange = (event)=>{
@@ -279,7 +285,7 @@ export default function AddAppointmentForm(props) {
                   <Grid item xs={12} sm={1} md={1} sx={{mt:2, mr:1}}>
                     <Button fullWidth onClick={seeAppointment} variant="outlined" sx={{mr:2}}>{t("calendar")}</Button>
                   </Grid>
-                  <Grid item xs={12} sm={4} md={4} sx={{mt:2, mr:1}}>
+                  <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
                         <LocalizationProvider dateAdapter={AdapterMoment}>
                         <DatePicker
                             label={t("date")}
@@ -292,7 +298,7 @@ export default function AddAppointmentForm(props) {
                         />
                          </LocalizationProvider> 
                   </Grid>
-                  <Grid item xs={12} sm={4} md={4} sx={{mt:2, mr:1}}>
+                  <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                          <LocalizationProvider dateAdapter={AdapterMoment}>
                         <TimePicker
                           label={t("Time")}
@@ -305,7 +311,7 @@ export default function AddAppointmentForm(props) {
                         </LocalizationProvider>
                       
                     </Grid>
-                    <Grid item xs={12} sm={2} md={2} sx={{mt:2}}>
+                    <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                         <TextField
                             label={t("duration")}
                             value={appo.duration}
@@ -314,6 +320,24 @@ export default function AddAppointmentForm(props) {
                             sx = {{mr:2}}
                             onChange={handleDurationChange}
                         />
+                    </Grid>
+                    <Grid item xs={12} sm={3} md={3} sx={{mt:2}}>
+                        <TextField
+                            label={t("cabin")}
+                            value={appo.cabin}
+                            variant="standard"
+                            fullWidth
+                            sx = {{mr:2, textAlign:'left'}}
+                            select
+                            onChange={handleCabinChange}
+                        >
+                           {cabinsData.map((option) => (
+                                    <MenuItem key={option.id} value={option.id}>
+                                    {option.localization}
+                                    </MenuItem>
+                                ))}
+
+                        </TextField>
                     </Grid>
                  </Grid>
                 </Paper>
