@@ -330,7 +330,9 @@
     "answer":"respondre",
     "nextaction":"Següent acció",
     "follow":"Segueix",
-    "newaction":"Nova Acció"
+    "newaction":"Nova Acció",
+    "responsetocommunicationwith":"Responent missatge de",
+    "addingcommunicationto":"Enviant communicació a "
 
 
 }

@@ -1,9 +1,4 @@
 import PropTypes from 'prop-types';
-import { locale } from 'moment';
-import configData from "../assets/data/config-data.json"
-
-const localization = configData[0].user[0].locales;
-
 
 function padTo2Digits(num) {
     return num.toString().padStart(2, '0');
@@ -17,10 +12,10 @@ export function formatDate(date) {
     ].join('/');
   }
 
-export function toLocalDate2(date) {
-  locale(localization);
+export function toLocalDate2(date, locale) {
+  locale(locale);
   console.log (typeof(date));
-  const result = new Date(date).toLocaleDateString(localization);
+  const result = new Date(date).toLocaleDateString(locale);
   return result;
 }
 
@@ -31,16 +26,16 @@ export const timeDifference = (date) => {
    
 }
 
-export const getDateFromISOTime = (date) =>{
+export const getDateFromISOTime = (date, locale) =>{
   const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   const date1 = new Date (date);
-  const strDate = date1.toLocaleDateString(localization,options);
+  const strDate = date1.toLocaleDateString(locale,options);
   return strDate;
 }
 
-export const getTimeFromISOTime = (date) =>{
+export const getTimeFromISOTime = (date, locale) =>{
   const date1 = new Date (date);
-  const strDate = date1.toLocaleTimeString(localization, {hour12:false, hour: '2-digit', minute: '2-digit' });
+  const strDate = date1.toLocaleTimeString(locale, {hour12:false, hour: '2-digit', minute: '2-digit' });
   return strDate;
 }
 

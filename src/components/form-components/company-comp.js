@@ -32,13 +32,14 @@ const InitData = {
 }
 
 export default function CompanyForm() {
+    const { t,  } = useTranslation();
     const [companyFrmDt, setCompanyFrmDt] = React.useState(InitData);
     React.useEffect (()=>{
         const loadedfrmData = getCompanyData();
         setCompanyFrmDt(loadedfrmData)
       
       },[])
-    const { t } = useTranslation();
+     
 
     const handleTextChange = (event) =>{
         setCompanyFrmDt({...companyFrmDt, [event.target.name]: event.target.value})

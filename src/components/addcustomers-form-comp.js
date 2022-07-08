@@ -23,15 +23,16 @@ var initValidation={
   dni: true
 }
 
-export default function CustomerForm() {
+export default function CustomerForm(props) {
   const NcState = useSelector((state)=> state.newCustomer);
   const [validation, setValidation] = React.useState(initValidation);
+  const locale = props.locale
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
-   const addedAt = new Date().toLocaleDateString();
+   const addedAt = new Date().toLocaleDateString(locale);
   
    const frm = {
     firstname: NcState.firstname,
@@ -93,12 +94,12 @@ export default function CustomerForm() {
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
-                <NameForm gender={"none"} />
+                <NameForm gender={"none"} locale={locale} />
                 {!validation.firstname ? <Alert severity="error">{t("introduceaname")}</Alert>: <></>}
                 {!validation.lastname ? <Alert severity="error">{t("introducealastname")}</Alert>: <></>} 
               </Grid>
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
-                <DniForm />
+                <DniForm locale={locale} />
                 {!validation.dni ? <Alert severity="error">{t("youmustintroduceavalidId")}</Alert>: <></>}
                 <EmailForm  />
                 {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}

@@ -21,6 +21,8 @@ function DepositContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const { t } = useTranslation();
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
 
   const [width, setWidth] = React.useState(Number(window.innerWidth));
 
@@ -81,7 +83,7 @@ function DepositContent() {
                   <Income />
                 </Paper>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', mt:2 }}>
-                  <Loses />
+                  <Loses locale={localization}/>
                 </Paper>
                 
               </Grid>

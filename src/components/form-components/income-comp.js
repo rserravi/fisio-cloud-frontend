@@ -14,8 +14,7 @@ import configData from "../../assets/data/config-data.json"
 import EditIcon from '@mui/icons-material/Edit';
 
 
-const localization = configData[0].user[0].locales;
-locale(localization);
+
 
 const initData = [{
     id: "0",
@@ -35,9 +34,11 @@ const initData = [{
 
 
 
-export default function Income() {
+export default function Income(props) {
   const { t } = useTranslation();
-  var today = new Date().toISOString();
+  const localization = props.locale;
+  locale(localization);
+  var today = new Date().toISOString(localization);
   const [income, setIncome] = React.useState( initData);
 
   React.useEffect(()=>{

@@ -1,8 +1,6 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
-import { useTranslation } from 'react-i18next';
-
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -146,7 +144,8 @@ export const getUserDataFromDb = (_id)=>{
     socialUser3:"@",
     countryPhoneCode:"+34",
     locale:"es-ES",
-    role:"user"
+    role:"user",
+    lastConnect:"",
   }
   for (let key in configData[0].user){
     
@@ -494,9 +493,12 @@ export const GetReceiverName = (customerId, userId, direction) =>{
   }
 }
 
-export const GetLocales = ()=>{
-  return configData[0].user[0].locales;
-}
+/* export const GetLocales = ()=>{
+  const result = useSelector((user)=>user.locales)
+  console.log(result)
+  return result;
+  //return configData[0].user[0].locales;
+} */
 
 export const GetRowById = (row,_id)=>{
   var found = {}

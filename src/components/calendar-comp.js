@@ -23,8 +23,7 @@ require('moment/locale/es.js')
 require('moment/locale/ca.js')
 require('moment/locale/fr.js')
 
-const localization = configData[0].user[0].locales;
-locale(localization);
+
 
 var initValidation={
   id:"1",
@@ -44,6 +43,8 @@ export default function CalendarComp(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const compact =props.compact;
+  const localization = props.locale;
+  locale(localization);
   const localizer = momentLocalizer(moment)
   const { t } = useTranslation();
   

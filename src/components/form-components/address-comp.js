@@ -9,6 +9,7 @@ import { countries} from '../../utils/dataFetch-utils'
 
 export const AddressForm = (props) =>{
     const newUserSelector =  useSelector(state => state.newCustomer);
+    const { t } = useTranslation();
 
     const InitData = {
         streetaddress: props.streetaddress,
@@ -33,8 +34,6 @@ export const AddressForm = (props) =>{
         }
     
       },[props,newUserSelector.streetaddress,newUserSelector.city,newUserSelector.state, newUserSelector.postalCode,newUserSelector.country])
-
-    const { t } = useTranslation();
 
     const handleChangeStreetAddress = (event) => {
         setAddressFrmData({...addressFrmDta, "streetaddress": event.target.value})

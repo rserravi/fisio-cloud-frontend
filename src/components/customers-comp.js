@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 //MUI IMPORTS
-import { Button, Grid, IconButton, Paper, Toolbar, Typography } from '@mui/material';
+import { Button, Grid, IconButton, Paper, Typography } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';

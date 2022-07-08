@@ -16,7 +16,6 @@ import { useParams } from 'react-router-dom';
 import UserSetupForm from '../../components/user-setup-comp';
 
 
-
 const mdTheme = createTheme();
 
 function UserSetupContent() {

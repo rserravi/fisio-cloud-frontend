@@ -1,5 +1,10 @@
+// REACT
 import * as React from 'react';
+import { useDispatch } from "react-redux";
+import { useNavigate } from 'react-router-dom';
+import { navigationFail, navigationSuccess } from '../slices/navigation-slice';
 import { useTranslation } from 'react-i18next';
+// MUI
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -7,30 +12,29 @@ import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
-
-import { LocalTextForDataGrid, paperColor, StatusColor } from '../utils/mui-custom-utils';
 import { styled } from '@mui/material/styles';
-import { findSocialIcon } from '../utils/social-networks-utils';
-import { GenderIcon } from '../utils/mui-custom-utils';
+import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
+import { LocalTextForDataGrid, paperColor, StatusColor } from '../utils/mui-custom-utils';
 import { AppBar, Button, Divider, Toolbar } from '@mui/material';
+import Collapse from '@mui/material/Collapse';
+import Grid from '@mui/material/Grid';
+//MUI ICONS
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import LocalPrintshopIcon from '@mui/icons-material/LocalPrintshop';
-import Title from './Title';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Collapse from '@mui/material/Collapse';
-import Grid from '@mui/material/Grid';
-import { firstItemId, getCustomer, lastItemId } from '../utils/dataFetch-utils';
-import { useDispatch } from "react-redux";
-import { useNavigate } from 'react-router-dom';
-import { navigationFail, navigationSuccess } from '../slices/navigation-slice';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { GenderIcon } from '../utils/mui-custom-utils';
 
+//CUSTOM IMPORTS
+import { findSocialIcon } from '../utils/social-networks-utils';
+import Title from './Title';
+import { firstItemId, getCustomer, lastItemId } from '../utils/dataFetch-utils';
+import { getDateFromISOTime, getTimeFromISOTime } from '../utils/date-utils';
 
 
 const ExpandMore = styled((props) => {
@@ -47,7 +51,6 @@ const ExpandMore = styled((props) => {
 const EditName= ()=>{
     console.log("Editar Nombre")
 }
-
 
 const SeeHistory= (props)=>{
     console.log("Ver Historial de Citas")
@@ -146,6 +149,7 @@ const RenderStatusCell=(props)=>{
 
 export default function CustomerCard(props) {
     const _id = Number(props._id);
+    const locale = props.locale;
     const customer = getCustomer(_id);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -156,6 +160,7 @@ export default function CustomerCard(props) {
     const [historyExpanded, setHistoryExpanded] = React.useState(true);
     const [appointmentsExpanded, setAppointmentsExpanded] = React.useState(true);
     const [contactsExpanded, setContatctExpanded] = React.useState(true);
+    
     // Select has an array of selected rows
     const [select, setSelection] = React.useState([]);
 
@@ -490,9 +495,9 @@ export default function CustomerCard(props) {
     const rowsHistory = history.map((row) => 
         ({
             id: row.id, 
-            date: row.date,
+            date:  getDateFromISOTime(row.date, locale),
             image: row.image, 
-            startingTime: row.startingTime, 
+            startingTime: getTimeFromISOTime(row.date, locale),
             duration: row.duration,
             service: row.service,
             price: row.price,
@@ -504,8 +509,8 @@ export default function CustomerCard(props) {
     const rowsAppointments = appointments.map((row) => 
         ({
             id: row.id, 
-            date: row.date,
-            startingTime: row.startingTime, 
+            date: getDateFromISOTime(row.date, locale),
+            startingTime: getTimeFromISOTime(row.date, locale),
             duration: row.duration,
             service: row.service,
             price: row.price + "€",
@@ -516,7 +521,7 @@ export default function CustomerCard(props) {
     const rowsContactHistory = contacthistory.map((row) => 
         ({
             id: row.id, 
-            date: row.date,
+            date: getDateFromISOTime(row.date, locale),
             type: row.type,
             duration: row.duration,
             subject: row.subject,

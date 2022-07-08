@@ -22,6 +22,8 @@ const mdTheme = createTheme();
 function DashboardContent() {
   const { t } = useTranslation();
   const boardState = useSelector((state)=> state.navigator);
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
 
   return (
     <ThemeProvider theme={mdTheme}>
@@ -44,7 +46,7 @@ function DashboardContent() {
         >
           <Toolbar />
           
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container sx={{ mt: 4, mb: 4 }}>
 
          
             <Grid container spacing={3}>
@@ -58,7 +60,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                 <CalendarComp compact={true}/>
+                 <CalendarComp compact={true} locale={localization}/>
                 </Paper>
               </Grid>
           
@@ -73,7 +75,7 @@ function DashboardContent() {
                   }}
                 >
                 
-                  <Deposits month={true} dashboard={true} />
+                  <Deposits month={true} dashboard={true} locale={localization}/>
                  
                 </Paper>
               </Grid>
@@ -81,7 +83,7 @@ function DashboardContent() {
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column', height: 400 }}>
                   <Container sx={{height:320}}>
-                    <CustomersComponent compact={true} info="newCustomers" />
+                    <CustomersComponent compact={true} info="newCustomers"/>
                     </Container>
                 </Paper>
               </Grid>

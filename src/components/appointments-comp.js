@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 //MUI IMPORTS
-import { Button, Grid, IconButton, Toolbar } from '@mui/material';
+import { Button, Grid, IconButton } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
@@ -84,6 +84,7 @@ export const AppointmentsComponent = (props)=> {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   compact = props.compact;
+  const locale= props.locale;
 
   const [anchorElPastButtonEL, setAnchorPastButtonEL] = React.useState(null);
   const openPastMenu = Boolean(anchorElPastButtonEL);
@@ -182,7 +183,7 @@ const RenderDateCell = (props) =>{
           </MenuItem>
         </Menu>
     
-        {getDateFromISOTime(date)}
+        {getDateFromISOTime(date, locale)}
         
       </>
     )
@@ -247,14 +248,14 @@ const RenderDateCell = (props) =>{
             {t("exit")}
           </MenuItem>
         </Menu>
-          {getDateFromISOTime(date)}
+          {getDateFromISOTime(date, locale)}
         </>
       )
     }
 
   return (
      <>
-     {getDateFromISOTime(date)}
+     {getDateFromISOTime(date, locale)}
       </>
   );
   
@@ -266,7 +267,7 @@ const RenderDateCell = (props) =>{
     userid: row.customerId,
     userName: row.customerName,
     date: row.date,
-    startingTime: getTimeFromISOTime(row.date) + " h.",
+    startingTime: getTimeFromISOTime(row.date, locale) + " h.",
     duration: row.duration +" m.",
     service: row.service,
     cabin: GetCabinNameById(row.cabin),

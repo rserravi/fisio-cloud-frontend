@@ -14,7 +14,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@mui/material/Avatar';
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {navigationDrawer, navigationLoading, navigationMenu, navigationSuccess } from '../slices/navigation-slice';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
@@ -24,7 +24,6 @@ import Dialog from '@mui/material/Dialog';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
-import configData from "../assets/data/config-data.json"
 
 
 const drawerWidth = 240;
@@ -51,6 +50,9 @@ const AppBar = styled(MuiAppBar, {
 function ApplicationBar(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const userSelector = useSelector(state => state.user);
+  const srcImage = userSelector.image;
+  const labelImage = userSelector.firstname + " " + userSelector.lastname;
 
   const [width, setWidth] = React.useState(Number(window.innerWidth));
 
@@ -146,7 +148,7 @@ function ApplicationBar(boardState) {
     goTo("/");
   }
   
-  const srcImage = configData[0].user[0].image;
+  
 
   return (
         
@@ -226,7 +228,7 @@ function ApplicationBar(boardState) {
             
             <Tooltip title={t("openusersettings")}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Ruben Serra" src={srcImage} />
+                <Avatar alt={labelImage} src={srcImage} />
               </IconButton>
             </Tooltip>
             <Menu

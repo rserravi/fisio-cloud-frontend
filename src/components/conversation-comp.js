@@ -4,7 +4,7 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { GetLocales, GetReceiverName, GetSenderName, GetThread } from '../utils/dataFetch-utils';
+import { GetReceiverName, GetSenderName, GetThread } from '../utils/dataFetch-utils';
 
 const textAlign = (dir)=>{
     if (dir ==="send") {
@@ -24,6 +24,7 @@ export const ConversationComponent = (props) => {
  
    const { t } = useTranslation();
    const threadData =GetThread(props.select);
+   const locale = props.locale;
    
    const Message = (msg)=>{
         var msgId =msg.id
@@ -44,7 +45,7 @@ export const ConversationComponent = (props) => {
                 alignItems="center">
                 
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)} sx={{mt:2, ml:2}}>
-                   <b>{t("from")}:</b> <Button>{GetSenderName(threadData[msgId].customerId, threadData[msgId].userId, threadData[msgId].direction)}</Button> <b>{t("subject")}: </b> {threadData[msgId].subject}.<b> {t("to")}: </b> <Button>{GetReceiverName(threadData[msgId].customerId, threadData[msgId].userId, threadData[msgId].direction)}</Button>, <b> {t("sendat")}:</b> {new Date(threadData[msgId].date).toLocaleDateString(GetLocales())}, {new Date(threadData[msgId].date).toLocaleTimeString(GetLocales())}
+                   <b>{t("from")}:</b> <Button>{GetSenderName(threadData[msgId].customerId, threadData[msgId].userId, threadData[msgId].direction)}</Button> <b>{t("subject")}: </b> {threadData[msgId].subject}.<b> {t("to")}: </b> <Button>{GetReceiverName(threadData[msgId].customerId, threadData[msgId].userId, threadData[msgId].direction)}</Button>, <b> {t("sendat")}:</b> {new Date(threadData[msgId].date).toLocaleDateString(locale)}, {new Date(threadData[msgId].date).toLocaleTimeString(locale)}
                 </Grid>
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)} sx={{ml:2}}>
                   
@@ -68,7 +69,7 @@ export const ConversationComponent = (props) => {
                       id="action"
                       name='action'
                       label={t("nextaction")}
-                      value={threadData[msgId].follow + " " + new Date(threadData[msgId].alertfollow).toLocaleDateString(GetLocales())}
+                      value={threadData[msgId].follow + " " + new Date(threadData[msgId].alertfollow).toLocaleDateString(locale)}
                       variant="standard"
                       sx={{mr:1}}
                       />:<></>}

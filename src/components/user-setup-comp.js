@@ -26,7 +26,8 @@ var initValidation={
 
 export default function UserSetupForm() {
   const NcState = useSelector((state)=> state.newCustomer);
-
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
   const _id = Number(useParams().tid);
   const [validation, setValidation] = React.useState(initValidation);
   const { t } = useTranslation();
@@ -36,7 +37,7 @@ export default function UserSetupForm() {
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
-    const addedAt = new Date().toLocaleDateString();
+    const addedAt = new Date().toLocaleDateString(localization);
     
     const frm = {
       firstname: NcState.firstname,
@@ -104,12 +105,12 @@ export default function UserSetupForm() {
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
-                <NameForm gender={"none"} editUser={true}/>
+                <NameForm gender={"none"} editUser={true} locale={localization}/>
                 {!validation.firstname ? <Alert severity="error">{t("introduceaname")}</Alert>: <></>}
                 {!validation.lastname ? <Alert severity="error">{t("introducealastname")}</Alert>: <></>} 
               </Grid>
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
-                <LocAndRoleForm editUser={true}/>
+                <LocAndRoleForm editUser={true} locale={localization}/>
                 <EmailForm editUser={true}/>
                 {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
               </Grid>
@@ -126,8 +127,6 @@ export default function UserSetupForm() {
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <AddressForm  editUser={true} />
               </Grid>
-             
-              
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <SocialForm editUser={true} />

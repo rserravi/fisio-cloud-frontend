@@ -20,6 +20,8 @@ const mdTheme = createTheme();
 function AppoinmentsContent() {
 
   const boardState = useSelector((state)=> state.navigator);
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
   const { t } = useTranslation();
 
   return (
@@ -47,12 +49,12 @@ function AppoinmentsContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AppointmentsComponent compact={false} info="all"/>
+                  <AppointmentsComponent compact={false} info="all" locale={localization}/>
                 </Paper>
               </Grid>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-               <CalendarComp />
+               <CalendarComp locale={localization} />
                 </Paper>
               </Grid>
             </Grid>

@@ -26,6 +26,8 @@ function SeeCustomerContent() {
   const _id = Number(useParams().tid);
   const customer = getCustomer(_id);
   const navigate = useNavigate();
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
   
   React.useEffect(() => {
     if (!customer){
@@ -66,12 +68,12 @@ function SeeCustomerContent() {
         >
           <Toolbar />
           
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container sx={{ mt: 4, mb: 4 }}>
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 0, display: 'flex', flexDirection: 'column' }}>
-                  <CustomerCard _id={_id}/>
+                  <CustomerCard _id={_id} locale={localization}/>
                 </Paper>
               </Grid>
             </Grid>

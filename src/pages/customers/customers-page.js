@@ -42,7 +42,7 @@ function CustomersContent() {
         >
           <Toolbar />
           
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container sx={{ mt: 4, mb: 4 }}>
 
             <Grid container spacing={1}>
              <Grid item xs={12}>

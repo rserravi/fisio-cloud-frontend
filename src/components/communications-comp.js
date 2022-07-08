@@ -50,13 +50,14 @@ export const CommunicationsComponent = (props)=> {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   compact = props.compact;
+  const locale = props.locale;
 
   const { t } = useTranslation();
   // Select has an array of selected rows
   const [select, setSelection] = React.useState([]);
 
   const getFormattedDate=(params)=>{
-    const resultDate = new Date(params.row.date).toLocaleDateString(GetLocales())
+    const resultDate = new Date(params.row.date).toLocaleDateString(locale)
     return resultDate;
   }
 
@@ -162,7 +163,7 @@ export const CommunicationsComponent = (props)=> {
       </Container>
      <Paper sx={{m:3}}>
     
-      {select.length>0?<ConversationComponent select={GetRowById(rows,select[select.length-1])} />:<></>}
+      {select.length>0?<ConversationComponent locale={locale} select={GetRowById(rows,select[select.length-1])} />:<></>}
       </Paper>
       
     </React.Fragment>

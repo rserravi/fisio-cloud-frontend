@@ -24,8 +24,8 @@ var initAddService={
 export default function AddAppointmentForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const locale = props.locale;
   const [customerID, setCustomerID] = React.useState(props.customerId)
-  // const _appoId = props.appoId
   
   const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "edit"
   const cabinsData = GetCabins();
@@ -286,7 +286,7 @@ export default function AddAppointmentForm(props) {
                     <Button fullWidth onClick={seeAppointment} variant="outlined" sx={{mr:2}}>{t("calendar")}</Button>
                   </Grid>
                   <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
-                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <DatePicker
                             label={t("date")}
                             value={appo.date}
@@ -299,7 +299,7 @@ export default function AddAppointmentForm(props) {
                          </LocalizationProvider> 
                   </Grid>
                   <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
-                         <LocalizationProvider dateAdapter={AdapterMoment}>
+                         <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <TimePicker
                           label={t("Time")}
                           value={appo.date}

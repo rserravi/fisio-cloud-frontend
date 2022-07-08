@@ -1,9 +1,9 @@
 import './App.css';
 import React from 'react';
+import {BrowserRouter as Router, Routes,  Route} from "react-router-dom";
 import SignInSide from './pages/sign-in/signIn-page';
 import Dashboard from './pages/dashboard/dashbord-main';
 import PasswordReset from './pages/passwordReset/passwordReset-page';
-import {BrowserRouter as Router, Routes,  Route} from "react-router-dom";
 import LandingPage from './pages/landing-page/landing-page';
 import SignUp from './pages/sign-up/sign-up';
 import Customers from './pages/customers/customers-page';
@@ -16,6 +16,7 @@ import DepositsPage from './pages/deposits/deposits-page';
 import UserSetup from './pages/userSetup/user-setup-page';
 import Setup from './pages/setup/setup-page';
 import Communications from './pages/communications/communications-page';
+import AddCommunication from './pages/communications/add-communications-page';
 
 
 function App() {
@@ -41,6 +42,9 @@ function App() {
           <Route path='/addappointment/:tid/:aid' element={<AddAppointment />} />
           <Route path='/deposits' element={<DepositsPage/>} /> 
           <Route path='/communications' element={<Communications />} />
+          <Route path='/addcommunication/' element={<AddCommunication />} />
+          <Route path='/addcommunication/:customerid' element={<AddCommunication />} />
+          <Route path='/addcommunication/:customerid/:thread' element={<AddCommunication />} />
           <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
           <Route path='/setup' element={<Setup/>} />
           {/* 

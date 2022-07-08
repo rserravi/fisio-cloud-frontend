@@ -12,28 +12,29 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
 import { useTranslation } from 'react-i18next';
-import AddAppointmentForm from '../../components/add-appointment-form-comp';
+import AddCommunicationsComponent from '../../components/add-communicaciont-comp';
 import { useParams } from 'react-router-dom';
 
 
 
 const mdTheme = createTheme();
 
-function AddAppointmentContent() {
+function AddCommunicationContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const _id = Number(useParams().tid);
-  const _appoId = Number(useParams().aid);
+  const _customerId = Number(useParams().customerid);
+  const _thread = Number(useParams().thread);
 
   const { t } = useTranslation();
+
   
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("addappointment")} />
+        <ApplicationBar boardState={boardState} title={t("addcomunication")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -55,7 +56,7 @@ function AddAppointmentContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AddAppointmentForm customerId={_id} appoId={_appoId} locale={localization}/>
+                  <AddCommunicationsComponent customerId={_customerId} threadId={_thread} locale={localization} />
                 </Paper>
               </Grid>
             </Grid>
@@ -70,6 +71,6 @@ function AddAppointmentContent() {
 
 }
 
-export default function AddAppointment() {
-  return <AddAppointmentContent />;
+export default function AddCommunication() {
+  return <AddCommunicationContent />;
 }

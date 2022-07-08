@@ -9,12 +9,10 @@ import { locale } from 'moment';
 import { validateDNI } from '../../utils/verification-utils';
 
 
-const localization = configData[0].user[0].locales;
-locale(localization);
-
-
 export const DniForm = (props) =>{
     const newUserSelector =  useSelector(state => state.newCustomer);
+    const localization = props.locale;
+    locale(localization);       
     const InitData = {
         dni: props.dni,
     }

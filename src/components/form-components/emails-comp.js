@@ -6,7 +6,6 @@ import { Box, Grid } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_emailHome_Commit, nc_emailWork_Commit } from '../../slices/newCustomer-slice';
 
-
 export const EmailForm = (props) =>{
   const newUserSelector =  useSelector(state => state.newCustomer);
     const InitData = {

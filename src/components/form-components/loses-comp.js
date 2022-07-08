@@ -10,15 +10,13 @@ import { Button, Container, Grid, TextField, Tooltip } from '@mui/material';
 import { LocalTextForDataGrid } from '../../utils/mui-custom-utils';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { locale } from 'moment';
-import configData from "../../assets/data/config-data.json"
 
 //ICONS
 import EditIcon from '@mui/icons-material/Edit';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import CampaignIcon from '@mui/icons-material/Campaign';
 
-const localization = configData[0].user[0].locales;
-locale(localization);
+
 
 const initData = [{
     id: "0",
@@ -36,9 +34,11 @@ const initData = [{
     periodEnd: new Date()
 }]
 
-export default function Loses() {
+export default function Loses(props) {
   const { t } = useTranslation();
-  var today = new Date().toISOString();
+  const localization = props.locale;
+  locale(localization);
+  var today = new Date().toISOString(localization);
   const [loses, setloses] = React.useState( initData);
 
   React.useEffect(()=>{

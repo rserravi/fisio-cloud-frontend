@@ -21,6 +21,8 @@ const mdTheme = createTheme();
 function AddCustomerContent() {
 
   const boardState = useSelector((state)=> state.navigator);
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
   const { t } = useTranslation();
 
   
@@ -45,12 +47,12 @@ function AddCustomerContent() {
         >
           <Toolbar />
           
-            <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+            <Container sx={{ mt: 4, mb: 4 }}>
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CustomerForm />
+                  <CustomerForm locale={localization}/>
                 </Paper>
               </Grid>
             </Grid>

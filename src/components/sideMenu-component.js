@@ -166,7 +166,7 @@ function SideMenu(boardState) {
   }
 
   const toogleAddCommunication = ()=>{
-    goTo("/communications")
+    goTo("/addcommunication")
   }
 
   const toogleSeeCommunication = ()=>{
