@@ -1,10 +1,15 @@
 //REACT IMPORTS
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, MenuItem, TextField } from '@mui/material';
+import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
-import { GetReceiverName, GetSenderName, GetThread } from '../utils/dataFetch-utils';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
+import { GetCommunicationActions, GetReceiverName, GetSenderName, GetThread } from '../utils/dataFetch-utils';
+
+
 
 const textAlign = (dir)=>{
     if (dir ==="send") {
@@ -20,14 +25,54 @@ const BackgroundColor = (dir) =>{
     return "mintcream";
    }
 
+const commActions = GetCommunicationActions();
+
 export const ConversationComponent = (props) => {
  
    const { t } = useTranslation();
    const threadData =GetThread(props.select);
    const locale = props.locale;
+   const [newActionDialogOpen, setNewActionDialogOpen] = React.useState(false);
+
+   const HandleNewActionClick = ()=>{
+    setNewActionDialogOpen(true)
+   }
+
+   const handleNewActionDialogClose = () =>{
+    setNewActionDialogOpen(false)
+   }
+
+  
+
+   
    
    const Message = (msg)=>{
         var msgId =msg.id
+        const dispatch = useDispatch();
+        const navigate = useNavigate();
+        const [msgCopy, setMsgCopy] = React.useState(threadData[msgId]);
+
+        const handleAnswerClick = (event) =>{
+
+            event.stopPropagation(); 
+            console.log(threadData, "CustomerID",threadData[msgId].customerId, "Thread", threadData[msgId].thread );
+            const actualScreen = "/addcommunication/" + threadData[msgId].customerId+"/" + threadData[msgId].thread
+            dispatch(navigationLoading());
+            navigate(actualScreen,{replace: true});
+            dispatch(navigationSuccess(actualScreen))
+           }
+        const handleNextActionChange = (event)=>{
+            setMsgCopy({...msgCopy, "follow": event.target.value})
+        }
+
+        const handleAlertChange= (value)=>{
+            setMsgCopy({...msgCopy, "alertfollow": value._d})
+          }
+        
+        const handleDialogSubmit = () =>{
+            console.log("DIALOG SUBMIT", msgCopy)
+            setNewActionDialogOpen(false)
+        }
         
         return(
         <React.Fragment>
@@ -87,9 +132,48 @@ export const ConversationComponent = (props) => {
                       />
                 </Grid>
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)} sx={{ml:2, mt:1, mb:2}}>
-                    {threadData[msgId].direction==="send"?<Button variant='outlined' sx={{mr:1}}>{t("answer")}</Button>:<></>}
-                    <Button variant='outlined'>{t("newaction")}</Button>
+                    {threadData[msgId].direction==="send"?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{t("answer")}</Button>:<></>}
+                    <Button onClick={HandleNewActionClick} variant='outlined'>{t("newaction")}</Button>
                 </Grid>
+                <Dialog open={newActionDialogOpen} onClose={handleNewActionDialogClose}>
+                    <DialogTitle>{t("newaction")}</DialogTitle>
+                    <DialogContent>
+                    <DialogContentText>
+                        {t("programanactiontoaddedtothecalendar")}
+                    </DialogContentText>
+                    <TextField
+                        id="nextction"
+                        name='nextaction'
+                        label={t("nextaction")}
+                        value={msgCopy.follow || ''}
+                        variant="standard"
+                        onChange={handleNextActionChange}
+                        select
+                        fullWidth
+                        sx={{mr:2, textAlign:'left'}}
+                        >
+                          {commActions.map((option) => (
+                            <MenuItem key={option.id} value={option.type}>{t(option.type)}</MenuItem>
+                          ))}
+                          <MenuItem key={15} value={"NONE"}>{t("nothing")}</MenuItem>               
+                        </TextField>
+                        <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
+                        <DatePicker
+                            label={t("date")}
+                            value={msgCopy.alertfollow}
+                            variant="standard"
+                            sx = {{mr:2}}
+                            onChange={handleAlertChange}
+                            
+                            renderInput={(params) => <TextField fullWidth variant="standard" sx = {{mr:2}} {...params} />}
+                        />
+                         </LocalizationProvider> 
+                    </DialogContent>
+                    <DialogActions>
+                    <Button onClick={handleDialogSubmit}>{t("accept")}</Button>
+                    <Button onClick={handleNewActionDialogClose}>{t("close")}</Button>
+                    </DialogActions>
+                </Dialog>
            
             </Grid>
             </div>

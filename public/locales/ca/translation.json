@@ -32,7 +32,7 @@
     "seemoreorders":"Veure més comandes",
     "addnewcustomer":"Afegir client",
     "allcustomers":"Tots els clients",
-    "calendar": "Cites",
+    "calendar": "Agenda",
     "seedates": "Veure Cites",
     "adddate": "Afegir cita",
     "emailmissing": "Falta el email",
@@ -332,7 +332,19 @@
     "follow":"Segueix",
     "newaction":"Nova Acció",
     "responsetocommunicationwith":"Responent missatge de",
-    "addingcommunicationto":"Enviant communicació a "
-
-
+    "addingcommunicationto":"Enviant communicació a ",
+    "whatsapp":"Whatsapp",
+    "action": "Acció",
+    "initcall":"Iniciar Trucada",
+    "endcall":"Finalitzat Trucada",
+    "nothing":"Cap",
+    "createcommunication":"Crear communicació",
+    "programanactiontoaddedtothecalendar":"Programa una acció per afegir-se al cal·lendari",
+    "seeappointments": "Veure Cites",
+    "for":"per",
+    "pastaction": "ACCIÓ PASSADA",
+    "reschedule":"Reprogramar",
+    "mail": "Correu E.",
+    "orientativeprice":"Preu orientatiu",
+    "performed":"Realitzats"
 }

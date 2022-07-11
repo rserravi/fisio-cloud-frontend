@@ -34,7 +34,7 @@ export default function AddAppointmentForm(props) {
     id:"1",
     date: new Date(Date.now()),
     duration: "60", 
-    service:"Masaje",
+    service:"1",
     cabin:"3",
     price: "50",
     paid:"0",
@@ -164,6 +164,7 @@ export default function AddAppointmentForm(props) {
   }
 
   const newServiceFormCommit = ()=>{
+    //TODO, GET NEW ID
     console.log(newService);
     setDialogOpen(false);
   }
@@ -395,7 +396,7 @@ export default function AddAppointmentForm(props) {
                             onChange={handleServicesChange}
                         >
                           {services.map((option) =>{ return (
-                            <MenuItem key={option.id} value={option.serviceName}>
+                            <MenuItem key={option.id} value={option.id}>
                               {option.serviceName}
                             </MenuItem>
                             )

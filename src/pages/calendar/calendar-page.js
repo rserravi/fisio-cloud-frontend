@@ -4,37 +4,29 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
+import Paper from '@mui/material/Paper';
 import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import Paper from '@mui/material/Paper';
-import Grid from '@mui/material/Grid';
-
 import { useTranslation } from 'react-i18next';
-import AddCommunicationsComponent from '../../components/add-communicaciont-comp';
-import { useParams } from 'react-router-dom';
-
-
+import BigCalendarComp from '../../components/big-calendar-comp';
 
 const mdTheme = createTheme();
 
-function AddCommunicationContent() {
+function CalendarContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const _customerId = Number(useParams().customerid);
-  const _thread = Number(useParams().thread);
-  console.log("REFRESCOS DE COMM-PAGE")
   const { t } = useTranslation();
 
-  
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("addcomunication")} />
+        <ApplicationBar boardState={boardState} title={t("calendar")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -50,27 +42,23 @@ function AddCommunicationContent() {
           }}
         >
           <Toolbar />
-          
-            <Container sx={{ mt: 4, mb: 4 }}>
+          <Container sx={{ mt: 4, mb: 4 }}>
 
             <Grid container spacing={1}>
-             <Grid item xs={12}>
+              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AddCommunicationsComponent customerId={_customerId} threadId={_thread} locale={localization} />
+                    <BigCalendarComp locale={localization} />
                 </Paper>
               </Grid>
             </Grid>
-
-            
           </Container>
           <Copyright sx={{ pt: 4 }} />
         </Box>
       </Box>
     </ThemeProvider>
   );
-
 }
 
-export default function AddCommunication() {
-  return <AddCommunicationContent />;
+export default function BigCalendar() {
+  return <CalendarContent />;
 }

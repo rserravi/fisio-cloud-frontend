@@ -25,7 +25,6 @@ export const ImageComponent = (props) =>{
       //console.log(props)
       if (props.editUser){
           const image2 = newUserSelector.image
-          console.log(image2)
           setImage(image2)
       }
     

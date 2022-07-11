@@ -1,6 +1,8 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
+import { useTranslation } from 'react-i18next';
+
 
 export const getCustomer = (_id) =>{
     let found = null;
@@ -116,6 +118,7 @@ export const getNewUsersId = ()=>{
 export const getUserDataFromDb = (_id)=>{
   let found = null;
   var item = {
+    id: _id,
     isSubmited:false,
     isValidated: false,
     error: "",
@@ -156,6 +159,7 @@ export const getUserDataFromDb = (_id)=>{
   }
   if (found){
   item ={
+    id : _id,
     isSubmited:false,
     isValidated: false,
     error: "",
@@ -228,6 +232,11 @@ export const getServices= () =>{
   return configData[0].services;
 }
 
+export const getNewServicesId = ()=>{
+  const lastId = configData[0].services[configData[0].services.length-1].id;
+  return lastId+1;
+}
+
 export const getPriceForService = (service)=>{
  var result = "0";
  for (let key in configData[0].services){
@@ -239,9 +248,45 @@ export const getPriceForService = (service)=>{
  return result;
 }
 
+export const getServicesRealized= (service)=>{
+  var count = 0;
+  for (let userKey in customerData){
+    if (customerData[userKey].history.length >0){
+      for (let histoKey in customerData[userKey].history){
+        if (Number(customerData[userKey].history[histoKey].service)=== Number(service)){
+          count = count +1
+        }
+      }
+    }
+
+  }
+  return count;
+}
+
+export const getServiceNameById = (_id)=>{
+  const data = configData[0].services;
+  let found = null;
+    for (let key in data){
+        if (Number(data[key].id) === Number(_id)){
+            found = data[key].serviceName;
+            break
+        }
+    }
+    return found +"";
+}
+
 export const GetCustomerIdFromName = (name) =>{
-  //TODO
-  return 0
+  var found = 0
+  const separated = name.split(" ")
+  for (let userKey in customerData){
+    if (customerData[userKey].firstname.includes(separated[0])){
+      if (customerData[userKey].lastname.includes(separated[separated.length-1])){
+        found = customerData[userKey].id;
+        return found
+      }
+    }
+  }
+  return found;
 }
 
 export const firstItemId = ()=>{
@@ -326,6 +371,7 @@ export const GetAppointmentById = (props) =>{
 }
 
 export const GetAppointmentsCalendarFormat = ()=>{
+   const { t } = useTranslation();
     var jsonObj = [];
     var newIdCount =0;
     for (let userKey in customerData){
@@ -333,7 +379,7 @@ export const GetAppointmentsCalendarFormat = ()=>{
             for (let appoKey in customerData[userKey].appointments){
                 newIdCount = newIdCount +1;
                 var id = newIdCount;
-                var title = customerData[userKey].firstname + " " + customerData[userKey].lastname + " para " + customerData[userKey].appointments[appoKey].service 
+                var title = customerData[userKey].firstname + " " + customerData[userKey].lastname + " " + t("for")+ " " + getServiceNameById(customerData[userKey].appointments[appoKey].service);
                 var allDay = false;
                 const start = new Date(customerData[userKey].appointments[appoKey].date)
                 const end = addMinutesToDate(start,Number(customerData[userKey].appointments[appoKey].duration));
@@ -367,11 +413,74 @@ export const GetAppointmentsCalendarFormat = ()=>{
                 item["color"] = color;
                 item["ispast"] = isPast;
                 item["customerId"] = customerId;
+                item["kind"]= "appo";
                 jsonObj.push(item)
             }
         }
     }
     return jsonObj  
+}
+
+export const GetAlertsCalendarFormat = ()=>{
+  const { t } = useTranslation();
+  var jsonObj = [];
+  var newIdCount =0;
+  for (let userKey in customerData){
+      if(customerData[userKey].contacthistory.length >0){
+          for (let commKey in customerData[userKey].contacthistory){
+            if( customerData[userKey].contacthistory[commKey].follow && customerData[userKey].contacthistory[commKey].alertfollow)
+            {
+              newIdCount = newIdCount +1;
+              var id = newIdCount;
+              var title = t(customerData[userKey].contacthistory[commKey].follow) + " " +t("to") + " " + customerData[userKey].firstname + " " + customerData[userKey].lastname
+              var allDay = false;
+              const start = new Date(customerData[userKey].contacthistory[commKey].alertfollow)
+              const end = addMinutesToDate(start, 30);
+              var backgroundColor = "mediumturquoise";
+              var color = "black";
+              var isPast = false;
+              const thisWeek = getWeekInYear(Date.now());
+              const dateWeek = getWeekInYear(start);
+              if (timeDifference(start) <= 0){
+                  backgroundColor = "red";
+                  color = "white"
+                  isPast = true;
+              }
+
+              if (dateWeek-thisWeek === 0){
+                  backgroundColor = "orange";
+                  color = "white"
+              }
+            
+
+              var resourceId = customerData[userKey].contacthistory[commKey].id;
+              const customerId = customerData[userKey].id;
+              var item = {}
+              item["id"] = id;
+              item["title"] = title;
+              item["allDay"] = allDay;
+              item["start"] = start;
+              item["end"] = end;
+              item["resourceId"] = resourceId;
+              item["backgroundColor"]= backgroundColor;
+              item["color"] = color;
+              item["ispast"] = isPast;
+              item["customerId"] = customerId;
+              item["kind"]= "comm";
+              jsonObj.push(item)
+            }
+          }
+      }
+  }
+  return jsonObj  
+}
+
+export const GetAllItemsCalendarFormat= ()=>{
+  var jsonObj = GetAppointmentsCalendarFormat();
+  var jsonObj2 = GetAlertsCalendarFormat();
+  const merged = [...jsonObj, ...jsonObj2];
+  merged.forEach((el, index)=> el.id = index+1);
+  return merged;
 }
 
 export const GetDepositsFromDate = (startdate, endDate) =>{
@@ -467,6 +576,43 @@ export const GetCabinNameById =(_id)=>{
         }
     }
     return found +"";
+}
+
+export const GetCommunicationActions = () =>{
+  return configData[0].commActions;
+}
+
+export const GetNextThreadId = (customerId)=>{
+  console.log("GET NEXT COMM ID", customerId)
+  var result = 0;
+  if(customerId){
+    for (let userKey in customerData){
+      if (customerData[userKey].id === customerId){
+        if (customerData[userKey].contacthistory.length !==0){
+          result = Number(customerData[userKey].contacthistory[customerData[userKey].contacthistory.length -1].thread)+1
+        }
+      }
+    }
+   
+    return result
+  }
+}
+
+
+export const GetNextCommunicationId =(customerId)=>{
+  console.log("GET NEXT COMM ID", customerId)
+  var result = 0;
+  if(customerId){
+    for (let userKey in customerData){
+      if (customerData[userKey].id === customerId){
+        if (customerData[userKey].contacthistory.length !==0){
+          result = Number(customerData[userKey].contacthistory[customerData[userKey].contacthistory.length -1].id)+1
+        }
+      }
+    }
+   
+    return result
+  }
 }
 
 export const GetSenderName = (customerId, userId, direction) =>{

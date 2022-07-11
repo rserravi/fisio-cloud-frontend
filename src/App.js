@@ -17,6 +17,7 @@ import UserSetup from './pages/userSetup/user-setup-page';
 import Setup from './pages/setup/setup-page';
 import Communications from './pages/communications/communications-page';
 import AddCommunication from './pages/communications/add-communications-page';
+import BigCalendar from './pages/calendar/calendar-page';
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
           <Route path='/addcommunication/:customerid/:thread' element={<AddCommunication />} />
           <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
           <Route path='/setup' element={<Setup/>} />
+          <Route path='/calendar' element={<BigCalendar />} />
           {/* 
          
           <Route path='/reports' element={<Reports/>} /> 

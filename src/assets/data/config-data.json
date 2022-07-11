@@ -211,6 +211,24 @@
                 "role":"User"
             }
         ],
+        "commActions":[
+            {
+                "id":1,
+                "type":"call"
+            },
+            {
+                "id":2,
+                "type":"email"
+            },
+            {
+                "id":3,
+                "type":"whatsapp"
+            },
+            {
+                "id":4,
+                "type":"other"
+            }
+        ],
         "cabins":[
             {
                 "id":1,

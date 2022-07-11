@@ -150,6 +150,7 @@ const createCustomerSlice = createSlice({
         },
        
         user_loadFromBackend:(state, action)=>{
+            state.id = action.payload.id
             state.isSubmited=action.payload.isSubmited
             state.isValidated=action.payload.isValidated
             state.error=action.payload.error
@@ -184,7 +185,8 @@ const createCustomerSlice = createSlice({
 
         user_set_user: (state, action) =>{
             const userData = getUserDataFromDb(action.payload)
-            console.log("USER DATA",userData, "PAYLOAD", action.payload);
+            //console.log("USER DATA",userData, "PAYLOAD", action.payload);
+            state.id = userData.id;
             state.isSubmited=userData.isSubmited
             state.isValidated=userData.isValidated
             state.error=userData.error

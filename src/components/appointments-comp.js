@@ -16,7 +16,7 @@ import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
-import { GetAppointments, GetCabinNameById } from '../utils/dataFetch-utils';
+import { GetAppointments, GetCabinNameById, getServiceNameById } from '../utils/dataFetch-utils';
 import { getDateFromISOTime, getTimeFromISOTime, getWeekInYear, timeDifference } from '../utils/date-utils';
 
 
@@ -269,7 +269,7 @@ const RenderDateCell = (props) =>{
     date: row.date,
     startingTime: getTimeFromISOTime(row.date, locale) + " h.",
     duration: row.duration +" m.",
-    service: row.service,
+    service: getServiceNameById(row.service),
     cabin: GetCabinNameById(row.cabin),
     price: row.price + "€",
     status: row.status,

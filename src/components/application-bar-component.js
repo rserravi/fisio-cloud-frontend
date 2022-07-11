@@ -53,6 +53,7 @@ function ApplicationBar(boardState) {
   const userSelector = useSelector(state => state.user);
   const srcImage = userSelector.image;
   const labelImage = userSelector.firstname + " " + userSelector.lastname;
+  const userId = userSelector.id;
 
   const [width, setWidth] = React.useState(Number(window.innerWidth));
 
@@ -126,7 +127,7 @@ function ApplicationBar(boardState) {
   }
 
   const handleUserSetup = () =>{
-    goTo("/usersetup/1")
+    goTo("/usersetup/"+userId.toString());
   }
 
   const handleSetupClick = () =>{

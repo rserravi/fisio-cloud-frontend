@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { locale } from 'moment';
-import { GetAppointmentsCalendarFormat, GetCabins, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
+import { GetAllItemsCalendarFormat, GetCabins, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
+
 import 'react-big-calendar/lib/sass/styles.scss'
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { addMonthtoDate, getDateFromISOTime, getTimeFromISOTime } from '../utils/date-utils';
@@ -17,9 +18,9 @@ import { TimePicker } from '@mui/x-date-pickers';
 
 require('moment/locale/es.js')
 require('moment/locale/ca.js')
-require('moment/locale/fr.js')
+require('moment/locale/en-gb.js')
 
-var initValidation={
+var initAppoValidation={
   id:"1",
   date: new Date(Date.now()),
   duration: "60", 
@@ -33,27 +34,45 @@ var initValidation={
   attachment:[{}]
 }
 
-export default function CalendarComp(props) {
+var initCommValidation={
+  id: "1",
+  senderName:"",
+  receiverName : "",
+  customerId: 0,
+  userId: 0,
+  communicationId: 0, 
+  direction: "receive",
+  date: new Date(Date.now()),
+  type: "call",
+  duration: 0,
+  subject: "",
+  notes: "",
+  follow: "",
+  alertfollow: "",
+  thread: 0
+}
+
+export default function BigCalendarComp(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const compact =props.compact;
   const localization = props.locale;
   locale(localization);
   const localizer = momentLocalizer(moment)
   const { t } = useTranslation();
-  
-  const [open, setOpen] = React.useState(false);
+  const compact =props.compact;
+
+  const [seeAppointmentDlg, setSeeAppointmentDlgOpen] = React.useState(false);
+  const [seeCommDlg, setSeeCommDlgOpen] = React.useState(false);
   const [customerID, setCustomerID] = React.useState(props.customerId)
   const [customerName, setCustomerName] = React.useState("")
   const [newEventDlg, setNewEventDlg] = React.useState(false);
 
   const [selectedEvent, setSelectedvent] = React.useState(null);
   const [eventStart, setEventStart] = React.useState("00:00");
-  const [appo, setAppo] = React.useState(initValidation);
+  const [appo, setAppo] = React.useState(initAppoValidation);
+  const [comm, setComm] = React.useState(initCommValidation);
   const services = getServices();
   const cabins = GetCabins();
-
-  
 
   moment.locale(
     'es', {
@@ -77,19 +96,25 @@ export default function CalendarComp(props) {
     }
   
   const handleDialogClose = () => {
-    setOpen(false);
-
+    setSeeAppointmentDlgOpen(false);
+    setSeeCommDlgOpen(false);
   };
   
   const handleSelectEvent = useCallback(
     (event) => {
-      console.log(event)
+      //console.log(event)
       setSelectedvent(event);
       setCustomerID(event.customerId);
-      setAppo({...appo, "id": event.resourceId})
-      setOpen(true);
+      if(event.kind==="appo"){
+        setAppo({...appo, "id": event.resourceId})
+        setSeeAppointmentDlgOpen(true);
+      }
+      else{
+        setComm({...comm, "id": event.resourceId});
+        setSeeCommDlgOpen(true);
+      }
     },
-    [appo]
+    [appo, comm]
     
   )
  
@@ -138,6 +163,10 @@ export default function CalendarComp(props) {
     dispatch(navigationSuccess(actualScreen))
   }
 
+  const handleFollowAction= (event) =>{
+
+  }
+
   
   const resourceMap = [
     { resourceId: 1, resourceTitle: 'Sala Principal' },
@@ -145,11 +174,10 @@ export default function CalendarComp(props) {
 
   return (
     <React.Fragment>
-      
-     {compact? <div>
+    {compact? <div>
       <Calendar
         localizer={localizer}
-        events={GetAppointmentsCalendarFormat()}
+        events={GetAllItemsCalendarFormat()}
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
         culture={localization}
@@ -200,7 +228,7 @@ export default function CalendarComp(props) {
     <Calendar
       localizer={localizer}
       culture={localization}
-      events={GetAppointmentsCalendarFormat()}
+      events={GetAllItemsCalendarFormat()}
       onSelectSlot={handleSelectSlot}
       onSelectEvent={handleSelectEvent}
       resourceIdAccessor="resourceId"
@@ -241,25 +269,50 @@ export default function CalendarComp(props) {
       />
     </div>
     }
-
     <Dialog
-      open={open}
+      open={seeAppointmentDlg}
       onClose={handleDialogClose}
-      aria-labelledby="alert-dialog-title"
-      aria-describedby="alert-dialog-description"
+      aria-labelledby="appointment-dialog-title"
+      aria-describedby="appointment-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">
+      <DialogTitle id="appointment-dialog-title">
         {selectedEvent? selectedEvent.title : <></>}
       </DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-        {selectedEvent? ""+getDateFromISOTime(selectedEvent.start) : <></>}
-        &nbsp;{t("from")} {selectedEvent? ""+getTimeFromISOTime(selectedEvent.start) : <></>} {t("to")} {selectedEvent? ""+getTimeFromISOTime(selectedEvent.end) : <></>}
+        <DialogContentText id="appointment-dialog-description">
+        {selectedEvent? ""+getDateFromISOTime(selectedEvent.start, localization) : <></>}
+        &nbsp;{t("from")} {selectedEvent? ""+getTimeFromISOTime(selectedEvent.start, localization) : <></>} {t("to")} {selectedEvent? ""+getTimeFromISOTime(selectedEvent.end, localization) : <></>}
         {selectedEvent && selectedEvent.ispast ? <p  style={{color:"#FF0000"}}><strong> {t("pastdate")}</strong> </p>  : <></>}
         </DialogContentText>
       </DialogContent>
       <DialogActions>
         {selectedEvent && selectedEvent.ispast ? <Button onClick={handleWriteReport}>{t("writereport")}</Button> :  <Button onClick={handleDialogClose}>{t("sendRequest")}</Button>}
+        <Button onClick={handleDialogClose}>{t("duplicateappointment")}</Button>
+        <Button onClick={handleDialogClose}>{t("deleteappointment")}</Button>
+        <Button onClick={handleDialogClose} autoFocus>
+          {t("exit")}
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    <Dialog
+      open={seeCommDlg}
+      onClose={handleDialogClose}
+      aria-labelledby="comm-dialog-title"
+      aria-describedby="comm-dialog-description"
+    >
+      <DialogTitle id="comm-dialog-title">
+        {selectedEvent? selectedEvent.title : <></>}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="comm-dialog-description">
+        {selectedEvent? ""+getDateFromISOTime(selectedEvent.start, localization) : <></>}
+        &nbsp;
+        {selectedEvent && selectedEvent.ispast ? <p  style={{color:"#FF0000"}}><strong> {t("pastaction")}</strong> </p>  : <></>}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        {selectedEvent && selectedEvent.ispast ? <Button onClick={handleFollowAction}>{t("reschedule")}</Button> :  <Button onClick={handleDialogClose}>{t("action")}</Button>}
         <Button onClick={handleDialogClose}>{t("duplicateappointment")}</Button>
         <Button onClick={handleDialogClose}>{t("deleteappointment")}</Button>
         <Button onClick={handleDialogClose} autoFocus>
@@ -275,7 +328,7 @@ export default function CalendarComp(props) {
       aria-describedby="new-event-dialog-description"
     >
       <DialogTitle id="new-event-dialog-title">
-        {t("newappointmenttheday")} {new Date(eventStart).toLocaleDateString()}
+        {t("newappointmenttheday")} {new Date(eventStart).toLocaleDateString(localization)}
         <p>{customerName}</p>
           
       </DialogTitle>

@@ -12,10 +12,8 @@ import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import {CustomersComponent} from '../../components/customers-comp';
-import CalendarComp from '../../components/calendar-comp';
 import { useTranslation } from 'react-i18next';
-
-
+import BigCalendarComp from '../../components/big-calendar-comp';
 
 const mdTheme = createTheme();
 
@@ -60,7 +58,7 @@ function DashboardContent() {
                     height: 240,
                   }}
                 >
-                 <CalendarComp compact={true} locale={localization}/>
+                 <BigCalendarComp compact={true} locale={localization}/>
                 </Paper>
               </Grid>
           

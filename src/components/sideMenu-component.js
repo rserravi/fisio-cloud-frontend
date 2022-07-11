@@ -26,7 +26,6 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import ExpandLess from '@mui/icons-material/ExpandLess';
@@ -39,11 +38,9 @@ import EuroIcon from '@mui/icons-material/Euro';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import CellTowerIcon from '@mui/icons-material/CellTower';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
-
+import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 
 const drawerWidth = 240;
-
-
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
   ({ theme, open }) => ({
@@ -71,7 +68,6 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
   }),
 );
 
-
 function SideMenu(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -94,14 +90,13 @@ function SideMenu(boardState) {
   //let actualScreen = screen;
   let open = drawerOpen;
   let expandClients = customerOpen;
-  let expandCal  =appointmentsOpen;
+  let expandAppo  =appointmentsOpen;
   let expandCom = communicationsOpen;
 
   if (isMobile){
     open = false;
     dispatch(navigationDrawer(false))
   }
-
 
   const { t } = useTranslation();
 
@@ -124,9 +119,9 @@ function SideMenu(boardState) {
     dispatch(navigationClientPanel(expandClients));
   }
 
-  const toggleCal = () =>{
-    expandCal = !expandCal;
-    dispatch(navigationAppointmentPanel(expandCal));
+  const toggleAppointment = () =>{
+    expandAppo = !expandAppo;
+    dispatch(navigationAppointmentPanel(expandAppo));
   }
 
   const toggleCom = () =>{
@@ -158,8 +153,8 @@ function SideMenu(boardState) {
     goTo("/deposits");
   }
 
-  const toogleShowReports= () =>{
-    goTo("/reports");
+  const toogleShowCalendar= () =>{
+    goTo("/calendar");
   }
   const toogleShowIntegrations= () =>{
     goTo("/integrations");
@@ -223,32 +218,32 @@ function SideMenu(boardState) {
                 </ListItemButton>
             </Collapse>
 
-            {/* Calendar */}
-            <ListItemButton onClick={toggleCal}>
+            {/* Appointments */}
+            <ListItemButton onClick={toggleAppointment}>
                 <ListItemIcon>
-                <CalendarMonthIcon />
+                <ViewAgendaIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("calendar")} />
-                {expandCal ? <ExpandLess /> : <ExpandMore />}
+                <ListItemText primary={t("appointments")} />
+                {expandAppo ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
 
-            <Collapse in={expandCal} timeout="auto" unmountOnExit>
+            <Collapse in={expandAppo} timeout="auto" unmountOnExit>
                 <ListItemButton sx={{ pl:4}} onClick={toogleAddAppointment}>
                   <ListItemIcon>
                     <ScheduleIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("adddate")} />
+                  <ListItemText primary={t("addappointment")} />
                 </ListItemButton>
                 
                 <ListItemButton sx={{ pl:4}} onClick={toogleShowAppointment}>
                   <ListItemIcon>
                     <CalendarViewWeekIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("seedates")} />
+                  <ListItemText primary={t("seeappointments")} />
                 </ListItemButton>
             </Collapse>
 
-
+            {/* Deposits */}
             <ListItemButton onClick={toogleShowDeposits}>
                 <ListItemIcon >
                 <EuroIcon />
@@ -280,12 +275,13 @@ function SideMenu(boardState) {
                   <ListItemText primary={t("seecommunications")} />
                 </ListItemButton>
             </Collapse>
-            
-            <ListItemButton onClick={toogleShowReports}>
+
+            {/* Calendar */}
+            <ListItemButton onClick={toogleShowCalendar}>
                 <ListItemIcon>
-                <BarChartIcon />
+                <CalendarMonthIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("reports")}/>
+                <ListItemText primary={t("calendar")}/>
             </ListItemButton>
 
             <ListItemButton onClick={toogleShowIntegrations}>
@@ -323,8 +319,7 @@ function SideMenu(boardState) {
             </ListItemButton>
             
           </List>
-        </Drawer>
-        
+        </Drawer>        
   );}
   else {
     return <></>
