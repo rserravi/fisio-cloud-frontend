@@ -14,9 +14,8 @@ import MenuItem from '@mui/material/MenuItem';
 //CUSTOM IMPORTS
 import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-import { nameInitial } from '../utils/name-utils.js';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
-import { GetAppointments, GetCabinNameById, getServiceNameById } from '../utils/dataFetch-utils';
+import { GetAppointments, GetCabinNameById, getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId, getServiceNameById } from '../utils/dataFetch-utils';
 import { getDateFromISOTime, getTimeFromISOTime, getWeekInYear, timeDifference } from '../utils/date-utils';
 
 
@@ -50,23 +49,6 @@ const printAppointment = (customerId) => {
   console.log("PRINT Appointment " + customerId);
 }
 
-
-const callUser = (firstname, lastname, number) =>{
-  console.log("Calling to " + nameInitial(firstname) + " "+ lastname + " at " + number )
-}
-
-const emailUser = (firstname, lastname, mail) =>{
-  console.log("Sending email to " + nameInitial(firstname) + " "+ lastname + " at " + mail )
-}
-
-const whatsappUser = (firstname, lastname, number, whastsapp) =>{
-  if (whastsapp){
-    console.log("Sending Whatsapp to " + nameInitial(firstname) + " "+ lastname + " at " + whastsapp )
-  }else{
-  console.log("Sending Whastapp to " + nameInitial(firstname) + " "+ lastname + " at Mobile " + number )
-  }
-}
-
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
 
 const data = GetAppointments();
@@ -86,6 +68,7 @@ export const AppointmentsComponent = (props)=> {
   compact = props.compact;
   const locale= props.locale;
 
+
   const [anchorElPastButtonEL, setAnchorPastButtonEL] = React.useState(null);
   const openPastMenu = Boolean(anchorElPastButtonEL);
   const [anchorElNextButtonEL, setAnchorNextButtonEL] = React.useState(null);
@@ -94,22 +77,22 @@ export const AppointmentsComponent = (props)=> {
 
   //RENDER CELLS
 
-const RenderDateCell = (props) =>{
-  const {hasFocus } = props;
-  const {date} = props.row;
-  const buttonElement = React.useRef(null);
-  const rippleRef = React.useRef(null);
-  const { t } = useTranslation();
+  const RenderDateCell = (props) =>{
+    const {hasFocus } = props;
+    const {date} = props.row;
+    const buttonElement = React.useRef(null);
+    const rippleRef = React.useRef(null);
+    const { t } = useTranslation();
 
-  React.useLayoutEffect(() => {
-    if (hasFocus) {
-      const input = buttonElement.current?.querySelector('input');
-      input?.focus();
-    } else if (rippleRef.current) {
-      // Only available in @mui/material v5.4.1 or later
-      rippleRef.current.stop({});
-    }
-  }, [hasFocus]);
+    React.useLayoutEffect(() => {
+      if (hasFocus) {
+        const input = buttonElement.current?.querySelector('input');
+        input?.focus();
+      } else if (rippleRef.current) {
+        // Only available in @mui/material v5.4.1 or later
+        rippleRef.current.stop({});
+      }
+    }, [hasFocus]);
 
   const thisWeek = getWeekInYear(Date.now());
   const dateWeek = getWeekInYear(date);
@@ -278,6 +261,7 @@ const RenderDateCell = (props) =>{
   })
   );
 
+
   const Columns = () => {
     const { t } = useTranslation();
   
@@ -301,7 +285,7 @@ const RenderDateCell = (props) =>{
             <GridActionsCellItem
             icon={<Tooltip title={t("call")}><PhoneForwardedIcon /></Tooltip>}
             label={t("call")}
-            
+            disabled = {!getCustomerPhoneFromId(params.row.userid)}
             onClick={(event) => {
               callUser(params.row.userid);
               event.stopPropagation();
@@ -310,7 +294,7 @@ const RenderDateCell = (props) =>{
             <GridActionsCellItem
             icon={<Tooltip title={t("sendemail")}><SendIcon /></Tooltip>}
             label={t("sendemail")}
-            
+            disabled = {!getCustomerMailFromId(params.row.userid)}
             onClick={(event) => {
               emailUser(params.row.userid);
               event.stopPropagation();
@@ -319,7 +303,7 @@ const RenderDateCell = (props) =>{
             <GridActionsCellItem
             icon={<Tooltip title={t("sendwhatsapp")}><WhatsAppIcon /></Tooltip>}
             label={t("GridActionsCellItem")}
-            
+            disabled = {!getCustomerWhatsappFromId(params.row.userid)}
             onClick={(event) => {
               whatsappUser(params.row.userid);
               event.stopPropagation();
@@ -407,6 +391,29 @@ const RenderDateCell = (props) =>{
     const actualScreen = "/addappointment/"+ Number(userId) +"/"+ Number(appoId);
     navigate(actualScreen, {replace: true});
     dispatch(navigationSuccess(actualScreen))
+  }
+
+  const emailUser = (id, mail) =>{
+    dispatch(navigationLoading());
+    navigate("/addcommunication/"+ Number(id) + "/0/2",{replace: true});
+    dispatch(navigationSuccess("addappointment"))
+    console.log("Sending email to " + id + " at " + mail )
+  
+  }
+  const callUser = (id) =>{
+    const actualScreen = "/addcommunication/"+ id + "/0/1"
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const whatsappUser = (id, whatsapp) =>{
+    if (whatsapp){
+      const actualScreen = "/addcommunication/"+ id + "/0/3"
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    }
   }
  
 

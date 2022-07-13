@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllData, GetCommunicationActions, getCustomer, GetCustomerIdFromName, GetNextCommunicationId, GetNextThreadId} from '../utils/dataFetch-utils';
+import { GetAllData, GetCommunicationActions, getCustomer, GetCustomerIdFromName, getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId, GetNextCommunicationId, GetNextThreadId} from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
@@ -16,13 +16,15 @@ export default function AddCommunicationsComponent(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userState = useSelector((state)=> state.user);
+  const navigationState =  useSelector((state)=> state.navigator);
   const [customerID, setCustomerID] = React.useState(props.customerId)
   const locale = props.locale;
   const commActions = GetCommunicationActions();
-  const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "addToIdAndThread"
+  const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "addToIdAndThread", "addToIdAndAction"
   const [showStart, setShowStart] = React.useState(true);
   const [showEnd, setShowEnd] = React.useState(false);
   const [showSend, setShowSend] = React.useState(false);
+  const [firstTimeRenderCheck, setFirstTimeRenderCheck] = React.useState(false);
     
   var initValidation={
     id: 0,
@@ -33,7 +35,7 @@ export default function AddCommunicationsComponent(props) {
     communicationId: 0, 
     direction: "receive",
     date: new Date().toISOString(locale),
-    type: "call",
+    type: 1,
     duration: 0,
     subject: "",
     notes: "",
@@ -44,21 +46,29 @@ export default function AddCommunicationsComponent(props) {
   const [Comm, setComm] = React.useState(initValidation);
 
   React.useEffect(() => {   
-    if(Number(Comm.customerId) === 0){ //PARA EVITAR REFRESCOS!
+    setCommButtons();
+    if(!firstTimeRenderCheck){ //PARA EVITAR REFRESCOS! SE EJECUTA SOLO LA PRIMERA VEZ
     //SELECCION DE MODOS
-    if (props.customerId && !props.threadId){
-          //MODO AÑADIR CITA A ID
-          setMode("addToId")
-          setComm({...Comm, "customerId": props.customerId, "thread": GetNextThreadId(props.customerId), "id": GetNextCommunicationId(props.customerId)})
-        }
+      setFirstTimeRenderCheck(true);
+      if (props.customerId && !props.threadId && !props.action){
+            //MODO AÑADIR CITA A ID
+            setMode("addToId")
+            setComm({...Comm, "customerId": props.customerId, "thread": GetNextThreadId(props.customerId), "id": GetNextCommunicationId(props.customerId)})
+          }
 
-    if (props.customerId && props.threadId){
+      if (props.customerId && props.threadId &&!props.action){
+            //MODO AÑADIR CITA A ID Y THREAD
+            setMode("addToIdAndThread")
+            setComm({...Comm, "customerId": props.customerId, "thread":props.threadId, "id": GetNextCommunicationId(props.customerId)})
+          }
+      if (props.customerId && !props.threadId &&props.action){
           //MODO AÑADIR CITA A ID Y THREAD
-          setMode("addToIdAndThread")
-          setComm({...Comm, "customerId": props.customerId, "thread":props.threadId, "id": GetNextCommunicationId(props.customerId)})
+          setMode("addToIdAndAction")
+          setComm({...Comm, "customerId": props.customerId, "thread":GetNextThreadId(props.customerId), "id": GetNextCommunicationId(props.customerId), "type": props.action})
         }
-      }
-    },[props.threadId, props.customerId, setMode, setComm, Comm, ]);
+    }
+    
+    },[props.threadId, props.customerId, props.action, setMode, setComm, Comm, ]);
 
   const [customerName, setCustomerName] = React.useState("")
    
@@ -74,6 +84,7 @@ export default function AddCommunicationsComponent(props) {
 
   const HandleSubmit = (event)=>{
     event.preventDefault();
+    
     console.log(Comm)
     //CALL API TO PUT IN DATABASE
     const actualScreen = "/communications"
@@ -93,18 +104,10 @@ export default function AddCommunicationsComponent(props) {
  
   const resetData= (event)=>{
     event.preventDefault();
-      setComm(initValidation);
-      if (props.customerId && !props.threadId){
-        //MODO AÑADIR CITA A ID
-        setMode("addToId")
-        setComm({...Comm, "customerId": props.customerId, "thread": GetNextThreadId(props.customerId)})
-      }
-
-      if (props.customerId && props.threadId){
-        //MODO AÑADIR CITA A ID Y THREAD
-        setMode("addToIdAndThread")
-        setComm({...Comm, "duration": props.customerId, "thread":props.threadId})
-      } 
+    const actualScreen = navigationState.previousScreen;
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen)) 
   }
 
   const handleDate= (value)=>{
@@ -121,25 +124,32 @@ export default function AddCommunicationsComponent(props) {
   }
 
   const handleActionChange = (event)=>{
-    event.preventDefault();
 
+    event.preventDefault();
     setComm({...Comm, "type": event.target.value})
-    switch (event.target.value) {
-      case "call":
-        setShowStart(true);
-        setShowSend(false);
+    setCommButtons();
+  }
+
+  const setCommButtons =()=>{
+    //console.log("setCommButton", Comm.type, "mode", mode)
+    switch (Number(Comm.type)) {
+      case 1:
+        if(!showEnd){
+          setShowStart(true);
+          setShowSend(false);
+        }
         break;
-      case "email":
+      case 2:
         setShowStart(false);
         setShowSend(true);
         break;
-      case "whatsapp":
+      case 3:
         setShowStart(false);
         setShowSend(true);
         break;
       default:
         setShowStart(false);
-        setShowSend(true);
+        setShowSend(false);
         break;
     }
   }
@@ -163,7 +173,7 @@ export default function AddCommunicationsComponent(props) {
   }
 
   const MainTitle = () =>{
-    // Modes "add", "addToId", "addToIdAndThread"
+    // Modes "add", "addToId", "addToIdAndThread", "addToIdAndAction"
     switch (mode) {
       case "add":
           return(<><CustomerSearchBar customerFunc={SetCustomer}/></>);
@@ -175,6 +185,27 @@ export default function AddCommunicationsComponent(props) {
           return (
             <h2>{t("responsetocommunicationwith")} {datos.firstname} {datos.lastname}</h2>
           )
+      case "addToIdAndAction":
+          if (props.action==="1"){
+            return(
+              <>
+            <h2>{t("makingcallto")} {datos.firstname} {datos.lastname} {t("to")} {getCustomerPhoneFromId(datos.id)} </h2>
+            <h4>{t("pressthecallbuttontocallandrecordtime")}</h4>
+            </>
+            )
+          }
+          if (props.action==="2"){
+            
+            return(
+            <h2>{t("sendingmailto")} {datos.firstname} {datos.lastname} {t("to")} {getCustomerMailFromId(datos.id)} </h2>
+            )
+          }
+          if (props.action==="3"){
+            return(
+            <h2>{t("sendingwhatsappto")} {datos.firstname} {datos.lastname} {t("to")} {getCustomerWhatsappFromId(datos.id)} </h2>
+            )
+          }
+          break;
         
       default:
           return (
@@ -191,6 +222,14 @@ export default function AddCommunicationsComponent(props) {
       setShowEnd(true);
       setComm({...Comm, "date":new Date(), "duration":"0:00:00"})
       startTime = new Date();
+      if(customerID){  
+        const tel = getCustomerPhoneFromId(customerID)
+      
+          let url = 'tel:'+tel
+           // Open our newly created URL in a new tab to send the message
+          console.log(url)
+          window.open(url);   
+        } 
     }
     const endCall = () =>{
       setShowStart(true);
@@ -208,10 +247,52 @@ export default function AddCommunicationsComponent(props) {
   }
 
   const SendFragment = () =>  {
+    const sendMessage = () =>{
+      console.log("ENVIANDO MENSAJE", Comm.type)
+      switch (Comm.type) {
+        case "2": // EMAIL
+          if(customerID){  
+            const email = getCustomerMailFromId(customerID)
+            if(Comm.notes && Comm.subject){
+              let url = 'mailto:'+email+'?subject='+Comm.subject+'&body='+Comm.notes
+               // Open our newly created URL in a new tab to send the message
+              console.log(url)
+              window.open(url);   
+            }  
+          }
+          
+          break;
+        case "3": // WHATSAPP
+          console.log("ENVIALDO WHATS a ", customerID)
+          if(customerID){  
+            const whatsapp = getCustomerWhatsappFromId(customerID)
+            if(Comm.notes || Comm.subject){
+              var message = Comm.subject + ". " + Comm.notes
+            // Regex expression to remove all characters which are NOT alphanumeric 
+              let number = whatsapp.replace(/[^\w\s]/gi, "").replace(/ /g, "");
 
+            // Appending the phone number to the URL
+              let url = `https://web.whatsapp.com/send?phone=${number}`;
+
+            // Appending the message to the URL by encoding it
+              url += `&text=${encodeURI(message)}&app_absent=0`;
+
+            // Open our newly created URL in a new tab to send the message
+            console.log(url)
+            window.open(url);
+            }  
+          }
+          
+          break;
+    
+        default:
+          console.log("ESTAMOS EN DEFAULT")
+          break;
+      }
+    }
     return (
       <React.Fragment>
-        <Button variant='contained'>{t("sendmessage")}</Button>
+        <Button sx={{mt:2}} onClick={sendMessage} variant='contained'>{t("sendmessage")}</Button>
       </React.Fragment>
     )
   }
@@ -258,18 +339,20 @@ export default function AddCommunicationsComponent(props) {
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                       <TextField
+                        
                         id="action"
                         name='action'
                         label={t("action")}
                         value={Comm.type || ''}
                         variant="standard"
+                        disabled={mode==="addToIdAndAction"}
                         onChange={handleActionChange}
                         select
                         fullWidth
                         sx={{mr:1, textAlign:'left'}}
                         >
                           {commActions.map((option) => (
-                            <MenuItem key={option.id} value={option.type}>{t(option.type)}</MenuItem>
+                            <MenuItem key={option.id} value={option.id}>{t(option.type)}</MenuItem>
                           ))}  
                       
                         </TextField>
@@ -277,7 +360,6 @@ export default function AddCommunicationsComponent(props) {
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                       {showStart?<CallFragment />:<></>}
                       {showEnd?<CallFragment />:<></>}
-                      {showSend?<SendFragment />:<></>}
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                       {!showSend?
@@ -318,12 +400,15 @@ export default function AddCommunicationsComponent(props) {
                         ></TextField>
                      </Grid>
                 </Grid>
+                <Grid container direction="row" justifyContent="flex-end" alignItems="flex-end">
+                {showSend?<SendFragment />:<></>}
+                </Grid>
                 <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                     <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:2}}>
                     <TextField
                         id="nextction"
                         name='nextaction'
-                        label={t("nextaction")}handleNewActionChange
+                        label={t("nextaction")}
                         value={Comm.follow || ''}
                         variant="standard"
                         onChange={handleNewActionChange}

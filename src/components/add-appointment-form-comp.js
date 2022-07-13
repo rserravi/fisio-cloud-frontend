@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { GetAllData, GetAppointmentById, GetCabins, getCustomer, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -24,6 +24,7 @@ var initAddService={
 export default function AddAppointmentForm(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const navigationState= useSelector((state)=> state.navigator);
   const locale = props.locale;
   const [customerID, setCustomerID] = React.useState(props.customerId)
   
@@ -122,8 +123,12 @@ export default function AddAppointmentForm(props) {
    }
  
 
-  const resetData= ()=>{
-    //setFrmData(frmDataInit);
+   const resetData= (event)=>{
+    event.preventDefault();
+    const actualScreen = navigationState.previousScreen;
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen)) 
   }
 
   const handleDate= (value)=>{

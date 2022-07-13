@@ -5,6 +5,7 @@
         "firstname": "Juanjo",
         "lastname": "Rubio Burguillos",
         "dni":"43444444G",
+        "birthdate": "1974-04-04T17:30:00.000Z",
         "image": "juanjorubio.jpg",
         "gender": "male",
         "inbound": "customer",
@@ -58,6 +59,7 @@
         "history":[
             {   
                 "id":"1",
+                "user":"1",
                 "date": "2019-04-02T17:30:00.000Z",
                 "duration": "20",
                 "service": "2",
@@ -75,6 +77,7 @@
             },
             {
                 "id":"2",
+                "user":"1",
                 "date": "2022-01-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "1",
@@ -91,6 +94,7 @@
             ,
             {
                 "id":"3",
+                "user":"1",
                 "date": "2020-04-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "1",
@@ -107,6 +111,7 @@
             ,
             {
                 "id":"4",
+                "user":"1",
                 "date": "2022-04-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "1",
@@ -123,6 +128,7 @@
             ,
             {
                 "id":"5",
+                "user":"1",
                 "date": "2022-06-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "1",
@@ -140,6 +146,7 @@
         "appointments":[
             {
                 "id":"1",
+                "user":"1",
                 "date": "2022-06-21T17:00:00.000Z",
                 "startingTime": "17:00",
                 "duration": "60", 
@@ -163,6 +170,7 @@
             },
             {
                 "id":"2",
+                "user":"1",
                 "date": "2022-06-28T10:00:00.000Z",
                 "startingTime": "10:00",
                 "duration": "60", 
@@ -194,7 +202,9 @@
                 "notes": "Preguntó por horarios. Debo devolver la llamada cuanto antes.",
                 "follow": "call",
                 "alertfollow": "2022-07-20T16:30:00.000Z",
-                "thread":"1"
+                "thread":"1",
+                "readed":false,
+                "answered":false
             }
         ]
     },
@@ -203,6 +213,7 @@
         "addedAt": "1-10-2018",
         "firstname": "Adel",
         "lastname": "Khader",
+        "birthdate": "1974-04-04T17:30:00.000Z",
         "dni":"43444444G",
         "image": "adelkader.jpg",
         "gender": "male",
@@ -251,6 +262,7 @@
         "history":[
             {
                 "id":"1",
+                "user":"1",
                 "date": "2020-09-20T11:00:00.000Z",     
                 "duration": "60",
                 "service": "1",
@@ -266,6 +278,7 @@
             },
             {
                 "id":"2",
+                "user":"1",
                 "date": "2020-11-02T17:30:00.000Z",
                 "duration": "60",
                 "service": "1",
@@ -283,6 +296,7 @@
         "appointments":[
             {
                 "id":"1",
+                "user":"1",
                 "date": "2022-07-22T11:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
@@ -299,6 +313,7 @@
             },
             {
                 "id":"2",
+                "user":"1",
                 "date": "2022-07-02T12:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
@@ -331,7 +346,9 @@
                 "notes": "Preguntó por horarios pero no le iba bien",
                 "follow": "",
                 "alertfollow": "",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":true
             },
             {
                 "id":"2",
@@ -344,7 +361,9 @@
                 "notes": "Informado sobre horarios:si no llama le envio un recordatorio en un més",
                 "follow": "mail",
                 "alertfollow":"2022-07-14T16:30:00.000Z",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":false
             }        
         ]
     },
@@ -354,6 +373,7 @@
         "firstname": "Maria",
         "lastname": "Lapuerta",
         "dni":"",
+        "birthdate": "",
         "image": "marialapuerta.jpg",
         "gender": "female",
         "inbound": "lead",
@@ -413,7 +433,9 @@
                 "notes": "Pregunta donde estamos",
                 "follow": "",
                 "alertfollow": "",
-                "thread":"1"
+                "thread":"1",
+                "readed":false,
+                "answered":false
             }
         ]
     },
@@ -423,6 +445,8 @@
         "firstname": "Ines",
         "lastname": "Arrimadas",
         "image": "",
+        "birthdate": "",
+        "dni":"",
         "gender": "other",
         "inbound": "lead",
         "email":
@@ -482,7 +506,9 @@
                 "notes": "Preguntó por horarios pero no le iba bien",
                 "follow": "",
                 "alertfollow": "",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":false
             }
         ]
     },
@@ -491,6 +517,7 @@
         "addedAt": "1-10-2015",
         "firstname": "Ana",
         "lastname": "Torroja",
+        "birthdate": "",
         "dni":"",
         "image": "marialapuerta.jpg",
         "gender": "female",
@@ -551,7 +578,9 @@
                 "notes": "Preguntó por horarios. Ya se pasará",
                 "follow": "mail",
                 "alertfollow": "2022-08-13T16:30:00.000Z",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":false
             }
         ]
     },
@@ -560,6 +589,7 @@
         "addedAt": "1-10-2015",
         "firstname": "Bo",
         "lastname": "Derek",
+        "birthdate": "",
         "dni":"",
         "image": "marialapuerta.jpg",
         "gender": "female",
@@ -620,7 +650,9 @@
                 "notes": "Preocupada por la mascarilla",
                 "follow": "",
                 "alertfollow": "",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":true
             },
             {
                 "id": "2",
@@ -633,7 +665,9 @@
                 "notes": "Detallamos medidas que usamos, y parace convencida",
                 "follow": "",
                 "alertfollow": "",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":true
             },
             {
                 "id": "3",
@@ -646,7 +680,9 @@
                 "notes": "Pregunta si puede reservar cita, concedida.",
                 "follow": "",
                 "alertfollow": "",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":true
             },
             {
                 "id": "4",
@@ -659,7 +695,9 @@
                 "notes": "Cancelación de cita",
                 "follow": "email",
                 "alertfollow": "2022-08-13T16:30:00.000Z",
-                "thread":"1"
+                "thread":"1",
+                "readed":true,
+                "answered":false
             }
         ]
     }

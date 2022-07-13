@@ -14,6 +14,8 @@ import { SocialForm } from './form-components/social-comp';
 import { CustomerValidation } from '../utils/verification-utils';
 import { DniForm } from './form-components/dni-form';
 import ReleaseFormComp from './form-components/release-form-comp';
+import { useNavigate } from 'react-router-dom';
+import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 
 var initValidation={
   firstname: true,
@@ -25,10 +27,12 @@ var initValidation={
 
 export default function CustomerForm(props) {
   const NcState = useSelector((state)=> state.newCustomer);
+  const navigationState= useSelector((state)=> state.navigator);
   const [validation, setValidation] = React.useState(initValidation);
   const locale = props.locale
   const { t } = useTranslation();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
@@ -77,8 +81,12 @@ export default function CustomerForm(props) {
   },[dispatch])
  
 
-  const resetData= ()=>{
-    //setFrmData(frmDataInit);
+  const resetData= (event)=>{
+    event.preventDefault();
+    const actualScreen = navigationState.previousScreen;
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen)) 
   }
 
   return (

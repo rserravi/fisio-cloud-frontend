@@ -346,5 +346,22 @@
     "reschedule":"Reprogramar",
     "mail": "Correo E.",
     "orientativeprice":"Precio orientativo",
-    "performed":"Realizados"
+    "performed":"Realizados",
+    "alerts":"Alertes",
+    "definehowmuchinfoyouwantyoseeinalerts":"Defineix quina informació vols veure en les alertes (campaneta superior dreta)",
+    "showappoinmentalerts":"Veure alertes de cites",
+    "showcommunicactionalerts": "Veure alertes de communicacions",
+    "showpastalerts": "Veure alertes passades",
+    "showcommingalerts": "Veure alertes futures",
+    "pastDaysPeriod": "Periode de dies passats a mostrar",
+    "commingDaysPeriod": "Periode de dies futurs a mostrar",
+    "update":"Actualizar",
+    "reset": "Resetar",
+    "image": "Imagen",
+    "inbound": "Inbound",
+    "osint": "OSINT",
+    "makingcallto":"Realizando llamada",
+    "pressthecallbuttontocallandrecordtime":"Pulsar el botón de llamada para comenzar a registrar el tiempo",
+    "sendmessage": "Enviar mensaje",
+    "sendingmailto": "Enviando mail a"
 }

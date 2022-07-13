@@ -15,6 +15,7 @@ import { t } from 'i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCustomer } from '../../utils/dataFetch-utils';
 import LinearProgress from '@mui/material/LinearProgress';
+import SeeCustomerComponent from '../../components/see-customer.-comp';
 
 
 
@@ -73,7 +74,7 @@ function SeeCustomerContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 0, display: 'flex', flexDirection: 'column' }}>
-                  <CustomerCard _id={_id} locale={localization}/>
+                  <SeeCustomerComponent _id={_id} locale={localization}/>
                 </Paper>
               </Grid>
             </Grid>

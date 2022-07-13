@@ -5,8 +5,9 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 //MUI IMPORTS
-import { Button, Grid, IconButton, Paper, Typography } from '@mui/material';
+import { Button, Grid, IconButton, } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
+import { Box } from '@mui/system';
 import Avatar from '@mui/material/Avatar';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -15,7 +16,7 @@ import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { nameInitial } from '../utils/name-utils.js';
 import customerData from "../assets/data/dummy-data.json";
-import { LocalTextForDataGrid, paperColor } from '../utils/mui-custom-utils';
+import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
 
 
 
@@ -31,6 +32,9 @@ import EmailIcon from '@mui/icons-material/Email';
 import PrintIcon from '@mui/icons-material/Print';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SendIcon from '@mui/icons-material/Send';
+import PersonSearchIcon from '@mui/icons-material/PersonSearch';
+import { getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId } from '../utils/dataFetch-utils';
+
 
 
 var info = "";
@@ -51,21 +55,12 @@ const printCustomer = (customerId) => {
   console.log("PRINT CUSTOMER " + customerId);
 }
 
-const callUser = (firstname, lastname, number) =>{
-  console.log("Calling to " + nameInitial(firstname) + " "+ lastname + " at " + number )
+
+
+const osint = (customerId) => {
+  console.log ("BUSCANDO POR INTERNET AL NUMERO", customerId)
 }
 
-const emailUser = (firstname, lastname, mail) =>{
-  console.log("Sending email to " + nameInitial(firstname) + " "+ lastname + " at " + mail )
-}
-
-const whatsappUser = (firstname, lastname, number, whastsapp) =>{
-  if (whastsapp){
-    console.log("Sending Whatsapp to " + nameInitial(firstname) + " "+ lastname + " at " + whastsapp )
-  }else{
-  console.log("Sending Whastapp to " + nameInitial(firstname) + " "+ lastname + " at Mobile " + number )
-  }
-}
 
 //RENDER CELLS
 
@@ -95,6 +90,7 @@ const RenderAppointmentCell = (props) => {
     navigate("/addappointment/"+ customerId,{replace: true});
     dispatch(navigationSuccess("addappointment"))
   }
+
   
   return (
      <strong>
@@ -182,169 +178,9 @@ const RenderAppointmentCell = (props) => {
   );
 };
 
-const RenderPhoneCell = (props) => {
-  const {hasFocus, value } = props;
-  const {firstName, lastName, whatsapp} = props.row;
-  const buttonElement = React.useRef(null);
-  const rippleRef = React.useRef(null);
-  const { t } = useTranslation();
 
-  React.useLayoutEffect(() => {
-    if (hasFocus) {
-      const input = buttonElement.current?.querySelector('input');
-      input?.focus();
-    } else if (rippleRef.current) {
-      // Only available in @mui/material v5.4.1 or later
-      rippleRef.current.stop({});
-    }
-  }, [hasFocus]);
 
-  return (
-     <strong>
-     
-      <Tooltip title={t("call")}>
-        <IconButton
-          component="button"
-          ref={buttonElement}
-          touchRippleRef={rippleRef}
-          variant="contained"
-          color='primary'
-          size="small"
-          style={{ marginLeft: 0 }}
-          // Remove button from tab sequence when cell does not have focus
-          tabIndex={hasFocus ? 0 : -1}
-          onKeyDown={(event) => {
-            if (event.key === ' ') {
-              // Prevent key navigation when focus is on button
-              event.stopPropagation();
-            }
-          }}
-      
-          onClick={(event) => {
-            callUser(firstName, lastName, value);
-            event.stopPropagation();
-          }}
-        
-        >
-          <PhoneForwardedIcon />
-        </IconButton>
-      </Tooltip>
-      <Tooltip title={t("sendwhatsapp")}>
-        <IconButton
-          component="button"
-          ref={buttonElement}
-          touchRippleRef={rippleRef}
-          variant="contained"
-          color='primary'
-          size="small"
-          style={{ marginLeft: 5 }}
-          // Remove button from tab sequence when cell does not have focus
-          tabIndex={hasFocus ? 0 : -1}
-          onKeyDown={(event) => {
-            if (event.key === ' ') {
-              // Prevent key navigation when focus is on button
-              event.stopPropagation();
-            }
-          }}
-      
-          onClick={(event) => {
-            whatsappUser(firstName, lastName, value, whatsapp);
-            event.stopPropagation();
-          }}
-        
-        >
-          <WhatsAppIcon />
-        </IconButton>
-      </Tooltip>
-      {value}
-      </strong>
-  );
-};
 
-const RenderEmailCell = (props) => {
-  const {hasFocus, value } = props;
-  const {firstName, lastName} = props.row;
-  const buttonElement = React.useRef(null);
-  const rippleRef = React.useRef(null);
-  const { t } = useTranslation();
-
-  React.useLayoutEffect(() => {
-    if (hasFocus) {
-      const input = buttonElement.current?.querySelector('input');
-      input?.focus();
-    } else if (rippleRef.current) {
-      // Only available in @mui/material v5.4.1 or later
-      rippleRef.current.stop({});
-    }
-  }, [hasFocus]);
-
-  return (
-     <>
-     
-      <Tooltip title={t("sendemail")}>
-        <IconButton
-          component="button"
-          ref={buttonElement}
-          touchRippleRef={rippleRef}
-          variant="contained"
-          color='primary'
-          size="small"
-          style={{ marginLeft: 0 }}
-          // Remove button from tab sequence when cell does not have focus
-          tabIndex={hasFocus ? 0 : -1}
-          onKeyDown={(event) => {
-            if (event.key === ' ') {
-              // Prevent key navigation when focus is on button
-              event.stopPropagation();
-            }
-          }}
-      
-          onClick={(event) => {
-            emailUser(firstName, lastName, value);
-            event.stopPropagation();
-          }}
-        
-        >
-          <SendIcon />
-        </IconButton>
-      </Tooltip>
-      {value}
-      </>
-  );
-};
-
-const RenderInboundCell = (props) => {
-  const {hasFocus, value } = props;
-  const { t } = useTranslation();
-
-  const buttonElement = React.useRef(null);
-  const rippleRef = React.useRef(null);
-  const colorPaperInbound = paperColor(props.row.inbound);
-
-  React.useLayoutEffect(() => {
-    if (hasFocus) {
-      const input = buttonElement.current?.querySelector('input');
-      input?.focus();
-    } else if (rippleRef.current) {
-      // Only available in @mui/material v5.4.1 or later
-      rippleRef.current.stop({});
-    }
-  }, [hasFocus]);
-
-  return (
-      <Paper 
-        onClick={(event) => {
-          event.stopPropagation();
-        }}
-        
-        sx={{bgcolor:colorPaperInbound.back, color:colorPaperInbound.front}}
-        
-      >
-        <Typography variant='p' component="p" marginX={2}>{t(value)}</Typography>
-      
-      </Paper>
-  );
-};
 
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
 
@@ -409,6 +245,175 @@ export const CustomersComponent = (props)=> {
   const dispatch = useDispatch();
   info= props.info;
   compact = props.compact;
+  var boxHeight = 600;
+  if(compact){
+    boxHeight = 330;
+  }
+
+  const RenderPhoneCell = (props) => {
+    const {hasFocus, value } = props;
+    const {id, whatsapp} = props.row;
+    const phone = getCustomerPhoneFromId(id);
+    const whats = getCustomerWhatsappFromId(id);
+    const buttonElement = React.useRef(null);
+    const rippleRef = React.useRef(null);
+    const { t } = useTranslation();
+  
+    React.useLayoutEffect(() => {
+      if (hasFocus) {
+        const input = buttonElement.current?.querySelector('input');
+        input?.focus();
+      } else if (rippleRef.current) {
+        // Only available in @mui/material v5.4.1 or later
+        rippleRef.current.stop({});
+      }
+    }, [hasFocus]);
+  
+    return (
+       <>
+       
+        <Tooltip title={t("call")}>
+          <IconButton
+            disabled={!phone}
+            component="button"
+            ref={buttonElement}
+            touchRippleRef={rippleRef}
+            variant="contained"
+            color='primary'
+            size="small"
+            style={{ marginLeft: 0 }}
+            // Remove button from tab sequence when cell does not have focus
+            tabIndex={hasFocus ? 0 : -1}
+            onKeyDown={(event) => {
+              if (event.key === ' ') {
+                // Prevent key navigation when focus is on button
+                event.stopPropagation();
+              }
+            }}
+        
+            onClick={(event) => {
+              callUser(id);
+              event.stopPropagation();
+            }}
+          
+          >
+            <PhoneForwardedIcon />
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={t("sendwhatsapp")}>
+          <IconButton
+           disabled={!whatsapp}
+            component="button"
+            ref={buttonElement}
+            touchRippleRef={rippleRef}
+            variant="contained"
+            color='primary'
+            size="small"
+            style={{ marginLeft: 5 }}
+            // Remove button from tab sequence when cell does not have focus
+            tabIndex={hasFocus ? 0 : -1}
+            onKeyDown={(event) => {
+              if (event.key === ' ') {
+                // Prevent key navigation when focus is on button
+                event.stopPropagation();
+              }
+            }}
+        
+            onClick={(event) => {
+              whatsappUser(id, whatsapp);
+              event.stopPropagation();
+            }}
+          
+          >
+            <WhatsAppIcon />
+          </IconButton>
+        </Tooltip>
+        {value}
+        </>
+    );
+  };
+
+  const RenderEmailCell = (props) => {
+    const {hasFocus, value } = props;
+    const {id} = props.row;
+    const buttonElement = React.useRef(null);
+    const rippleRef = React.useRef(null);
+    const { t } = useTranslation();
+    const email = getCustomerMailFromId(id);
+
+  
+    React.useLayoutEffect(() => {
+      if (hasFocus) {
+        const input = buttonElement.current?.querySelector('input');
+        input?.focus();
+      } else if (rippleRef.current) {
+        // Only available in @mui/material v5.4.1 or later
+        rippleRef.current.stop({});
+      }
+    }, [hasFocus]);
+  
+    return (
+       <>
+       
+        <Tooltip title={t("sendemail")}>
+          <IconButton
+            component="button"
+            disabled={!email}
+            ref={buttonElement}
+            touchRippleRef={rippleRef}
+            variant="contained"
+            color='primary'
+            size="small"
+            style={{ marginLeft: 0 }}
+            // Remove button from tab sequence when cell does not have focus
+            tabIndex={hasFocus ? 0 : -1}
+            onKeyDown={(event) => {
+              if (event.key === ' ') {
+                // Prevent key navigation when focus is on button
+                event.stopPropagation();
+              }
+            }}
+        
+            onClick={(event) => {
+              emailUser(id, value);
+              event.stopPropagation();
+            }}
+          
+          >
+            <SendIcon />
+          </IconButton>
+        </Tooltip>
+        {value}
+        </>
+    );
+  };
+  
+  const emailUser = (id, mail) =>{
+    dispatch(navigationLoading());
+    navigate("/addcommunication/"+ id + "/0/2",{replace: true});
+    dispatch(navigationSuccess("addappointment"))
+    console.log("Sending email to " + id + " at " + mail )
+  
+  }
+
+
+  const callUser = (id) =>{
+    const actualScreen = "/addcommunication/"+ id + "/0/1"
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const whatsappUser = (id, whatsapp) =>{
+    if (whatsapp){
+      const actualScreen = "/addcommunication/"+ id + "/0/3"
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    }
+  }
+  
+
 
   const { t } = useTranslation();
  
@@ -433,9 +438,9 @@ export const CustomersComponent = (props)=> {
   
     return(
       [
-        { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'inbound', headerName: "Inbound", width: 120 ,renderCell:RenderInboundCell },
-        { field: 'image', headerName:"Imagen", width:60, renderCell: (params)=>
+        { field: 'id', headerName: t("Id"), width: 20, hide:"true" },
+        { field: 'inbound', headerName: t("inbound"), width: 120 },
+        { field: 'image', headerName:t("image"), width:60, renderCell: (params)=>
             {
               return(
                 <>
@@ -444,9 +449,9 @@ export const CustomersComponent = (props)=> {
               )
             }
         },
-        { field: 'firstName', headerName: t("name"), width: 100 },
-        { field: 'lastName', headerName: t("lastname"), width: 130 },
-        { field: 'email', headerName: t("email"), width: 190, renderCell:RenderEmailCell},
+        { field: 'firstName', headerName: t("name"), width: 100, align: "right",headerAlign:"right" },
+        { field: 'lastName', headerName: t("lastname"), width: 150},
+        { field: 'email', headerName: t("email"), width: 190,renderCell: RenderEmailCell},
         
         {
           field: 'phoneNumber',
@@ -478,6 +483,15 @@ export const CustomersComponent = (props)=> {
           />,
           
             <GridActionsCellItem
+            icon={<PersonSearchIcon />}
+            label={t("osint")}
+            showInMenu
+            onClick={(event) => {
+              osint(params.id);
+              event.stopPropagation();
+          }}
+          />,
+          <GridActionsCellItem
             icon={<ContentCopyIcon />}
             label={t("duplicatecustomer")}
             showInMenu
@@ -607,7 +621,35 @@ export const CustomersComponent = (props)=> {
     
       <CustomerToolBar />
       <Title>{t(setTitle())}</Title>
-    
+      <Box
+          sx={{
+            height: boxHeight,
+            width: '100%',
+            '& .inbound-unknown': {
+              backgroundColor: 'rosybrown',
+              color: 'white',
+              fontWeight: '600',
+            },
+            '& .inbound-lead': {
+              backgroundColor: 'khaki',
+              color: 'dimgray',
+              fontWeight: '600',
+            },
+            '& .inbound-customer': {
+              backgroundColor: 'dodgerblue',
+              color: 'white',
+              fontWeight: '600',
+            },
+            '& .inbound-passive': {
+              backgroundColor: 'darkred',
+              color: 'white',
+              fontWeight: '600',
+            },
+            '& .name-bold': {
+              fontWeight: '600',
+            },
+            
+          }}>
       <DataGrid
         rows={rows}
         columns={Columns()}
@@ -618,12 +660,34 @@ export const CustomersComponent = (props)=> {
         components={!compact?{
           Toolbar: GridToolbar,
         }:null}
-      
         onSelectionModelChange={handleRowSelection}
-
         localeText={LocalTextForDataGrid()}
+        getCellClassName={(params) => {
+          if (params.field === 'inbound') {
+            switch (params.value) {
+              case "unknown":
+                return 'inbound-unknown';
+              case "lead":
+                return 'inbound-lead';
+              case "customer":
+                return 'inbound-customer';
+              case "passive":
+                return 'inbound-passive';
+            
+              default:
+                return 'inbound-unknown';
+            }
+          }else{
+            if (params.field === 'firstName' || params.field ==='lastName'){
+              return 'name-bold'
+            }
+            else{
+            return '';
+            }
+          }
+        }}
       />
-      
+  </Box>
     </React.Fragment>
   );
 }

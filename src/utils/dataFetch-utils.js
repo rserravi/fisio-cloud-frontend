@@ -7,8 +7,7 @@ import { useTranslation } from 'react-i18next';
 export const getCustomer = (_id) =>{
     let found = null;
     for (let key in customerData){
-      
-        if (customerData[key].id === _id){
+        if (Number(customerData[key].id) === Number(_id)){
             found = customerData[key];
             break
         }
@@ -16,18 +15,47 @@ export const getCustomer = (_id) =>{
     return found;
 }
 
-export const getCustomerMailFromId=(_id)=>{
+export const getCustomerPhoneFromId=(_id)=>{
   let found = "";
     for (let key in customerData){
-        if (customerData[key].email){
-          for (let emailKey  in customerData[key].email){
-            if(customerData[key].email[emailKey])
-              found = customerData[key].email[emailKey].emailAddress;
-              return found;
+      if (customerData[key].id===_id){
+        if (customerData[key].phoneNumber){
+          if (customerData[key].phoneNumber[1].number){
+            found = customerData[key].phoneNumber[1].number
+          }
+          else{
+            found = customerData[key].phoneNumber[0].number
           }
         }
+      }
     }
     return found;
+}
+
+export const getCustomerWhatsappFromId=(_id)=>{
+  let found = "";
+  for (let key in customerData){
+    if (customerData[key].id===_id){
+      found = customerData[key].whatsapp;
+    }
+  }
+  return found;
+}
+
+export const getCustomerMailFromId=(_id)=>{
+  let found = "";
+  for (let key in customerData){
+    if (customerData[key].id===_id){
+      if (customerData[key].email){
+        for (let emailKey  in customerData[key].email){
+          if(customerData[key].email[emailKey])
+            found = customerData[key].email[emailKey].emailAddress;
+            return found;
+        }
+      }
+    }
+  }
+  return found;
 }
 
 export const getCompanyData = ()=>{
@@ -60,31 +88,69 @@ export const getCompanyData = ()=>{
 export const GetCommunications = (props)=>{
   var jsonObj = [];
   var newIdCount =0;
+  var item = {};
   if (!props){
-    for (let key in customerData){
-      if (customerData[key].contacthistory){
-        for (let histoKey in customerData[key].contacthistory){
+    const data = customerData;
+    for (let key in data){
+      if (data[key].contacthistory){
+        for (let histoKey in data[key].contacthistory){
           newIdCount = newIdCount + 1;
-          var item = {};
+          item = {};
           item["id"]= newIdCount;
-          item["customerId"]= customerData[key].id;
-          item["userId"]= customerData[key].contacthistory[histoKey].user;
-          item["direction"]= customerData[key].contacthistory[histoKey].direction;
-          item["communicationId"]= customerData[key].contacthistory[histoKey].id;
-          item["date"] = customerData[key].contacthistory[histoKey].date;
-          item["type"] =  customerData[key].contacthistory[histoKey].type;
-          item["duration"] = customerData[key].contacthistory[histoKey].duration;
-          item["subject"] =  customerData[key].contacthistory[histoKey].subject;
-          item["notes"] =customerData[key].contacthistory[histoKey].notes;
-          item["follow"] =customerData[key].contacthistory[histoKey].follow;
-          item["thread"] = customerData[key].contacthistory[histoKey].thread;
+          item["customerId"]= data[key].id;
+          item["userId"]= data[key].contacthistory[histoKey].user;
+          item["direction"]= data[key].contacthistory[histoKey].direction;
+          item["communicationId"]= data[key].contacthistory[histoKey].id;
+          item["date"] = data[key].contacthistory[histoKey].date;
+          item["type"] =  data[key].contacthistory[histoKey].type;
+          item["duration"] = data[key].contacthistory[histoKey].duration;
+          item["subject"] =  data[key].contacthistory[histoKey].subject;
+          item["notes"] =data[key].contacthistory[histoKey].notes;
+          item["follow"] =data[key].contacthistory[histoKey].follow;
+          item["thread"] = data[key].contacthistory[histoKey].thread;
+          item["readed"] =  data[key].contacthistory[histoKey].readed;
+          item["answered"] =  data[key].contacthistory[histoKey].answered;
           
           jsonObj.push(item)
         }
       }
     }
   }
+  else {
+    const data = getCustomer(props.id);
+   
+      if (data.contacthistory){
+        for (let histoKey in data.contacthistory){
+          newIdCount = newIdCount + 1;
+          item = {};
+          item["id"]= newIdCount;
+          item["customerId"]= data.id;
+          item["userId"]= data.contacthistory[histoKey].user;
+          item["direction"]= data.contacthistory[histoKey].direction;
+          item["communicationId"]= data.contacthistory[histoKey].id;
+          item["date"] = data.contacthistory[histoKey].date;
+          item["type"] =  data.contacthistory[histoKey].type;
+          item["duration"] = data.contacthistory[histoKey].duration;
+          item["subject"] =  data.contacthistory[histoKey].subject;
+          item["notes"] =data.contacthistory[histoKey].notes;
+          item["follow"] =data.contacthistory[histoKey].follow;
+          item["thread"] = data.contacthistory[histoKey].thread;
+          item["readed"] =  data.contacthistory[histoKey].readed;
+          item["answered"] =  data.contacthistory[histoKey].answered;
+          
+          jsonObj.push(item)
+        }
+      }
+  }
+    
+
   return jsonObj;
+}
+
+export const OrderArrayByDate = (datedArray)=>{
+    const data = datedArray;
+    const sorted = data.sort((a,b)=> new Date(b.date) - new Date(a.date))
+    return sorted;
 }
 
 export const getUserList = (props) =>{
@@ -558,6 +624,10 @@ export const GetDebtsToDate = (endDate) =>{
     return accumulated;
 }
 
+export const GetAlertsData = () =>{
+  return configData[0].alerts;
+}
+
 export const GetAllData = () =>{
   return customerData;
 }
@@ -583,7 +653,6 @@ export const GetCommunicationActions = () =>{
 }
 
 export const GetNextThreadId = (customerId)=>{
-  console.log("GET NEXT COMM ID", customerId)
   var result = 0;
   if(customerId){
     for (let userKey in customerData){
@@ -600,7 +669,6 @@ export const GetNextThreadId = (customerId)=>{
 
 
 export const GetNextCommunicationId =(customerId)=>{
-  console.log("GET NEXT COMM ID", customerId)
   var result = 0;
   if(customerId){
     for (let userKey in customerData){
@@ -639,13 +707,6 @@ export const GetReceiverName = (customerId, userId, direction) =>{
   }
 }
 
-/* export const GetLocales = ()=>{
-  const result = useSelector((user)=>user.locales)
-  console.log(result)
-  return result;
-  //return configData[0].user[0].locales;
-} */
-
 export const GetRowById = (row,_id)=>{
   var found = {}
   for (let key in row){
@@ -681,6 +742,8 @@ export const GetThread = (data)=>{
           item["follow"] = customerData[key].contacthistory[commKey].follow;
           item["alertfollow"]= customerData[key].contacthistory[commKey].alertfollow;
           item["thread"] =  customerData[key].contacthistory[commKey].thread;
+          item["readed"] = customerData[key].contacthistory[commKey].readed;
+          item["answered"] = customerData[key].contacthistory[commKey].readed;
           
           jsonObj.push(item)
         }

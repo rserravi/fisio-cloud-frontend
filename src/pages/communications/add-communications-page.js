@@ -26,7 +26,7 @@ function AddCommunicationContent() {
   const localization = userSelector.locale;
   const _customerId = Number(useParams().customerid);
   const _thread = Number(useParams().thread);
-  console.log("REFRESCOS DE COMM-PAGE")
+  const _action = useParams().action;
   const { t } = useTranslation();
 
   
@@ -56,7 +56,7 @@ function AddCommunicationContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AddCommunicationsComponent customerId={_customerId} threadId={_thread} locale={localization} />
+                  <AddCommunicationsComponent customerId={_customerId} threadId={_thread} action={_action} locale={localization} />
                 </Paper>
               </Grid>
             </Grid>

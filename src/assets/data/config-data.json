@@ -242,6 +242,14 @@
                 "id":3,
                 "localization":"Visita"
             }
-        ]    
+        ],
+        "alerts":{
+            "showAppoAlerts":true,
+            "showCommAlerts":true,
+            "showPast": true,
+            "showComming":true,
+            "pastDaysPeriod":7,
+            "commingDaysPeriod":5
+        }
     }
 ]

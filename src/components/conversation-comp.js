@@ -28,11 +28,13 @@ const BackgroundColor = (dir) =>{
 const commActions = GetCommunicationActions();
 
 export const ConversationComponent = (props) => {
+
  
    const { t } = useTranslation();
    const threadData =GetThread(props.select);
    const locale = props.locale;
    const [newActionDialogOpen, setNewActionDialogOpen] = React.useState(false);
+   console.log(threadData)
 
    const HandleNewActionClick = ()=>{
     setNewActionDialogOpen(true)

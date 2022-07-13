@@ -12,6 +12,7 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { CommunicationsComponent } from '../../components/communications-comp';
+import { CommTab } from '../../components/form-components/comm-tab-comp';
 
 
 const mdTheme = createTheme();
@@ -49,7 +50,7 @@ function CommunicactionsContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CommunicationsComponent compact={false} locale={localization}/>
+                  <CommTab compact={false} locale={localization}/>
                 </Paper>
               </Grid>
             </Grid>
