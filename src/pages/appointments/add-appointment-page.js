@@ -24,8 +24,8 @@ function AddAppointmentContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const _id = Number(useParams().tid);
-  const _appoId = Number(useParams().aid);
+  const _id = Number(useParams().customerId);
+  const _appoId = Number(useParams().appoId);
 
   const { t } = useTranslation();
   

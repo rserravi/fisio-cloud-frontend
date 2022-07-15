@@ -10,7 +10,6 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import CustomerCard from '../../components/customer-card-comp';
 import { t } from 'i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getCustomer } from '../../utils/dataFetch-utils';
@@ -25,6 +24,7 @@ function SeeCustomerContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const _id = Number(useParams().tid);
+  const _tab = useParams().tab; //appo, hist, depo, comm
   const customer = getCustomer(_id);
   const navigate = useNavigate();
   const userSelector = useSelector(state => state.user);
@@ -74,7 +74,7 @@ function SeeCustomerContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 0, display: 'flex', flexDirection: 'column' }}>
-                  <SeeCustomerComponent _id={_id} locale={localization}/>
+                  <SeeCustomerComponent _id={_id} locale={localization} _tab={_tab}/>
                 </Paper>
               </Grid>
             </Grid>

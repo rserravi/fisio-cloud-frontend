@@ -26,7 +26,7 @@
             "city": "New York",
             "state": "NY",
             "postalCode": "10021",
-            "country":"spain"
+            "country":"usa"
         },
         "phoneNumber":
         [
@@ -69,9 +69,14 @@
                 "status":"paid",
                 "closed": "2019-04-04T17:30:00.000Z",
                 "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-                "attachment":[{
+                "attachment":[
+                    {
                         "id":"1",
                         "file":"cosas.pdf"
+                    },
+                    {
+                        "id":"2",
+                        "file":"otrascosas.pdf"
                     }
                 ]
             },
@@ -223,6 +228,10 @@
             {
               "type": "home",
               "emailAddress": "adelk@gmail.com"
+            },
+            {
+              "type": "work",
+              "emailAddress": ""
             }
         ],
 
@@ -255,8 +264,11 @@
             {
                 "media": "twitter",
                 "user": "@TeresaRodr_"
+            },
+            {
+                "media": "",
+                "user": ""
             }
-
         ],
  
         "history":[
@@ -297,7 +309,7 @@
             {
                 "id":"1",
                 "user":"1",
-                "date": "2022-07-22T11:00:00.000Z",
+                "date": "2022-07-02T11:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "1",
@@ -314,7 +326,7 @@
             {
                 "id":"2",
                 "user":"1",
-                "date": "2022-07-02T12:00:00.000Z",
+                "date": "2022-07-19T12:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "1",
@@ -363,7 +375,7 @@
                 "alertfollow":"2022-07-14T16:30:00.000Z",
                 "thread":"1",
                 "readed":true,
-                "answered":false
+                "answered":true
             }        
         ]
     },
@@ -382,6 +394,10 @@
             {
               "type": "home",
               "emailAddress": ""
+            },
+            {
+                "type": "work",
+                "emailAddress": ""
             }
         ],
 

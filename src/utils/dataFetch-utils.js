@@ -370,41 +370,57 @@ export const GetAppointments = ()=>{
         if(customerData[userKey].appointments.length >=0){
             for (let appoKey in customerData[userKey].appointments){
                 newIdCount = newIdCount +1;
-                var id = newIdCount;
-                var customerId = customerData[userKey].id;
-                var customerName = customerData[userKey].firstname + " " + customerData[userKey].lastname;
-                var date = customerData[userKey].appointments[appoKey].date;
-                var startingTime = customerData[userKey].appointments[appoKey].startingTime;
-                var duration = customerData[userKey].appointments[appoKey].duration;
-                var service = customerData[userKey].appointments[appoKey].service;
-                var cabin = customerData[userKey].appointments[appoKey].cabin;
-                var price = customerData[userKey].appointments[appoKey].price;
-                var paid = customerData[userKey].appointments[appoKey].paid;
-                var status = customerData[userKey].appointments[appoKey].status;
-                var closed = customerData[userKey].appointments[appoKey].closed;
-                var notes = customerData[userKey].appointments[appoKey].notes;
-                var attachment = customerData[userKey].appointments[appoKey].attachment;
                 var item = {}
-                item["id"] = id;
-                item["customerId"] = customerId;
-                item["customerName"] = customerName;
-                item["date"] = date;
-                item["startingTime"] = startingTime;
-                item["duration"] = duration;
-                item["service"] = service;
-                item["cabin"]= cabin;
-                item["price"] = price;
-                item["paid"] = paid;
-                item["status"] = status;
-                item["closed"] = closed;
-                item["notes"] = notes;
-                item["attachment"] = attachment;
+                item["id"] = newIdCount;
+                item["customerId"] = customerData[userKey].id;
+                item["customerName"] = customerData[userKey].firstname + " " + customerData[userKey].lastname;
+                item["date"] = customerData[userKey].appointments[appoKey].date;
+                item["startingTime"] = customerData[userKey].appointments[appoKey].startingTime;
+                item["duration"] = customerData[userKey].appointments[appoKey].duration;
+                item["service"] = customerData[userKey].appointments[appoKey].service;
+                item["cabin"]= customerData[userKey].appointments[appoKey].cabin;
+                item["price"] = customerData[userKey].appointments[appoKey].price;
+                item["paid"] = customerData[userKey].appointments[appoKey].paid;
+                item["status"] = customerData[userKey].appointments[appoKey].status;
+                item["closed"] = customerData[userKey].appointments[appoKey].closed;
+                item["notes"] = customerData[userKey].appointments[appoKey].notes;
+                item["attachment"] = customerData[userKey].appointments[appoKey].attachment;
 
                 jsonObj.push(item)
             }
         }
     }
     return jsonObj  
+}
+
+export const GetHistories = ()=>{
+  var jsonObj = [];
+  var newIdCount =0;
+  for (let userKey in customerData){
+      if(customerData[userKey].history.length >=0){
+          for (let appoKey in customerData[userKey].history){
+              newIdCount = newIdCount +1;
+              var item = {}
+              item["id"] = newIdCount;
+              item["customerId"] = customerData[userKey].id;
+              item["customerName"] = customerData[userKey].firstname + " " + customerData[userKey].lastname;
+              item["date"] = customerData[userKey].apphistoryointments[appoKey].date;
+              item["startingTime"] = customerData[userKey].history[appoKey].startingTime;
+              item["duration"] = customerData[userKey].history[appoKey].duration;
+              item["service"] = customerData[userKey].history[appoKey].service;
+              item["cabin"]= customerData[userKey].history[appoKey].cabin;
+              item["price"] = customerData[userKey].history[appoKey].price;
+              item["paid"] = customerData[userKey].history[appoKey].paid;
+              item["status"] = customerData[userKey].history[appoKey].status;
+              item["closed"] = customerData[userKey].history[appoKey].closed;
+              item["notes"] = customerData[userKey].history[appoKey].notes;
+              item["attachment"] = customerData[userKey].history[appoKey].attachment;
+
+              jsonObj.push(item)
+          }
+      }
+  }
+  return jsonObj  
 }
 
 export const GetAppointmentById = (props) =>{
@@ -415,6 +431,8 @@ export const GetAppointmentById = (props) =>{
           if (Number(customerData[userKey].appointments[appoKey].id) ===  Number(props.appoId)){
             var item = {}
                 item["id"] = customerData[userKey].appointments[appoKey].id
+                item["customerId"] = customerData[userKey].id;
+                item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
                 item["date"] =  customerData[userKey].appointments[appoKey].date;
                 item["duration"] = customerData[userKey].appointments[appoKey].duration;
                 item["service"] =  customerData[userKey].appointments[appoKey].service;
@@ -433,6 +451,93 @@ export const GetAppointmentById = (props) =>{
       }
       }
     console.log(jsonObj)
+    return jsonObj  
+}
+
+export const GetHistoryById = (props) =>{
+  var jsonObj = [];
+  for (let userKey in customerData){
+    if (Number(customerData[userKey].id )=== Number(props.userId)){
+      for (let histKey in customerData[userKey].history){
+        if (Number(customerData[userKey].history[histKey].id) ===  Number(props.appoId)){
+          var item = {}
+              item["id"] = customerData[userKey].history[histKey].id
+              item["customerId"] = customerData[userKey].id;
+              item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
+              item["date"] =  customerData[userKey].history[histKey].date;
+              item["duration"] = customerData[userKey].history[histKey].duration;
+              item["service"] =  customerData[userKey].history[histKey].service;
+              item["cabin"]=   customerData[userKey].history[histKey].cabin;
+              item["price"] =customerData[userKey].history[histKey].price;
+              item["paid"] =customerData[userKey].history[histKey].paid;
+              item["status"] = customerData[userKey].history[histKey].status;
+              item["closed"] = customerData[userKey].history[histKey].closed;
+              item["notes"] = customerData[userKey].history[histKey].notes;
+              item["attachment"] = customerData[userKey].history[histKey].attachment;
+
+              jsonObj.push(item)
+              return jsonObj  
+        }
+      }
+    }
+    }
+  console.log(jsonObj)
+  return jsonObj  
+}
+
+export const GetAppointmentsByCustomerId = (customerID) =>{
+  var jsonObj = [];
+    for (let userKey in customerData){
+      if (Number(customerData[userKey].id )=== Number(customerID)){
+        for (let appoKey in customerData[userKey].appointments){
+        
+            var item = {}
+                item["id"] = customerData[userKey].appointments[appoKey].id
+                item["customerId"] = customerData[userKey].id;
+                item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
+                item["date"] =  customerData[userKey].appointments[appoKey].date;
+                item["duration"] = customerData[userKey].appointments[appoKey].duration;
+                item["service"] =  customerData[userKey].appointments[appoKey].service;
+                item["cabin"]=   customerData[userKey].appointments[appoKey].cabin;
+                item["price"] =customerData[userKey].appointments[appoKey].price;
+                item["paid"] =customerData[userKey].appointments[appoKey].paid;
+                item["status"] = customerData[userKey].appointments[appoKey].status;
+                item["closed"] = customerData[userKey].appointments[appoKey].closed;
+                item["notes"] = customerData[userKey].appointments[appoKey].notes;
+                item["attachment"] = customerData[userKey].appointments[appoKey].attachment;
+
+                jsonObj.push(item)
+        }
+      }
+      }
+    return jsonObj  
+}
+
+export const GetHistoryByCustomerId = (customerID) =>{
+  var jsonObj = [];
+    for (let userKey in customerData){
+      if (Number(customerData[userKey].id )=== Number(customerID)){
+        for (let appoKey in customerData[userKey].history){
+        
+            var item = {}
+                item["id"] = customerData[userKey].history[appoKey].id
+                item["customerId"] = customerData[userKey].id;
+                item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
+                item["date"] =  customerData[userKey].history[appoKey].date;
+                item["duration"] = customerData[userKey].history[appoKey].duration;
+                item["service"] =  customerData[userKey].history[appoKey].service;
+                item["cabin"]=   customerData[userKey].history[appoKey].cabin;
+                item["price"] =customerData[userKey].history[appoKey].price;
+                item["paid"] =customerData[userKey].history[appoKey].paid;
+                item["status"] = customerData[userKey].history[appoKey].status;
+                item["closed"] = customerData[userKey].history[appoKey].closed;
+                item["notes"] = customerData[userKey].history[appoKey].notes;
+                item["attachment"] = customerData[userKey].history[appoKey].attachment;
+
+                jsonObj.push(item)
+        }
+      }
+      }
     return jsonObj  
 }
 
@@ -567,6 +672,17 @@ export const GetDepositsFromDate = (startdate, endDate) =>{
     }
 
     return accumulated;
+}
+
+export const GetFormattedAttachments = (attachments) =>{ 
+  console.log(attachments);
+  var text = "";
+  const linkbase = "https://localhost:3000/docs/"
+  for (let key in attachments){
+    text = text + '<a href="'+linkbase+attachments[key]+'">'+attachments[key]+'</a> '
+  }
+  return text;
+
 }
 
 export const GetDepositsArrayFromDate = (startdate, endDate, status) =>{
@@ -718,6 +834,25 @@ export const GetRowById = (row,_id)=>{
 return found;
 }
 
+export const notAnsweredMessages = (customerId)=>{
+  var count = 0;
+  if(customerId){
+    for (let userKey in customerData){
+      if (customerData[userKey].id === customerId){
+        if (customerData[userKey].contacthistory.length !==0){
+          for (let commKey in customerData[userKey].contacthistory){
+            if (!customerData[userKey].contacthistory[commKey].answered){
+              count = count +1;
+            }
+          }
+        }
+      }
+    }
+   
+    return count
+  }
+}
+
 export const GetThread = (data)=>{
   const customerID = data.customerId;
   const thread = data.thread;
@@ -743,7 +878,7 @@ export const GetThread = (data)=>{
           item["alertfollow"]= customerData[key].contacthistory[commKey].alertfollow;
           item["thread"] =  customerData[key].contacthistory[commKey].thread;
           item["readed"] = customerData[key].contacthistory[commKey].readed;
-          item["answered"] = customerData[key].contacthistory[commKey].readed;
+          item["answered"] = customerData[key].contacthistory[commKey].answered;
           
           jsonObj.push(item)
         }

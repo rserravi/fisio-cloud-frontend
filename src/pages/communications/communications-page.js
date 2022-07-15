@@ -12,7 +12,7 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { CommunicationsComponent } from '../../components/communications-comp';
-import { CommTab } from '../../components/form-components/comm-tab-comp';
+import { CommTab } from '../../components/tabs/comm-tab-comp';
 
 
 const mdTheme = createTheme();

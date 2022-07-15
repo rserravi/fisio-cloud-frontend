@@ -60,19 +60,18 @@ export const getAge = (birthdate) =>{
 }
 
 export const addMinutesToDate = (date, minutes)=>{
-
   var oldDate = new Date();
   if (typeof(date)==="string"){
     oldDate = new Date(date)
   }
-  else{
-    if (date._isAMomentObject){
+  if (date._isAMomentObject){
       oldDate = date._d;
     }
-  }
+
   if (Object.prototype.toString.call(date) === '[object Date]'  ){
     oldDate = date;
   }
+
   var newd = new Date(date);
   newd.setMinutes(oldDate.getMinutes()+Number(minutes));
   return newd

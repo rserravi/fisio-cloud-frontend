@@ -6,6 +6,8 @@ const initialState = {
     error: "",
     isEditing:false,
     isNew: true,
+    id:0,
+    addedAt:"",
     firstname:"",
     lastname:"",
     image: "images/Portrait_Placeholder.png",
@@ -148,28 +150,45 @@ const createCustomerSlice = createSlice({
             state.isValidated=action.payload.isValidated
             state.error=action.payload.error
             state.isEditing=action.payload.isEditing
+            state.id = action.payload.id
+            state.addedAt = action.payload.addedAt
             state.firstname=action.payload.firstname
             state.lastname=action.payload.lastname
             state.image=action.payload.image
             state.birthdate=action.payload.birthdate
             state.gender=action.payload.gender
-            state.emailhome=action.payload.emailhome
-            state.emailwork=action.payload.emailwork
-            state.streetaddress=action.payload.streetaddress
-            state.city=action.payload.city
-            state.state=action.payload.state
-            state.postalCode=action.payload.postalCode
-            state.country=action.payload.country
-            state.homephone=action.payload.homephone
-            state.mobilephone=action.payload.mobilephone
+            state.dni = action.payload.dni
+            if (action.payload.email[0]){
+                state.emailhome=action.payload.email[0].emailAddress
+            }
+            if (action.payload.email[1]){
+            state.emailwork=action.payload.email[1].emailAddress
+            }
+            state.streetaddress=action.payload.address.streetaddress
+            state.city=action.payload.address.city
+            state.state=action.payload.address.state
+            state.postalCode=action.payload.address.postalCode
+            state.country=action.payload.address.country
+            state.homephone=action.payload.phoneNumber[0].number
+            state.mobilephone=action.payload.phoneNumber[1].number
             state.whatsapp=action.payload.whatsapp
-            state.social1=action.payload.social1
-            state.social2=action.payload.social2
-            state.social3=action.payload.social3
-            state.socialUser1=action.payload.socialUser1
-            state.socialUser2=action.payload.socialUser2
-            state.socialUser3=action.payload.socialUser3
+            if (action.payload.socialMedia[0]){
+                state.social1=action.payload.socialMedia[0].media
+                state.socialUser1=action.payload.socialMedia[0].user
+            }
+            if (action.payload.socialMedia[1]){
+                state.social1=action.payload.socialMedia[1].media
+                state.socialUser1=action.payload.socialMedia[1].user
+            }
+            if (action.payload.socialMedia[2]){
+                state.social1=action.payload.socialMedia[2].media
+                state.socialUser1=action.payload.socialMedia[2].user
+            }    
+           
             state.countryPhoneCode=action.payload.countryPhoneCode
+            state.releaseformFile=action.payload.releaseForm.file
+            state.releaseformGenerated=action.payload.releaseForm.generated
+            state.releaseformSigned=action.payload.releaseForm.signed
             state.locale=action.payload.locale
             state.role=action.payload.role
             state.isNew=action.payload.isNew

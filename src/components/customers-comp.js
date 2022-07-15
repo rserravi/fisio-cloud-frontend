@@ -14,7 +14,6 @@ import Tooltip from '@mui/material/Tooltip';
 //CUSTOM IMPORTS
 import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-import { nameInitial } from '../utils/name-utils.js';
 import customerData from "../assets/data/dummy-data.json";
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
 
@@ -55,8 +54,6 @@ const printCustomer = (customerId) => {
   console.log("PRINT CUSTOMER " + customerId);
 }
 
-
-
 const osint = (customerId) => {
   console.log ("BUSCANDO POR INTERNET AL NUMERO", customerId)
 }
@@ -86,19 +83,36 @@ const RenderAppointmentCell = (props) => {
   }, [hasFocus]);
 
   const addNewAppointment= (customerId) =>{
+    const actualScreen = "/addappointment/"+ customerId
     dispatch(navigationLoading());
-    navigate("/addappointment/"+ customerId,{replace: true});
-    dispatch(navigationSuccess("addappointment"))
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const seeAppo = (customerId)=>{
+    const actualScreen = "/customer/"+ customerId + "/appo";
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  
+  }
+
+  const seeHist = (customerId)=>{
+    const actualScreen = "/customer/"+ customerId + "/hist";
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
   }
 
   
   return (
      <strong>
-      <Tooltip title={t("nextappointments")}>
+      <Tooltip title={t("appointments")}>
       <IconButton 
         aria-label="delete" 
         variant='contained' 
         onClick={(event) => {
+          seeAppo(_id);
           event.stopPropagation();
         }}
      
@@ -118,12 +132,13 @@ const RenderAppointmentCell = (props) => {
       {value.next}
       </IconButton>
       </Tooltip>
-      {!compact ? <Tooltip title={t("pastappointments")}>
+      {!compact ? <Tooltip title={t("history")}>
       <IconButton 
         aria-label="delete" 
         variant='contained' 
         style={{ marginLeft: 2 }}
         onClick={(event) => {
+          seeHist(_id)
           event.stopPropagation();
         }}
         sx={{ 
@@ -272,7 +287,7 @@ export const CustomersComponent = (props)=> {
     return (
        <>
        
-        <Tooltip title={t("call")}>
+        <Tooltip disabled={!phone} title={t("call")}>
           <IconButton
             disabled={!phone}
             component="button"
@@ -300,7 +315,7 @@ export const CustomersComponent = (props)=> {
             <PhoneForwardedIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip title={t("sendwhatsapp")}>
+        <Tooltip disabled={!whatsapp} title={t("sendwhatsapp")}>
           <IconButton
            disabled={!whatsapp}
             component="button"
@@ -355,7 +370,7 @@ export const CustomersComponent = (props)=> {
     return (
        <>
        
-        <Tooltip title={t("sendemail")}>
+        <Tooltip disabled={!email} title={t("sendemail")}>
           <IconButton
             component="button"
             disabled={!email}
@@ -526,14 +541,14 @@ export const CustomersComponent = (props)=> {
 
   // NAVIGATE FUNCTIONS
   const AddCustomerButton= () =>{
-    const actualScreen = "addcustomer";
-    navigate("/addcustomer",{replace: true});
+    const actualScreen = "/addcustomer";
+    navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
   const seeCustomer = (customerId) => {
-    const actualScreen = "customer/"+customerId
-    navigate("/customer/"+customerId,{replace: true});
+    const actualScreen = "/customer/"+customerId
+    navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
  

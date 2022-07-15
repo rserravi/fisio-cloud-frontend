@@ -313,10 +313,8 @@ export const AppointmentsComponent = (props)=> {
         { field: 'userName', headerName: t("Customer"), width:200},
         { field: 'date', headerName: t("date"), width: 220, renderCell:RenderDateCell},
         { field: 'startingTime', headerName: t("Time"), width:100},
-        { field: 'duration', headerName: t("Duration"), width: 80
-       },
-        { field: 'service', headerName: t("Service"), width: 80
-       },
+        { field: 'duration', headerName: t("Duration"), width: 80},
+        { field: 'service', headerName: t("Service"), width: 80},
         { field: 'price', headerName: t("Price"), width: 80 },
         { field: 'cabin', headerName: t("cabin"), width: 75 },
         {

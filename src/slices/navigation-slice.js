@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    screen :"Dashboard",
+    screen :"/dashboard",
     previousScreen:"",
     drawerOpen: true,
     showMenu: true,

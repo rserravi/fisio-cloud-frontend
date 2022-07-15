@@ -10,7 +10,6 @@ import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import { styled } from '@mui/material/styles';
 import { paperColor } from '../utils/mui-custom-utils';
 import { AppBar, Button, Divider, Toolbar } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -22,12 +21,16 @@ import { GenderIcon } from '../utils/mui-custom-utils';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSaleTwoTone';
 import ScheduleIcon from '@mui/icons-material/ScheduleTwoTone';
 import EmailIcon from '@mui/icons-material/EmailTwoTone';
+import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 
 //CUSTOM IMPORTS
 import { findSocialIcon } from '../utils/social-networks-utils';
-import { firstItemId, getCustomer, lastItemId } from '../utils/dataFetch-utils';
+import { firstItemId, getCustomer, lastItemId, notAnsweredMessages } from '../utils/dataFetch-utils';
 import { getAge } from '../utils/date-utils';
-import { CommTab } from './form-components/comm-tab-comp';
+import { CommTab } from './tabs/comm-tab-comp';
+import { AppoTab } from './tabs/appo-tab-comp';
+import { nc_loadFromBackend } from '../slices/newCustomer-slice';
+import { HistTab } from './tabs/hist-tab-comp';
 
 export default function SeeCustomerComponent(props) {
     const _id = Number(props._id);
@@ -35,9 +38,13 @@ export default function SeeCustomerComponent(props) {
     const customer = getCustomer(_id);
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [showTabs, setShowTabs] = React.useState("none") // none, appo, comm, depo
+    const [showTabs, setShowTabs] = React.useState(props._tab?props._tab:"none") // none, appo, comm, depo, hist
     const { t } = useTranslation();
     
+    React.useEffect(()=>{
+        dispatch(nc_loadFromBackend(customer));
+
+    },[customer, dispatch])
 
     if (!customer){
         return (
@@ -46,8 +53,6 @@ export default function SeeCustomerComponent(props) {
     }
     const colorPaperInbound = paperColor(customer.inbound)
     const history = customer.history;
-    const appointments = customer.appointments;
-
    
     const SeeAllCustomers=(event)=>{
         event.stopPropagation();
@@ -59,38 +64,46 @@ export default function SeeCustomerComponent(props) {
     const SeePreviousCustomer = (event) =>{
         event.stopPropagation();
         if (_id <= Number(firstItemId())){
-            const actualScreen = "/customer/"+lastItemId();
+            const lastItem = lastItemId();
+            const actualScreen = "/customer/"+lastItem
+            dispatch(nc_loadFromBackend(getCustomer(lastItem)));
             navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
+            
+           
         }else{
             const actualScreen = "/customer/" + (_id-1);
+            dispatch(nc_loadFromBackend(getCustomer(_id-1)));
             navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
+            
         }
+        setShowTabs("none")
     }
 
     const SeeNextCustomer = (event) =>{
         event.stopPropagation();
-        if (_id >= Number(lastItemId())){
-            const actualScreen = "/customer/" + firstItemId();
+        const lastItem = lastItemId();
+        const firstItem = firstItemId()
+        if (_id >= Number(lastItem)){
+            const actualScreen = "/customer/" + firstItem;
+            dispatch(nc_loadFromBackend(getCustomer(firstItem)));
             navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
+           
         }else{
             const actualScreen = "/customer/" + (_id+1);
+            dispatch(nc_loadFromBackend(getCustomer(_id+1)));
             navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
+            
         }
+        setShowTabs("none")
     }
 
-    const seeCalendar = (event) =>{
-        event.stopPropagation();
-        console.log ("Ver Calendario")
-       
-    }
-
-    const addNewAppointment = (event) =>{
-        event.stopPropagation();
-        const actualScreen = "/addappointment/"+_id.toString()
+    const sendEmail = (event)=>{
+        console.log(event.target.outerText)
+        const actualScreen = "/addcommunication/"+_id.toString()+"/0/2/" + event.target.outerText;
         try {
             navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
@@ -99,15 +112,23 @@ export default function SeeCustomerComponent(props) {
         }     
     }
 
-    const SeeAppointments= (event)=>{
-     
-        const actualScreen = "/addappointment/"+_id.toString()+"/"+event
+    const callPhone = (event)=>{
+        console.log(event.target.outerText)
+        const actualScreen = "/addcommunication/"+_id.toString()+"/0/1/" + event.target.outerText;
         try {
             navigate(actualScreen, {replace: true});
             dispatch(navigationSuccess(actualScreen))
         } catch (error) {
             dispatch(navigationFail(error))
         }     
+    }
+
+    const seeInGoogleMaps = (event)=>{
+        console.log(event)
+        event.stopPropagation();
+        var url = "https://maps.google.com/?q="+customer.address.streetAddress +" "+ customer.address.postalCode+" "+customer.address.city+" "+customer.address.state+", "+customer.address.country
+        console.log(url)
+        window.open(url);   
     }
 
     const SeeAppointmentsTab = (event)=>{
@@ -119,19 +140,56 @@ export default function SeeCustomerComponent(props) {
     const SeeCommunicationsTab = (event)=>{
         setShowTabs("comm")
     }
+    const SeeHistoryTab = (event)=>{
+        setShowTabs("hist")
+    }
 
     const ButtonTabs = ()=>{
         return(
             <React.Fragment>
-            <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" sx={{mb:4}}>
-                <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
-                  <Button variant='contained' color={showTabs === "appo"?"secondary":"primary"} size="small" onClick={SeeAppointmentsTab} startIcon={<ScheduleIcon />}>{t("seeappointments")} </Button>
+            <Grid container direction="row" justifyContent="space-around" alignItems="baseline"  marginBottom={2}>
+                <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
+                  <Button 
+                    fullWidth 
+                    variant='outlined' 
+                    color={showTabs === "appo"?"secondary":"primary"} size="small" 
+                    onClick={SeeAppointmentsTab} 
+                    startIcon={<ScheduleIcon />}
+                    >{t("seeappointments")} 
+                 </Button>
                 </Grid>
-                <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
-                  <Button variant='contained' color={showTabs === "depo"?"secondary":"primary"} size="small" onClick={SeeDepositsTab} startIcon={<PointOfSaleIcon />}>{t("seedeposits")} </Button>
+                <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
+                  <Button 
+                    fullWidth 
+                    variant='outlined' 
+                    color={showTabs === "hist"?"secondary":"primary"} 
+                    size="small" 
+                    onClick={SeeHistoryTab} 
+                    startIcon={<AssignmentTwoToneIcon />}
+                    >{t("seehistory")} 
+                  </Button>
                 </Grid>
-                <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
-                  <Button variant='contained' color={showTabs === "comm"?"secondary":"primary"} size="small" onClick={SeeCommunicationsTab} startIcon={<EmailIcon />}>{t("seecommunications")}</Button>
+                <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
+                  <Button 
+                    fullWidth 
+                    variant='outlined'
+                    color={showTabs === "depo"?"secondary":"primary"}
+                    size="small" 
+                    onClick={SeeDepositsTab} 
+                    startIcon={<PointOfSaleIcon />}
+                    >{t("seedeposits")} 
+                  </Button>
+                </Grid>
+                <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
+                  <Button 
+                    fullWidth 
+                    variant='outlined' 
+                    color={showTabs === "comm"?"secondary":"primary"} 
+                    size="small" 
+                    onClick={SeeCommunicationsTab} 
+                    startIcon={<EmailIcon />}
+                    >{t("seecommunications")}
+                  </Button>
                 </Grid>      
             </Grid>
           </React.Fragment>
@@ -139,22 +197,18 @@ export default function SeeCustomerComponent(props) {
     }
 
     const CheckPendingNotes=()=>{
-
         const count = history.reduce((accumulatos, obj)=>{
          if (obj.status === "pending"){
              return accumulatos + Number(obj.price);
          }
-         return accumulatos;
-         
+         return accumulatos;      
         }, 0);
      
           
          return (
-             <React.Fragment>
-             
-             {count ?<Button color='error' sx={{ marginRight:2 }}> ¡{count}€ {t("missing")}!</Button>:<Button color='success'> 
-             {t("nodebts")}</Button>}
-            
+            <React.Fragment>
+                {count ?<Button color='error' onClick={()=>{setShowTabs("depo")}} sx={{ marginRight:2 }}> ¡{count}€ {t("missing")}!</Button>:<Button onClick={()=>{setShowTabs("depo")}} color='success'> 
+                {t("nodebts")}</Button>}
             </React.Fragment>
          )
      }
@@ -177,14 +231,6 @@ export default function SeeCustomerComponent(props) {
         }
     }
 
-    const AppoTab = () =>{
-        return (
-            <React.Fragment>
-                appo
-            </React.Fragment>
-        )
-    }
-
     const DepoTab = () =>{
         return (
             <React.Fragment>
@@ -192,7 +238,6 @@ export default function SeeCustomerComponent(props) {
             </React.Fragment>
         )
     }
-
   
   //MAIN DOM RETURN
   
@@ -202,13 +247,9 @@ export default function SeeCustomerComponent(props) {
         <AppBar position='static' color="transparent" >
             <Toolbar>
                 <Typography variant="h5" component="h1" align='left' sx={{ flexGrow: 1 }}>
-                    {customer.firstname} {customer.lastname} 
-                   
+                    {customer.firstname} {customer.lastname}          
                 </Typography>
-              
                     {CheckPendingNotes()}
-                    
-
                     <Button variant="contained" key={"todos los clientes"} onClick={SeeAllCustomers}>
                         {t("allcustomers")}
                     </Button>
@@ -231,8 +272,8 @@ export default function SeeCustomerComponent(props) {
             <Grid item xs={12} md={2} sm={2}>
             <CardMedia
                     component="img"
-                    sx={{ width: 180, align:'center' }}
-                    image={"/images/" + customer.image}
+                    sx={{ width: 172, align:'center' }}
+                    image={customer.image?"/images/" + customer.image:"/images/Portrait_Placeholder.png"}
                     alt="Foto"
                 />
                     <Paper
@@ -242,10 +283,13 @@ export default function SeeCustomerComponent(props) {
                     </Paper> 
                     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start"> 
                         <Grid item xs={12} md={12} sm={12}>
-                            <Button variant="contained" color="success" sx={{mb:1, mt:3}}>{t("nextappointments")} {customer.appointments.length}</Button>
+                            <Button fullWidth variant="contained" color="success" sx={{mb:1, mt:3}} onClick={()=>{setShowTabs("appo")}}>{t("appointments")} {customer.appointments.length}</Button>
                         </Grid>
                         <Grid item xs={12} md={12} sm={12}>
-                            <Button variant="contained" color="warning" sx={{mb:1}}>{t("pastappointments")} {customer.appointments.length}</Button>
+                            <Button fullWidth variant="contained" color="warning" sx={{mb:1}} onClick={()=>{setShowTabs("hist")}}>{t("history")} {customer.history.length}</Button>
+                        </Grid>
+                        <Grid item xs={12} md={12} sm={12}>
+                            <Button fullWidth variant="contained" color="error" sx={{mb:1}} onClick={()=>{setShowTabs("comm")}}>{t("notansweredmessages")} {notAnsweredMessages(customer.id)}</Button>
                         </Grid>
                     </Grid>
             </Grid>
@@ -294,8 +338,8 @@ export default function SeeCustomerComponent(props) {
                             <Paper sx={{p:1, width:"100%", mb:2}}>
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("home")}: {customer.email[0]?<Button size='small'>{customer.email[0].emailAddress}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("work")}: {customer.email[1]?<Button size='small'>{customer.email[1].emailAddress}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("home")}: {customer.email[0]?<Button onClick={sendEmail} size='small'>{customer.email[0].emailAddress}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("work")}: {customer.email[1]?<Button onClick={sendEmail} size='small'>{customer.email[1].emailAddress}</Button>:<></>}</Typography>
                                     </Grid>
                                     <Grid item>
                                         <Button align='left'>{t("edit")}</Button>
@@ -305,8 +349,8 @@ export default function SeeCustomerComponent(props) {
                             <Paper sx={{p:1, width:"100%", mb:2}}>
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("home")}: {customer.phoneNumber[0]?<Button size='small'>{customer.phoneNumber[0].number}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("work")}: {customer.phoneNumber[1]?<Button size='small'>{customer.phoneNumber[1].number}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("home")}: {customer.phoneNumber[0]?<Button onClick={callPhone} size='small'>{customer.phoneNumber[0].number}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("work")}: {customer.phoneNumber[1]?<Button onClick={callPhone} size='small'>{customer.phoneNumber[1].number}</Button>:<></>}</Typography>
                                         <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("whatsapp")}: {customer.whatsapp?<Button size='small'>{customer.whatsapp}</Button>:<></>}</Typography>
                                     </Grid>
                                     <Grid item>
@@ -323,7 +367,7 @@ export default function SeeCustomerComponent(props) {
                                         
                                     </Grid>
                                     <Grid item>
-                                        <Button align='left'>{t("edit")}</Button><Button align='left'>{t("seeingooglemaps")}</Button>
+                                        <Button align='left'>{t("edit")}</Button><Button onClick={seeInGoogleMaps}>{t("seeingooglemaps")}</Button>
                                     </Grid>
                                  </Grid>
                             </Paper>
@@ -332,8 +376,9 @@ export default function SeeCustomerComponent(props) {
                 </Grid>
             </Grid>
         </Grid>
-        <Grid container direction="row" spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start" sx={{p:2}}> 
-        {showTabs==="appo"?<AppoTab locale={locale} />:<></>}
+        <Grid container direction="row" spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start" > 
+        {showTabs==="appo"?<AppoTab locale={locale} customer={customer}/>:<></>}
+        {showTabs==="hist"?<HistTab locale={locale} customer={customer}/>:<></>}
         {showTabs==="depo"?<DepoTab locale={locale}/>:<></>}
         {showTabs==="comm"?<CommTab locale={locale} customer={customer}/>:<></>}
         </Grid>

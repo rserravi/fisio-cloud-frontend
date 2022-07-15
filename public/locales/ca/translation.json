@@ -373,5 +373,21 @@
     "readed":"Llegit",
     "answered":"Contestat",
     "Answer": "Resposta",
-    "seecommunication": "Veure communicació"
+    "seecommunication": "Veure communicació",
+    "notreaded":"No Llegit",
+    "notanswered": "No Contestat",
+    "notansweredmessages":"Missatges no contestats",
+    "showonlypastdates":" cites passades",
+    "showonlynextdates":" properes cites",
+    "showalldates":" totes les cites",
+    "history":"Historial",
+    "seehistory":"Veure Historial",
+    "edithistory":"Editar historial",
+    "attachments":"Arxius adjunts",
+    "Paid":"Pagat",
+    "pay": "Pagar",
+    "fullypaid":"Pagat completament",
+    "paydialog":"Introdueix un nou pagament per aquesta cita",
+    "payquantity":"Quantitat abonada",
+    "edithistoryof":"Editant historial de"
 }

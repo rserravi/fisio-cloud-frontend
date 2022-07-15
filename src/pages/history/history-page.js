@@ -12,30 +12,28 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 
 import { useTranslation } from 'react-i18next';
-import AddCommunicationsComponent from '../../components/add-communicaciont-comp';
 import { useParams } from 'react-router-dom';
+import EditHistoryForm from '../../components/edithistory-form-comp';
 
 
 
 const mdTheme = createTheme();
 
-function AddCommunicationContent() {
+function EditHistoryContent() {
 
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const _customerId = Number(useParams().customerid);
-  const _thread = Number(useParams().thread);
-  const _action = useParams().action;
-  const _phonemail =useParams().phonemail;
-  const { t } = useTranslation();
+  const _id = Number(useParams().customerId);
+  const _appoId = Number(useParams().appoId);
 
+  const { t } = useTranslation();
   
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("addcomunication")} />
+        <ApplicationBar boardState={boardState} title={t("edithistory")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -57,7 +55,7 @@ function AddCommunicationContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AddCommunicationsComponent customerId={_customerId} threadId={_thread} action={_action} phonemail={_phonemail} locale={localization} />
+                   <EditHistoryForm customerId={_id} appoId={_appoId} locale={localization}/> 
                 </Paper>
               </Grid>
             </Grid>
@@ -72,6 +70,6 @@ function AddCommunicationContent() {
 
 }
 
-export default function AddCommunication() {
-  return <AddCommunicationContent />;
+export default function EditHistory() {
+  return <EditHistoryContent />;
 }

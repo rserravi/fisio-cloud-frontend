@@ -18,6 +18,7 @@ import Setup from './pages/setup/setup-page';
 import Communications from './pages/communications/communications-page';
 import AddCommunication from './pages/communications/add-communications-page';
 import BigCalendar from './pages/calendar/calendar-page';
+import EditHistory from './pages/history/history-page';
 
 
 function App() {
@@ -36,17 +37,20 @@ function App() {
           <Route path="/customers" element={<Customers />} />
           <Route path="/addcustomer" element={<AddCustomer />} />
           <Route path='/customer/:tid' element={<SeeCustomer />} />
+          <Route path='/customer/:tid/:tab' element={<SeeCustomer />} />
           <Route path='/404' element={<FourOuFour/>} /> 
           <Route path='/appointments' element={<Appointments />} />
           <Route path='/addappointment' element={<AddAppointment />} />
-          <Route path='/addappointment/:tid' element={<AddAppointment />} />
-          <Route path='/addappointment/:tid/:aid' element={<AddAppointment />} />
+          <Route path='/addappointment/:customerId' element={<AddAppointment />} />
+          <Route path='/addappointment/:customerId/:appoId' element={<AddAppointment />} />
           <Route path='/deposits' element={<DepositsPage/>} /> 
           <Route path='/communications' element={<Communications />} />
           <Route path='/addcommunication/' element={<AddCommunication />} />
           <Route path='/addcommunication/:customerid' element={<AddCommunication />} />
           <Route path='/addcommunication/:customerid/:thread' element={<AddCommunication />} />
           <Route path='/addcommunication/:customerid/:thread/:action' element={<AddCommunication />} />
+          <Route path='/addcommunication/:customerid/:thread/:action/:phonemail' element={<AddCommunication />} />
+          <Route path='/edithistory/:customerId/:appoId' element={<EditHistory />} />
           <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
           <Route path='/setup' element={<Setup/>} />
           <Route path='/calendar' element={<BigCalendar />} />

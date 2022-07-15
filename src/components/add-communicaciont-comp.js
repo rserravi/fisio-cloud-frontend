@@ -25,6 +25,7 @@ export default function AddCommunicationsComponent(props) {
   const [showEnd, setShowEnd] = React.useState(false);
   const [showSend, setShowSend] = React.useState(false);
   const [firstTimeRenderCheck, setFirstTimeRenderCheck] = React.useState(false);
+  const [phonemail, setPhonemail] = React.useState(props.phonemail);
     
   var initValidation={
     id: 0,
@@ -189,7 +190,7 @@ export default function AddCommunicationsComponent(props) {
           if (props.action==="1"){
             return(
               <>
-            <h2>{t("makingcallto")} {datos.firstname} {datos.lastname} {t("to")} {getCustomerPhoneFromId(datos.id)} </h2>
+            <h2>{t("makingcallto")} {datos.firstname} {datos.lastname} {t("to")} {!props.phonemail?getCustomerPhoneFromId(datos.id):phonemail} </h2>
             <h4>{t("pressthecallbuttontocallandrecordtime")}</h4>
             </>
             )
@@ -197,12 +198,12 @@ export default function AddCommunicationsComponent(props) {
           if (props.action==="2"){
             
             return(
-            <h2>{t("sendingmailto")} {datos.firstname} {datos.lastname} {t("to")} {getCustomerMailFromId(datos.id)} </h2>
+            <h2>{t("sendingmailto")} {datos.firstname} {datos.lastname} {t("to")} {!props.phonemail?getCustomerMailFromId(datos.id):phonemail} </h2>
             )
           }
           if (props.action==="3"){
             return(
-            <h2>{t("sendingwhatsappto")} {datos.firstname} {datos.lastname} {t("to")} {getCustomerWhatsappFromId(datos.id)} </h2>
+            <h2>{t("sendingwhatsappto")} {datos.firstname} {datos.lastname} {t("to")} {!props.phonemail?getCustomerWhatsappFromId(datos.id):phonemail} </h2>
             )
           }
           break;

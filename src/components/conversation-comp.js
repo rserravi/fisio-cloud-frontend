@@ -22,7 +22,7 @@ const BackgroundColor = (dir) =>{
     if (dir ==="send") {
         return "honeydew"
     }
-    return "mintcream";
+    return "gainsboro";
    }
 
 const commActions = GetCommunicationActions();
@@ -34,7 +34,6 @@ export const ConversationComponent = (props) => {
    const threadData =GetThread(props.select);
    const locale = props.locale;
    const [newActionDialogOpen, setNewActionDialogOpen] = React.useState(false);
-   console.log(threadData)
 
    const HandleNewActionClick = ()=>{
     setNewActionDialogOpen(true)
@@ -120,6 +119,8 @@ export const ConversationComponent = (props) => {
                       variant="standard"
                       sx={{mr:1}}
                       />:<></>}
+                     
+                      <p style={{color:"red"}}>{!threadData[msgId].answered?<b>{t("notanswered")}. </b>:<></>}</p>
                     </Grid>
                     
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)}sx={{ml:2, mt:2}}>
