@@ -25,7 +25,7 @@ export const NameForm = (props) =>{
     const InitData = {
         firstname: props.firstname,
         lastname: props.lastname,
-        birthdate: Date.now(),
+        birthdate: props.birthdate?props.birthdate:Date.now(),
         gender: props.gender
     }
     

@@ -1,5 +1,5 @@
 //REACT IMPORTS
-import { Button, Grid, IconButton, Tooltip } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, InputAdornment, TextField, Tooltip } from '@mui/material';
 
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +8,8 @@ import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
 import { addMinutesToDate, getDateFromISOTime, getTimeFromISOTime, timeDifference } from '../../utils/date-utils';
 import FilePresentTwoToneIcon from '@mui/icons-material/FilePresentTwoTone';
+import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 
 export const AppoSingleComponent = (props) => {
@@ -17,6 +19,12 @@ export const AppoSingleComponent = (props) => {
    const locale = props.locale;
    const dispatch = useDispatch();
    const navigate = useNavigate();
+   const [rescheduleDialog, setRescheduleDialogOpen] = React.useState(false);
+   const [fileItDialog, setFileItDialogOpen]= React.useState(false);
+   const [payDialog, setPayDialogOpen]= React.useState(false);
+   const [payAmount, setPayAmount]= React.useState(0);
+   const [newAppoDate, setNewAppDate] = React.useState(new Date());
+
 
    const RenderAttachments = (attachment) =>{
     console.log("ATTACHMENT",attachment)
@@ -50,17 +58,55 @@ export const AppoSingleComponent = (props) => {
 
    }
 
-   const reScheduleClick = ()=>{
-
+   const reScheduleClick = (event)=>{
+        event.stopPropagation();
+        setRescheduleDialogOpen(true);
    }
 
-   const fileItClick = ()=>{
-
+   const fileItClick = (event)=>{
+        event.stopPropagation();
+        setFileItDialogOpen(true);
    }
 
-   const payClick = ()=>{
+    const payAmountHandle = (event)=>{
+        setPayAmount(event.target.valueAsNumber)
+    }
 
-   }
+    const payClick = (event)=>{
+        event.stopPropagation();
+        setPayDialogOpen(true);
+    }
+
+    const closeDialogs = (event)=>{
+        event.stopPropagation();
+        setRescheduleDialogOpen(false);
+        setPayDialogOpen(false);
+        setFileItDialogOpen(false);
+    }
+
+    const printrecipe = (event)=>{
+
+    }
+
+    const setNewPaymentAccept = (event)=>{
+        //API CALL
+    }
+   
+    const handleNewAppoDate = (value)=>{
+        setNewAppDate(new Date (value));
+       }
+    
+    const setRescheduleSubmit = (event)=>{
+        console.log("enviar ",newAppoDate,"a la API")
+        //API CALLS
+        setRescheduleDialogOpen(false);
+    }
+    
+    const setFileItSubmit = (event)=>{
+        console.log("ARXIVANT A l'HISTORIAL");
+        //API CALLS
+        setFileItDialogOpen(false);
+    }
 
    return(
         <React.Fragment>
@@ -105,6 +151,79 @@ export const AppoSingleComponent = (props) => {
                 </Grid>
             </Grid>
             </div>
+            <Dialog open={payDialog} onClose={closeDialogs}>
+                <DialogTitle>{t("pay")}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {t("paydialog")}
+                        </DialogContentText>
+                        <TextField
+                            autoFocus
+                            value= {payAmount}
+                            onChange = {payAmountHandle}
+                            margin="dense"
+                            id="pay"
+                            label={t("payquantity")}
+                            type="number"
+                            fullWidth
+                            variant="standard"
+                            InputProps={{
+                                endAdornment: <InputAdornment position="end">€</InputAdornment>,
+                              }}
+                        />
+                        
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={printrecipe}>{t("printrecipe")}</Button>
+                        <Button onClick={setNewPaymentAccept}>{t("accept")}</Button>
+                        <Button onClick={closeDialogs}>{t("cancel")}</Button>
+                        
+                    </DialogActions>
+            </Dialog>
+            <Dialog open={rescheduleDialog} onClose={closeDialogs}>
+                <DialogTitle>{t("reschedule")}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {t("rescheduledialog")}
+                        </DialogContentText>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <DatePicker
+                            label={t("newdate")}
+                            value={newAppoDate}
+                            variant="standard"
+                            sx = {{mr:2}}
+                            onChange={handleNewAppoDate}
+                            renderInput={(params) => <TextField variant="standard" fullWidth sx = {{mr:2}} {...params} />}
+                        />
+                        </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterMoment}>
+                        <TimePicker
+                            label={t("time")}
+                            value={newAppoDate}
+                            variant="standard"
+                            sx = {{mr:2}}
+                            onChange={handleNewAppoDate}
+                            renderInput={(params) => <TextField variant="standard" fullWidth sx = {{mr:2}} {...params} />}
+                        />
+                        </LocalizationProvider>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={setRescheduleSubmit}>{t("accept")}</Button>
+                        <Button onClick={closeDialogs}>{t("cancel")}</Button>    
+                    </DialogActions>
+            </Dialog>
+            <Dialog open={fileItDialog} onClose={closeDialogs}>
+                <DialogTitle>{t("fileit")}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText>
+                            {t("doyouwanttofiletheappointmentorkeepediting")}
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                        <Button onClick={setFileItSubmit}>{t("fileit")}</Button>
+                        <Button onClick={closeDialogs}>{t("edit")}</Button>    
+                    </DialogActions>
+            </Dialog>
        </React.Fragment>
    )
 }

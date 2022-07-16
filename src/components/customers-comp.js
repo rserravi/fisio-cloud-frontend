@@ -61,6 +61,10 @@ const osint = (customerId) => {
 
 //RENDER CELLS
 
+const RenderInboundCell = (props)=>{
+
+}
+
 const RenderAppointmentCell = (props) => {
   const {hasFocus, value } = props;
 
@@ -428,6 +432,22 @@ export const CustomersComponent = (props)=> {
     }
   }
   
+  const getMail= (row)=>{
+    var result=""
+    if(row.email[1]){
+      if (row.email[1].emailAddress!==""){
+        result = row.email[1].emailAddress + " (w)"
+        return result
+      }
+    }
+    if(row.email[0]){
+      if (row.email[0].emailAddress!==""){
+        result = row.email[0].emailAddress + " (h)"
+        return result
+      }
+    }
+    return result;
+  }
 
 
   const { t } = useTranslation();
@@ -440,7 +460,7 @@ export const CustomersComponent = (props)=> {
       image: row.image, 
       firstName: row.firstname, 
       lastName: row.lastname,
-      email: row.email[1] ? row.email[1].emailAddress : row.email[0].emailAddress, 
+      email: getMail(row),
       phoneNumber: row.phoneNumber[1].number,
       whatsapp: row.whatsapp,
       appointments: {"next": row.appointments.length, "past": row.history.length}, 

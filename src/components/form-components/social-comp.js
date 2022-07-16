@@ -20,12 +20,19 @@ export const SocialForm = (props) =>{
       socialUser2:"@",
       socialUser3:"@"
     }
+    const InitProps = {
+      social1: props.social1,
+      social2: props.social2,
+      social3: props.social3,
+      socialUser1:props.socialUser1,
+      socialUser2:props.socialUser2,
+      socialUser3:props.socialUser3
+    }
     const dispatch = useDispatch();
-    const [socialFrmData, setSocialFrmData] = React.useState(InitData);
+    const [socialFrmData, setSocialFrmData] = React.useState(props.social1?InitProps:InitData);
     const newUserSelector =  useSelector(state => state.newCustomer);
 
     React.useEffect (()=>{
-      //console.log(props)
       if (props.editUser){
           const InitData2 = {
             social1: newUserSelector.social1,
@@ -37,7 +44,6 @@ export const SocialForm = (props) =>{
           }
           setSocialFrmData(InitData2)
       }
-  
     },[
       props.editUser,
       newUserSelector.social1,

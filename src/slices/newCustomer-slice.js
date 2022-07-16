@@ -158,37 +158,48 @@ const createCustomerSlice = createSlice({
             state.birthdate=action.payload.birthdate
             state.gender=action.payload.gender
             state.dni = action.payload.dni
+            if (action.payload.email){
             if (action.payload.email[0]){
                 state.emailhome=action.payload.email[0].emailAddress
             }
             if (action.payload.email[1]){
             state.emailwork=action.payload.email[1].emailAddress
             }
-            state.streetaddress=action.payload.address.streetaddress
-            state.city=action.payload.address.city
-            state.state=action.payload.address.state
-            state.postalCode=action.payload.address.postalCode
-            state.country=action.payload.address.country
-            state.homephone=action.payload.phoneNumber[0].number
-            state.mobilephone=action.payload.phoneNumber[1].number
+            }
+            if (action.payload.address){
+                state.streetaddress=action.payload.address.streetAddress
+                state.city=action.payload.address.city
+                state.state=action.payload.address.state
+                state.postalCode=action.payload.address.postalCode
+                state.country=action.payload.address.country
+            }
+            if (action.payload.phoneNumber){
+                state.homephone=action.payload.phoneNumber[0].number
+                state.mobilephone=action.payload.phoneNumber[1].number
+            }
             state.whatsapp=action.payload.whatsapp
-            if (action.payload.socialMedia[0]){
-                state.social1=action.payload.socialMedia[0].media
-                state.socialUser1=action.payload.socialMedia[0].user
+            if(action.payload.socialMedia){
+                if (action.payload.socialMedia[0]){
+                    state.social1=action.payload.socialMedia[0].media
+                    state.socialUser1=action.payload.socialMedia[0].user
+                }
+            
+                if (action.payload.socialMedia[1]){
+                    state.social2=action.payload.socialMedia[1].media
+                    state.socialUser2=action.payload.socialMedia[1].user
+                }
+                if (action.payload.socialMedia[2]){
+                    state.social3=action.payload.socialMedia[2].media
+                    state.socialUser3=action.payload.socialMedia[2].user
+                }    
             }
-            if (action.payload.socialMedia[1]){
-                state.social1=action.payload.socialMedia[1].media
-                state.socialUser1=action.payload.socialMedia[1].user
-            }
-            if (action.payload.socialMedia[2]){
-                state.social1=action.payload.socialMedia[2].media
-                state.socialUser1=action.payload.socialMedia[2].user
-            }    
            
             state.countryPhoneCode=action.payload.countryPhoneCode
-            state.releaseformFile=action.payload.releaseForm.file
-            state.releaseformGenerated=action.payload.releaseForm.generated
-            state.releaseformSigned=action.payload.releaseForm.signed
+            if(action.payload.releaseForm){
+                state.releaseformFile=action.payload.releaseForm.file
+                state.releaseformGenerated=action.payload.releaseForm.generated
+                state.releaseformSigned=action.payload.releaseForm.signed
+            }
             state.locale=action.payload.locale
             state.role=action.payload.role
             state.isNew=action.payload.isNew

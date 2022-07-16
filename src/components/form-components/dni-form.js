@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 import { Alert, Grid, Paper } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_dni_Commit } from '../../slices/newCustomer-slice';
-import configData from "../../assets/data/config-data.json"
 import { locale } from 'moment';
 import { validateDNI } from '../../utils/verification-utils';
 

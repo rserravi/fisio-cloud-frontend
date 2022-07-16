@@ -24,6 +24,7 @@ import Dialog from '@mui/material/Dialog';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
+import { GetBadgeAlerts } from '../utils/dataFetch-utils';
 
 
 const drawerWidth = 240;
@@ -109,22 +110,13 @@ function ApplicationBar(boardState) {
 
   const handleOpenBadgesMenu = (event) => {
     setAnchorElBadges(event.currentTarget);
-    };
+  };
   
-    const handleCloseBadgesMenu = () => {
-      setAnchorElBadges("");
-    };
+  const handleCloseBadgesMenu = () => {
+    setAnchorElBadges("");
+  };
 
-  const getBadgeAlerts = () =>{
-
-    //API CALL FOR GETTING ALERTS
-    return (
-      {
-        "1": "alerta 1",
-        "2": "alerta 2"
-      }
-    )
-  }
+  const getBadgeAlerts = GetBadgeAlerts();
 
   const handleUserSetup = () =>{
     goTo("/usersetup/"+userId.toString());
@@ -148,6 +140,13 @@ function ApplicationBar(boardState) {
     console.log("LOGGIN OUT");
     goTo("/");
   }
+
+  const linkPrepare=(event, link)=>{
+    console.log(event, link)
+    goTo(link)
+  }
+
+
   
   
 
@@ -198,7 +197,7 @@ function ApplicationBar(boardState) {
 
             <Tooltip title={t("seeAlerts")}>
               <IconButton color="inherit" onClick={handleOpenBadgesMenu}>
-                <Badge badgeContent={Object.keys(getBadgeAlerts()).length} color="secondary">
+                <Badge badgeContent={getBadgeAlerts.length} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -220,9 +219,9 @@ function ApplicationBar(boardState) {
               onClose={handleCloseBadgesMenu}
             >
               
-              {Object.values(getBadgeAlerts()).map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                  <Typography textAlign="center">{setting}</Typography>
+              {getBadgeAlerts.map((setting) => (
+                <MenuItem key={setting.id} onClick={((event)=>{event.stopPropagation();linkPrepare(event, setting.link)})}>
+                  <Typography textAlign="center">{setting.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>

@@ -22,11 +22,11 @@
         ],
         "address":
         {
-            "streetAddress": "21 2nd Street",
+            "streetAddress": "21 E 2nd St",
             "city": "New York",
             "state": "NY",
-            "postalCode": "10021",
-            "country":"usa"
+            "postalCode": "10003",
+            "country":"United States"
         },
         "phoneNumber":
         [
@@ -43,15 +43,15 @@
         "socialMedia":
         [
             {
-                "media": "facebook",
+                "media": "Facebook",
                 "user": "@juanjo.rubio.7798"
             },
             {
-                "media": "twitter",
+                "media": "Twitter",
                 "user": "@TeresaRodr_"
             },
             {
-                "media": "reddit",
+                "media": "Reddit",
                 "user": "@TeresaRo12"
             }
 
@@ -191,9 +191,9 @@
             }
         ],
         "releaseForm":{
-                "file":"",
-                "generated":"false",
-                "signed":"false"
+                "file":"01-RF.pdf",
+                "generated":true,
+                "signed":true
         },
         "contacthistory":[
             {
@@ -258,11 +258,11 @@
         "socialMedia":
         [
             {
-                "media": "facebook",
+                "media": "Facebook",
                 "user": "@juanjo.rubio.7798"
             },
             {
-                "media": "twitter",
+                "media": "Twitter",
                 "user": "@TeresaRodr_"
             },
             {
@@ -343,8 +343,8 @@
         ],
         "releaseForm":{
             "file":"",
-            "generated":"false",
-            "signed":"false"
+            "generated":false,
+            "signed":false
         },
         "contacthistory":[
             {
@@ -434,8 +434,8 @@
         ],
         "releaseForm":{
             "file":"",
-            "generated":"false",
-            "signed":"false"
+            "generated":false,
+            "signed":false
         },
         "contacthistory":[
             {   
@@ -507,8 +507,8 @@
         ],
         "releaseForm":{
             "file":"",
-            "generated":"false",
-            "signed":"false"
+            "generated":false,
+            "signed":false
         },
         "contacthistory":[
             {
@@ -579,8 +579,8 @@
         ],
         "releaseForm":{
             "file":"",
-            "generated":"false",
-            "signed":"false"
+            "generated":false,
+            "signed":false
         },
         "contacthistory":[
             {
@@ -651,8 +651,8 @@
         ],
         "releaseForm":{
             "file":"",
-            "generated":"false",
-            "signed":"false"
+            "generated":false,
+            "signed":false
         },
         "contacthistory":[
             {

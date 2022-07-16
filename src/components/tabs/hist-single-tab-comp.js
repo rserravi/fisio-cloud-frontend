@@ -5,8 +5,9 @@ import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
-import { addMinutesToDate, getDateFromISOTime, getTimeFromISOTime, timeDifference } from '../../utils/date-utils';
+import { addMinutesToDate, getDateFromISOTime, getTimeFromISOTime } from '../../utils/date-utils';
 import FilePresentTwoToneIcon from '@mui/icons-material/FilePresentTwoTone';
+
 
 
 export const HistSingleComponent = (props) => {
@@ -16,7 +17,6 @@ export const HistSingleComponent = (props) => {
    const locale = props.locale;
    const dispatch = useDispatch();
    const navigate = useNavigate();
-   const [rescheduleDialog, setRescheduleDialogOpen] = React.useState(false) 
    const [payDialog, setPayDialogOpen] = React.useState(false) 
    const debt = Number(data.price) - Number(data.paid)
    const [payAmount, setPayAmount]= React.useState(0);
@@ -62,7 +62,6 @@ export const HistSingleComponent = (props) => {
 
    const closeDialogs = (event)=>{
     event.stopPropagation();
-    setRescheduleDialogOpen(false);
     setPayDialogOpen(false);
    }
 
@@ -73,6 +72,8 @@ export const HistSingleComponent = (props) => {
    const setNewPaymentAccept = (event)=>{
     //API CALL
    }
+
+ 
 
    return(
         <React.Fragment>
@@ -140,8 +141,8 @@ export const HistSingleComponent = (props) => {
                         <Button onClick={closeDialogs}>{t("cancel")}</Button>
                         
                     </DialogActions>
-
             </Dialog>
+            
        </React.Fragment>
    )
 }

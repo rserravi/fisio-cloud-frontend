@@ -888,6 +888,55 @@ export const GetThread = (data)=>{
   return jsonObj.reverse();
 }
 
+export const GetBadgeAlerts = () =>{
+  const alertsSetup = configData[0].alerts;
+  const { t } = useTranslation();
+  var idCounter = 0;
+  var jsonObj = [];
+  if (alertsSetup.showAppoAlerts){
+    const appo = GetAppointments();
+    if (alertsSetup.showPast){
+      for (let key in appo){
+        if (timeDifference(appo[key].date)<=alertsSetup.pastDaysPeriod){
+          var item = {};
+          idCounter= idCounter +1;
+          item["id"]= idCounter;
+          item["title"] = t("pastdate") +" "+ appo[key].customerName
+          item["link"] = "/addappointment/"+ appo[key].customerId +"/" + appo[key].id;
+          item["date"] = appo[key].date
+          jsonObj.push(item)
+        }
+        if (timeDifference(appo[key].date)>=alertsSetup.commingDaysPeriod){
+          var item = {};
+          idCounter= idCounter +1;
+          item["id"]= idCounter;
+          item["title"] = t("nextdate") +" "+ appo[key].customerName
+          item["link"] = "/addappointment/"+ appo[key].customerId +"/" + appo[key].id;
+          item["date"] = appo[key].date
+          jsonObj.push(item)
+        }
+      }
+    }
+    
+    return jsonObj
+  }
+
+  
+ /* [
+      {
+        "id":"1",
+        "title":"alerta 1",
+        "link": "page 1"
+      },
+      {
+        "id":"2",
+        "title":"alerta 2",
+        "link": "page 2"
+      }
+    
+    ] */
+}
+
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js
 export const countries = [
     { code: 'AD', label: 'Andorra', phone: '376' },

@@ -43,7 +43,9 @@ const navigationSlice = createSlice({
         navigationMenu:(state, action) =>{
             state.showMenu = action.payload;
         },
-        
+        navigationForceActualScreen:(state, action) =>{
+            state.screen = action.payload
+        },
     }
 });
 
@@ -57,5 +59,6 @@ export const {
     navigationDrawer,
     navigationCommunicationsPanel,
     navigationMenu,
+    navigationForceActualScreen
 } = actions;
 export default reducer;
