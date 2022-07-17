@@ -1,6 +1,6 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
-import { addMinutesToDate, getWeekInYear, timeDifference } from "./date-utils";
+import { addMinutesToDate, timeDifference } from "./date-utils";
 import { useTranslation } from 'react-i18next';
 
 
@@ -303,6 +303,11 @@ export const getNewServicesId = ()=>{
   return lastId+1;
 }
 
+export const getNewCabinId = ()=>{
+  const lastId = configData[0].cabins[configData[0].cabins.length-1].id;
+  return lastId+1;
+}
+
 export const getPriceForService = (service)=>{
  var result = "0";
  for (let key in configData[0].services){
@@ -329,6 +334,20 @@ export const getServicesRealized= (service)=>{
   return count;
 }
 
+export const getServicesByCabin= (cabin)=>{
+  var count = 0;
+  for (let userKey in customerData){
+    if (customerData[userKey].history.length >0){
+      for (let histoKey in customerData[userKey].history){
+        if (Number(customerData[userKey].history[histoKey].cabin)=== Number(cabin)){
+          count = count +1
+        }
+      }
+    }
+
+  }
+  return count;
+}
 export const getServiceNameById = (_id)=>{
   const data = configData[0].services;
   let found = null;
@@ -372,6 +391,7 @@ export const GetAppointments = ()=>{
                 newIdCount = newIdCount +1;
                 var item = {}
                 item["id"] = newIdCount;
+                item["appoId"] = Number(customerData[userKey].appointments[appoKey].id);
                 item["customerId"] = customerData[userKey].id;
                 item["customerName"] = customerData[userKey].firstname + " " + customerData[userKey].lastname;
                 item["date"] = customerData[userKey].appointments[appoKey].date;
@@ -541,37 +561,107 @@ export const GetHistoryByCustomerId = (customerID) =>{
     return jsonObj  
 }
 
-export const GetAppointmentsCalendarFormat = ()=>{
-   const { t } = useTranslation();
+export const GetAppointmentsCalendarFormat = (mode)=>{
+  // const { t } = useTranslation();
     var jsonObj = [];
     var newIdCount =0;
     for (let userKey in customerData){
-        if(customerData[userKey].appointments.length >=0){
+        if(customerData[userKey].appointments.length >=0){   
             for (let appoKey in customerData[userKey].appointments){
-                newIdCount = newIdCount +1;
-                var id = newIdCount;
-                var title = customerData[userKey].firstname + " " + customerData[userKey].lastname + " " + t("for")+ " " + getServiceNameById(customerData[userKey].appointments[appoKey].service);
-                var allDay = false;
-                const start = new Date(customerData[userKey].appointments[appoKey].date)
-                const end = addMinutesToDate(start,Number(customerData[userKey].appointments[appoKey].duration));
                 var backgroundColor = "dodgerblue";
                 var color = "white";
+                const start = new Date(customerData[userKey].appointments[appoKey].date)
+                const end = addMinutesToDate(start,Number(customerData[userKey].appointments[appoKey].duration));
+                var timeDif = Math.ceil(timeDifference(start) /(1000 * 3600 * 24)); //CONVERT TIMEDIFFERENCE TO DAYS
                 var isPast = false;
-                const thisWeek = getWeekInYear(Date.now());
-                const dateWeek = getWeekInYear(start);
-                if (timeDifference(start) <= 0){
+                var isNext = false;
+                if (timeDif <= 0){
                     backgroundColor = "red";
                     color = "white"
                     isPast = true;
                 }
 
-                if (dateWeek-thisWeek === 0){
+                if (timeDif <=7 && timeDif>=0){
                     backgroundColor = "orange";
                     color = "white"
+                    isNext = true;
                 }
-              
 
-                var resourceId = customerData[userKey].appointments[appoKey].id;
+                // CONDICIONAL
+                if (!mode || (mode==="past" && isPast) || (mode==="next" && isNext)){
+                  newIdCount = newIdCount +1;
+                  var id = newIdCount;
+                  var title ="";
+                  var service =  getServiceNameById(customerData[userKey].appointments[appoKey].service);
+                  var commAction = "";
+                  var allDay = false;
+                  var customerName = customerData[userKey].firstname + " " + customerData[userKey].lastname
+                  var resourceId = customerData[userKey].appointments[appoKey].id;
+                  const customerId = customerData[userKey].id;
+
+                  var item = {}
+                  item["id"] = id;
+                  item["title"] = title;
+                  item["allDay"] = allDay;
+                  item["start"] = start;
+                  item["end"] = end;
+                  item["resourceId"] = resourceId;
+                  item["backgroundColor"]= backgroundColor;
+                  item["color"] = color;
+                  item["ispast"] = isPast;
+                  item["isnext"] = isNext;
+                  item["customerId"] = customerId;
+                  item["kind"]= "appo";
+                  item["customerName"]= customerName;
+                  item["service"]= service;
+                  item["commAction"]= commAction;
+                  jsonObj.push(item)
+                }
+            }
+        }
+    }
+    return jsonObj  
+}
+
+export const GetAlertsCalendarFormat = (mode)=>{
+ // const { t } = useTranslation();
+  var jsonObj = [];
+  var newIdCount =0;
+  for (let userKey in customerData){
+      if(customerData[userKey].contacthistory.length >0){
+          for (let commKey in customerData[userKey].contacthistory){
+            if( customerData[userKey].contacthistory[commKey].follow && customerData[userKey].contacthistory[commKey].alertfollow)
+            {
+              var backgroundColor = "mediumturquoise";
+              var color = "black";
+              const start = new Date(customerData[userKey].contacthistory[commKey].alertfollow)
+              const end = addMinutesToDate(start, 30);
+              var timeDif = Math.ceil(timeDifference(start) /(1000 * 3600 * 24)); //CONVERT TIMEDIFFERENCE TO DAYS
+              var isPast = false;
+              var isNext = false;
+              if (timeDif <= 0){
+                backgroundColor = "firebrick";
+                color = "white"
+                isPast = true;
+              }
+              if (timeDif <=7 && timeDif >=0){
+                backgroundColor = "tan";
+                color = "white"
+                isNext = true;
+              }
+
+              // CONDICIONAL
+              if (!mode || (mode==="past" && isPast) || (mode==="next" && isNext)){
+             
+                newIdCount = newIdCount +1;
+                var id = newIdCount;
+                var title = ""
+                var customerName = customerData[userKey].firstname + " " + customerData[userKey].lastname
+                var service = "";
+                var commAction = customerData[userKey].contacthistory[commKey].follow 
+                var allDay = false;
+               
+                var resourceId = customerData[userKey].contacthistory[commKey].id;
                 const customerId = customerData[userKey].id;
                 var item = {}
                 item["id"] = id;
@@ -583,62 +673,14 @@ export const GetAppointmentsCalendarFormat = ()=>{
                 item["backgroundColor"]= backgroundColor;
                 item["color"] = color;
                 item["ispast"] = isPast;
+                item["isnext"] = isNext;
                 item["customerId"] = customerId;
-                item["kind"]= "appo";
+                item["kind"]= "comm";
+                item["customerName"]= customerName;
+                item["service"]= service;
+                item["commAction"]= commAction;
                 jsonObj.push(item)
-            }
-        }
-    }
-    return jsonObj  
-}
-
-export const GetAlertsCalendarFormat = ()=>{
-  const { t } = useTranslation();
-  var jsonObj = [];
-  var newIdCount =0;
-  for (let userKey in customerData){
-      if(customerData[userKey].contacthistory.length >0){
-          for (let commKey in customerData[userKey].contacthistory){
-            if( customerData[userKey].contacthistory[commKey].follow && customerData[userKey].contacthistory[commKey].alertfollow)
-            {
-              newIdCount = newIdCount +1;
-              var id = newIdCount;
-              var title = t(customerData[userKey].contacthistory[commKey].follow) + " " +t("to") + " " + customerData[userKey].firstname + " " + customerData[userKey].lastname
-              var allDay = false;
-              const start = new Date(customerData[userKey].contacthistory[commKey].alertfollow)
-              const end = addMinutesToDate(start, 30);
-              var backgroundColor = "mediumturquoise";
-              var color = "black";
-              var isPast = false;
-              const thisWeek = getWeekInYear(Date.now());
-              const dateWeek = getWeekInYear(start);
-              if (timeDifference(start) <= 0){
-                  backgroundColor = "red";
-                  color = "white"
-                  isPast = true;
               }
-
-              if (dateWeek-thisWeek === 0){
-                  backgroundColor = "orange";
-                  color = "white"
-              }
-            
-
-              var resourceId = customerData[userKey].contacthistory[commKey].id;
-              const customerId = customerData[userKey].id;
-              var item = {}
-              item["id"] = id;
-              item["title"] = title;
-              item["allDay"] = allDay;
-              item["start"] = start;
-              item["end"] = end;
-              item["resourceId"] = resourceId;
-              item["backgroundColor"]= backgroundColor;
-              item["color"] = color;
-              item["ispast"] = isPast;
-              item["customerId"] = customerId;
-              item["kind"]= "comm";
-              jsonObj.push(item)
             }
           }
       }
@@ -646,10 +688,38 @@ export const GetAlertsCalendarFormat = ()=>{
   return jsonObj  
 }
 
-export const GetAllItemsCalendarFormat= ()=>{
-  var jsonObj = GetAppointmentsCalendarFormat();
-  var jsonObj2 = GetAlertsCalendarFormat();
-  const merged = [...jsonObj, ...jsonObj2];
+//MODE: "pastdate","notanswered","allcal","pastcomm","nextcomm","allcomm","seeall"
+export const GetAllItemsCalendarFormat= (mode)=>{
+  var appoObj = [];
+  var alerObj = [];
+  
+  switch (mode) {
+    case "pastdate":
+      appoObj= GetAppointmentsCalendarFormat("past");
+      break;
+    case "notanswered":
+      appoObj= GetAppointmentsCalendarFormat("next");
+      break;
+    case "allcal":
+      appoObj= GetAppointmentsCalendarFormat();
+      break;
+    case "pastcomm":
+      alerObj = GetAlertsCalendarFormat("past");
+      break;
+    case "nextcomm":
+      alerObj = GetAlertsCalendarFormat("next");
+      break;
+    case "allcomm":
+      alerObj = GetAlertsCalendarFormat();
+      break;
+  
+    default:
+      appoObj = GetAppointmentsCalendarFormat();
+      alerObj = GetAlertsCalendarFormat();
+      break;
+  }
+   
+  const merged = [...appoObj, ...alerObj];
   merged.forEach((el, index)=> el.id = index+1);
   return merged;
 }
@@ -907,7 +977,7 @@ export const GetBadgeAlerts = () =>{
           jsonObj.push(item)
         }
         if (timeDifference(appo[key].date)>=alertsSetup.commingDaysPeriod){
-          var item = {};
+          item = {};
           idCounter= idCounter +1;
           item["id"]= idCounter;
           item["title"] = t("nextdate") +" "+ appo[key].customerName

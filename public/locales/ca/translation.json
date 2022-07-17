@@ -404,5 +404,13 @@
     "caption":"Llegenda",
     "useranswer":"Resposta d'usuari",
     "seeall":"Veure Tot",
-    "nextdate":"PROPERA CITA"
+    "nextdate":"PROPERA CITA",
+    "seealldates":"Totes les cites",
+    "addDate":"Afegir data",
+    "pastcomm":"Communicació passada",
+    "nextcomm":"Communicació propera",
+    "allcomm":"Totes les comm",
+    "cabins":"Consultoris (espais físics)",
+    "addcabin":"Afegir consultori"
+
 }

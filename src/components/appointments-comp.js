@@ -247,7 +247,8 @@ export const AppointmentsComponent = (props)=> {
   const rows = data.map((row) => 
   ({
     id: row.id,  
-    userid: row.customerId,
+    appoid: row.appoId,
+    customerId: row.customerId,
     userName: row.customerName,
     date: row.date,
     startingTime: getTimeFromISOTime(row.date, locale) + " h.",
@@ -278,34 +279,34 @@ export const AppointmentsComponent = (props)=> {
               label={t("seecustomer")}
               
               onClick={(event) => {
-                seeCustomer(params.row.userid);
+                seeCustomer(params.row.customerId);
                 event.stopPropagation();
               }}
             />,
             <GridActionsCellItem
             icon={<Tooltip title={t("call")}><PhoneForwardedIcon /></Tooltip>}
             label={t("call")}
-            disabled = {!getCustomerPhoneFromId(params.row.userid)}
+            disabled = {!getCustomerPhoneFromId(params.row.customerId)}
             onClick={(event) => {
-              callUser(params.row.userid);
+              callUser(params.row.customerId);
               event.stopPropagation();
             }}
             />,
             <GridActionsCellItem
             icon={<Tooltip title={t("sendemail")}><SendIcon /></Tooltip>}
             label={t("sendemail")}
-            disabled = {!getCustomerMailFromId(params.row.userid)}
+            disabled = {!getCustomerMailFromId(params.row.customerId)}
             onClick={(event) => {
-              emailUser(params.row.userid);
+              emailUser(params.row.customerId);
               event.stopPropagation();
             }}
           />,
             <GridActionsCellItem
             icon={<Tooltip title={t("sendwhatsapp")}><WhatsAppIcon /></Tooltip>}
             label={t("GridActionsCellItem")}
-            disabled = {!getCustomerWhatsappFromId(params.row.userid)}
+            disabled = {!getCustomerWhatsappFromId(params.row.customerId)}
             onClick={(event) => {
-              whatsappUser(params.row.userid);
+              whatsappUser(params.row.customerId);
               event.stopPropagation();
             }}
           />,
@@ -330,8 +331,7 @@ export const AppointmentsComponent = (props)=> {
             label={t("seeappointment")}
             
             onClick={(event) => {
-              console.log(params.row.userid);
-              seeAppointment(params.row.userid, params.id);
+              seeAppointment(params.row.customerId, params.row.appoid);
               event.stopPropagation();
           }}
           />,     
@@ -384,9 +384,9 @@ export const AppointmentsComponent = (props)=> {
     dispatch(navigationSuccess(actualScreen))
   }
 
-  const seeAppointment= (userId, appoId) => {
+  const seeAppointment= (customerId, appoId) => {
     dispatch(navigationLoading())
-    const actualScreen = "/addappointment/"+ Number(userId) +"/"+ Number(appoId);
+    const actualScreen = "/addappointment/"+ Number(customerId) +"/"+ Number(appoId);
     navigate(actualScreen, {replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
@@ -473,14 +473,14 @@ export const AppointmentsComponent = (props)=> {
   const doReport = (props) =>{
     console.log("Hacer informe de cita " + props.id);
     setAnchorPastButtonEL(null);
-    seeAppointment(props.userid, props.id);
+    seeAppointment(props.customerId, props.id);
 
   }
 
   const modifyAppointment = (props) =>{
     console.log("Modificar cita " + props.id);
     setAnchorPastButtonEL(null);
-    seeAppointment(props.userid, props.id);
+    seeAppointment(props.customerId, props.id);
   }
 
    // Set if Toolbar is visible depending on var compact

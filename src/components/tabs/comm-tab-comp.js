@@ -12,11 +12,8 @@ import { Button, Paper } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import styled from '@emotion/styled';
 import { GridFilterModel } from '@mui/x-data-grid';
-//import { indianred } from '@mui/material/colors';
 
 //MUI ICONS
-
-
 import EditIcon from '@mui/icons-material/EditOffTwoTone';
 import ContentCopyIcon from '@mui/icons-material/ContentCopyTwoTone';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
@@ -32,8 +29,6 @@ import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import { Box } from '@mui/system';
 import { GetCommunications, GetRowById, OrderArrayByDate } from '../../utils/dataFetch-utils';
 import { ConversationComponent } from '../conversation-comp';
-
-
 
 
 export const CommTab = (props) =>{

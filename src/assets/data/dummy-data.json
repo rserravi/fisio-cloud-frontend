@@ -206,7 +206,7 @@
                 "subject": "Información",
                 "notes": "Preguntó por horarios. Debo devolver la llamada cuanto antes.",
                 "follow": "call",
-                "alertfollow": "2022-07-20T16:30:00.000Z",
+                "alertfollow": "2022-07-25T16:30:00.000Z",
                 "thread":"1",
                 "readed":false,
                 "answered":false
@@ -372,7 +372,7 @@
                 "subject": "Contestación",
                 "notes": "Informado sobre horarios:si no llama le envio un recordatorio en un més",
                 "follow": "mail",
-                "alertfollow":"2022-07-14T16:30:00.000Z",
+                "alertfollow":"2022-07-21T16:30:00.000Z",
                 "thread":"1",
                 "readed":true,
                 "answered":true
@@ -710,7 +710,7 @@
                 "subject": "Cancelación",
                 "notes": "Cancelación de cita",
                 "follow": "email",
-                "alertfollow": "2022-08-13T16:30:00.000Z",
+                "alertfollow": "2022-08-22T16:30:00.000Z",
                 "thread":"1",
                 "readed":true,
                 "answered":false

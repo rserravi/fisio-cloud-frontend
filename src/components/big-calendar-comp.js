@@ -7,7 +7,7 @@ import { GetAllItemsCalendarFormat, GetCabins, GetCustomerIdFromName, getPriceFo
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 
 import 'react-big-calendar/lib/sass/styles.scss'
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, InputAdornment, MenuItem, TextField } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, InputAdornment, MenuItem, TextField } from '@mui/material';
 import { addMonthtoDate, getDateFromISOTime, getTimeFromISOTime } from '../utils/date-utils';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
@@ -15,6 +15,7 @@ import { navigationLoading, navigationSuccess } from '../slices/navigation-slice
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { TimePicker } from '@mui/x-date-pickers';
+import styled from '@emotion/styled';
 
 require('moment/locale/es.js')
 require('moment/locale/ca.js')
@@ -61,6 +62,22 @@ export default function BigCalendarComp(props) {
   const { t } = useTranslation();
   const compact =props.compact;
 
+  const getCalDataWithTitleInData = (data)=> {
+    const datos2 = data;
+    for (let key in datos2){
+      if (datos2[key].kind==="comm"){
+        datos2[key].title = t(datos2[key].commAction) + " " + t("to") + " " + datos2[key].customerName;
+      }
+      if (datos2[key].kind==="appo"){
+        datos2[key].title = t("appointment") +": "+ datos2[key].customerName + " " + t("for") + " " +datos2[key].service;
+      }
+    }
+    return datos2
+  }
+
+  const [data, setData]= React.useState(getCalDataWithTitleInData(GetAllItemsCalendarFormat()));
+  const [filterMode, setFilterMode] = React.useState("seeall");
+ 
   const [seeAppointmentDlg, setSeeAppointmentDlgOpen] = React.useState(false);
   const [seeCommDlg, setSeeCommDlgOpen] = React.useState(false);
   const [customerID, setCustomerID] = React.useState(props.customerId)
@@ -88,6 +105,11 @@ export default function BigCalendarComp(props) {
         },
        },
     );
+
+  React.useEffect(()=>{
+    //setData(GetAllItemsCalendarFormat(filterMode));
+
+  },[data, filterMode])
 
   const SetCustomer = (data) =>{
       console.log (data);
@@ -166,18 +188,104 @@ export default function BigCalendarComp(props) {
   const handleFollowAction= (event) =>{
 
   }
-
   
+  // Set if Toolbar is visible depending on var compact
+  const CustomerToolBar = () =>{
+    const IndianRedButton = styled(Button)(({ theme }) => ({
+      backgroundColor:"indianred",
+      color : "white",
+      '&:hover': {
+        backgroundColor: "indianred",
+        color:"white"
+      },
+    }));
+    const OrangeButton = styled(Button)(({ theme }) => ({
+        color: "white",
+        backgroundColor:"orange",
+        '&:hover': {
+          backgroundColor: "orange",
+          
+        },
+      }));
+    
+    const DodgerBlueButton = styled(Button)(({ theme }) => ({
+      color: "white",
+      backgroundColor:"dodgerblue",
+      '&:hover': {
+        backgroundColor: "dodgerblue",
+        colot: "white"
+      },
+    }));
+
+    const FireBrickButton = styled(Button)(({ theme }) => ({
+      color: "white",
+      backgroundColor:"firebrick",
+      '&:hover': {
+        backgroundColor: "firebrick",
+        colot: "white"
+      },
+    }));
+
+    const TanButton = styled(Button)(({ theme }) => ({
+      color: "white",
+      backgroundColor:"tan",
+      '&:hover': {
+        backgroundColor: "tan",
+        colot: "white"
+      },
+    }));
+
+    const MediumTurquoiseButton = styled(Button)(({ theme }) => ({
+      color: "black",
+      backgroundColor:"mediumturquoise",
+      '&:hover': {
+        backgroundColor: "mediumturquoise",
+        colot: "black"
+      },
+    }));
+    
+
+    const setModeForFilter = (mode) =>{
+        setFilterMode(mode)
+        const datos = GetAllItemsCalendarFormat(mode);
+        if (datos){
+          setData(getCalDataWithTitleInData(datos));
+        }
+    }
+
+   
+  
+
+    return (
+      <React.Fragment>
+          <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" marginBottom={2}>
+      
+              <Grid item xs={12} sm={12} md={12} sx={{my:2}}>
+                  <IndianRedButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastdate")})} size="small" sx={{mr:1}}>{t("pastdate")}  </IndianRedButton>
+                  <OrangeButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notanswered")})}  size="small" sx={{mr:1}}>{t("nextdate")} </OrangeButton>
+                  <DodgerBlueButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcal")})} size="small" sx={{mr:1}}>{t("seealldates")} </DodgerBlueButton>
+                  <FireBrickButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastcomm")})} size="small" sx={{mr:1}}>{t("pastcomm")} </FireBrickButton>
+                  <TanButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("nextcomm")})} size="small" sx={{mr:1}}>{t("nextcomm")} </TanButton>
+                  <MediumTurquoiseButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcomm")})} size="small" sx={{mr:1}}>{t("allcomm")} </MediumTurquoiseButton>
+                  <Button onClick={((event)=>{event.stopPropagation(); setModeForFilter("seeall")})} sx={2} size="small">{t("seeall")} </Button>
+              </Grid>
+          </Grid>
+      </React.Fragment>
+    )
+
+  }
+
   const resourceMap = [
     { resourceId: 1, resourceTitle: 'Sala Principal' },
   ]
 
   return (
     <React.Fragment>
+    {!compact?<CustomerToolBar />:<></>}
     {compact? <div>
       <Calendar
         localizer={localizer}
-        events={GetAllItemsCalendarFormat()}
+        events={data}
         onSelectEvent={handleSelectEvent}
         onSelectSlot={handleSelectSlot}
         culture={localization}
@@ -228,7 +336,7 @@ export default function BigCalendarComp(props) {
     <Calendar
       localizer={localizer}
       culture={localization}
-      events={GetAllItemsCalendarFormat()}
+      events={data}
       onSelectSlot={handleSelectSlot}
       onSelectEvent={handleSelectEvent}
       resourceIdAccessor="resourceId"

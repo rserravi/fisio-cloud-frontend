@@ -19,6 +19,7 @@ import Communications from './pages/communications/communications-page';
 import AddCommunication from './pages/communications/add-communications-page';
 import BigCalendar from './pages/calendar/calendar-page';
 import EditHistory from './pages/history/history-page';
+import Reports from './pages/reports/reports-page';
 
 
 function App() {
@@ -51,6 +52,7 @@ function App() {
           <Route path='/addcommunication/:customerid/:thread/:action' element={<AddCommunication />} />
           <Route path='/addcommunication/:customerid/:thread/:action/:phonemail' element={<AddCommunication />} />
           <Route path='/edithistory/:customerId/:appoId' element={<EditHistory />} />
+          <Route path="/reports/:period" element={<Reports />} />
           <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
           <Route path='/setup' element={<Setup/>} />
           <Route path='/calendar' element={<BigCalendar />} />

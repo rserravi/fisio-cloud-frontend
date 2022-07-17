@@ -18,10 +18,12 @@ const initValue = {
 
 export default function SetupForm() {
     const [selected, setSelected] = React.useState(initValue);
+    const [showTabs, setShowTabs] = React.useState("company") // none, company, users, alerts, cabins, services
     const { t } = useTranslation();
 
     const buttonClick =(event)=>{
         setSelected({[event.target.name] : true})
+        setShowTabs(event.target.name);
     }
 
     return (
@@ -31,11 +33,11 @@ export default function SetupForm() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
              
-                  <Button name='company' onClick={buttonClick} variant='outlined' sx={{mr:2, mt:2}}>{t("company")}</Button>
-                  <Button name='users' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("users")}</Button>
-                  <Button name='alerts' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("alerts")}</Button>
-                  <Button name='cabins' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("physicalspace")}</Button>
-                  <Button name='services' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("services")}</Button>
+                  <Button color={showTabs === "company"?"secondary":"primary"}  name='company' onClick={buttonClick} variant='outlined' sx={{mr:2, mt:2}}>{t("company")}</Button>
+                  <Button color={showTabs === "users"?"secondary":"primary"} name='users' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("users")}</Button>
+                  <Button color={showTabs === "alerts"?"secondary":"primary"} name='alerts' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("alerts")}</Button>
+                  <Button color={showTabs === "cabins"?"secondary":"primary"} name='cabins' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("physicalspace")}</Button>
+                  <Button color={showTabs === "services"?"secondary":"primary"} name='services' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("services")}</Button>
                   </Grid>  
              </Grid>    
              </Paper>
