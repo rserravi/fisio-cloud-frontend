@@ -744,6 +744,28 @@ export const GetDepositsFromDate = (startdate, endDate) =>{
     return accumulated;
 }
 
+export const GetDepositsForMonthChart = (startdate, endDate) =>{
+  const start = new Date (startdate);
+  const end = new Date (endDate)
+  const jsonObj = [];
+
+  for (let userKey in customerData){
+      if(customerData[userKey].history.length >=0){
+          for (let histoKey in customerData[userKey].history){
+              
+             const eventDate = new Date(customerData[userKey].history[histoKey].date)
+             if (eventDate > start && eventDate < end ){
+                  var item = {}
+                  item["month"] = eventDate.getMonth();
+                  item["earnings"] = eventDate.paid;
+                  jsonObj.push(item)
+             }
+          }
+      }
+  }
+  return jsonObj;
+}
+
 export const GetFormattedAttachments = (attachments) =>{ 
   console.log(attachments);
   var text = "";

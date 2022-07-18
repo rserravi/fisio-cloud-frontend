@@ -10,7 +10,6 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import {CustomersComponent} from '../../components/customers-comp';
 import { useTranslation } from 'react-i18next';
 import { ReportsComponent } from '../../components/report-comp';
 
@@ -47,7 +46,7 @@ function ReportsContent() {
 
             <Grid container spacing={1}>
              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                <Paper sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
                   <ReportsComponent compact={false} info="all"/>
                 </Paper>
               </Grid>

@@ -58,9 +58,7 @@ function App() {
           <Route path='/calendar' element={<BigCalendar />} />
           {/* 
          
-          <Route path='/reports' element={<Reports/>} /> 
           <Route path='/integrations' element={<Integrations/>} /> 
-          <Route path='/setup' element={<Setup/>} />
           */}
         </Routes>
       </Router>

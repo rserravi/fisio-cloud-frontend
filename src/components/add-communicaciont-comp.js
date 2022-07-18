@@ -25,7 +25,7 @@ export default function AddCommunicationsComponent(props) {
   const [showEnd, setShowEnd] = React.useState(false);
   const [showSend, setShowSend] = React.useState(false);
   const [firstTimeRenderCheck, setFirstTimeRenderCheck] = React.useState(false);
-  const [phonemail, setPhonemail] = React.useState(props.phonemail);
+  const [phonemail] = React.useState(props.phonemail);
     
   var initValidation={
     id: 0,
@@ -45,6 +45,30 @@ export default function AddCommunicationsComponent(props) {
     thread: props.thread  
   }
   const [Comm, setComm] = React.useState(initValidation);
+
+  const setCommButtons =React.useCallback(()=>{
+    //console.log("setCommButton", Comm.type, "mode", mode)
+    switch (Number(Comm.type)) {
+      case 1:
+        if(!showEnd){
+          setShowStart(true);
+          setShowSend(false);
+        }
+        break;
+      case 2:
+        setShowStart(false);
+        setShowSend(true);
+        break;
+      case 3:
+        setShowStart(false);
+        setShowSend(true);
+        break;
+      default:
+        setShowStart(false);
+        setShowSend(false);
+        break;
+    }
+  },[Comm.type, showEnd])
 
   React.useEffect(() => {   
     setCommButtons();
@@ -69,7 +93,7 @@ export default function AddCommunicationsComponent(props) {
         }
     }
     
-    },[props.threadId, props.customerId, props.action, setMode, setComm, Comm, ]);
+    },[props.threadId, props.customerId, props.action, setMode, setComm, Comm, firstTimeRenderCheck, setCommButtons]);
 
   const [customerName, setCustomerName] = React.useState("")
    
@@ -129,30 +153,6 @@ export default function AddCommunicationsComponent(props) {
     event.preventDefault();
     setComm({...Comm, "type": event.target.value})
     setCommButtons();
-  }
-
-  const setCommButtons =()=>{
-    //console.log("setCommButton", Comm.type, "mode", mode)
-    switch (Number(Comm.type)) {
-      case 1:
-        if(!showEnd){
-          setShowStart(true);
-          setShowSend(false);
-        }
-        break;
-      case 2:
-        setShowStart(false);
-        setShowSend(true);
-        break;
-      case 3:
-        setShowStart(false);
-        setShowSend(true);
-        break;
-      default:
-        setShowStart(false);
-        setShowSend(false);
-        break;
-    }
   }
 
   const handleNewActionChange= (event)=>{
