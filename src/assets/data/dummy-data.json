@@ -117,7 +117,7 @@
             {
                 "id":"4",
                 "user":"1",
-                "date": "2022-04-02T17:30:00.000Z",
+                "date": "2021-12-02T17:30:00.000Z",
                 "duration": "60", 
                 "service": "1",
                 "cabin":"3",
@@ -427,7 +427,54 @@
         ],
  
         "history":[
+            {
+                "id":"1",
+                "user":"1",
+                "date": "2022-02-02T17:30:00.000Z",
+                "duration": "20",
+                "service": "2",
+                "cabin":"1",
+                "price":"20",
+                "paid":"20",
+                "status":"paid",
+                "closed":"2022-02-02T20:30:00.000Z",
+                "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "attachment":[
 
+                ]
+            },
+            {
+                "id":"2",
+                "user":"1",
+                "date": "2022-02-05T17:30:00.000Z",
+                "duration": "60",
+                "service": "1",
+                "cabin":"1",
+                "price":"50",
+                "paid":"50",
+                "status":"paid",
+                "closed":"2022-02-10T20:30:00.000Z",
+                "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "attachment":[
+
+                ]
+            },
+            {
+                "id":"3",
+                "user":"2",
+                "date": "2022-03-10T17:30:00.000Z",
+                "duration": "60",
+                "service": "1",
+                "cabin":"1",
+                "price":"50",
+                "paid":"50",
+                "status":"paid",
+                "closed":"2022-03-11T20:30:00.000Z",
+                "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                "attachment":[
+
+                ]
+            }
         ],
         "appointments":[
             

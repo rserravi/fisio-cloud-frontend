@@ -19,6 +19,8 @@ const mdTheme = createTheme();
 function ReportsContent() {
 
   const boardState = useSelector((state)=> state.navigator);
+  const userSelector = useSelector(state => state.user);
+  const localization = userSelector.locale;
   const { t } = useTranslation();
 
   return (
@@ -47,7 +49,9 @@ function ReportsContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
-                  <ReportsComponent compact={false} info="all"/>
+                  
+                  <ReportsComponent locale={localization} compact={false} info="all"/>
+                  
                 </Paper>
               </Grid>
             </Grid>

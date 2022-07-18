@@ -411,6 +411,10 @@
     "nextcomm":"Communicació propera",
     "allcomm":"Totes les comm",
     "cabins":"Consultoris (espais físics)",
-    "addcabin":"Afegir consultori"
+    "addcabin":"Afegir consultori",
+    "earnings":"Guanys",
+    "cabinName":"Serveis per consultori",
+    "and":"i",
+    "realized":"Serveis realitzats"
 
 }

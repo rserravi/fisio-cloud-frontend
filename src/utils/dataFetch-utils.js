@@ -2,6 +2,7 @@ import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, timeDifference } from "./date-utils";
 import { useTranslation } from 'react-i18next';
+import _, { map } from 'underscore';
 
 
 export const getCustomer = (_id) =>{
@@ -744,28 +745,6 @@ export const GetDepositsFromDate = (startdate, endDate) =>{
     return accumulated;
 }
 
-export const GetDepositsForMonthChart = (startdate, endDate) =>{
-  const start = new Date (startdate);
-  const end = new Date (endDate)
-  const jsonObj = [];
-
-  for (let userKey in customerData){
-      if(customerData[userKey].history.length >=0){
-          for (let histoKey in customerData[userKey].history){
-              
-             const eventDate = new Date(customerData[userKey].history[histoKey].date)
-             if (eventDate > start && eventDate < end ){
-                  var item = {}
-                  item["month"] = eventDate.getMonth();
-                  item["earnings"] = eventDate.paid;
-                  jsonObj.push(item)
-             }
-          }
-      }
-  }
-  return jsonObj;
-}
-
 export const GetFormattedAttachments = (attachments) =>{ 
   console.log(attachments);
   var text = "";
@@ -777,18 +756,81 @@ export const GetFormattedAttachments = (attachments) =>{
 
 }
 
-export const GetDepositsArrayFromDate = (startdate, endDate, status) =>{
-
+export const GetAllDepositsArray = (locale) =>{
   var jsonObj = [];
-  const start = new Date (startdate);
-  const end = new Date (endDate);
   var counter = 0;
+  if (!locale){locale='default'}
 
   for (let userKey in customerData){
       if(customerData[userKey].history.length >=0){
           for (let histoKey in customerData[userKey].history){   
              const eventDate = new Date(customerData[userKey].history[histoKey].date)
-             if (customerData[userKey].history[histoKey].status===status && eventDate > start && eventDate < end ){
+                var item = {};
+                item["id"]= counter
+                item["histoId"] = customerData[userKey].history[histoKey].id
+                item["date"] =  customerData[userKey].history[histoKey].date;
+                item["duration"] = customerData[userKey].history[histoKey].duration;
+                item["service"] =  customerData[userKey].history[histoKey].service;
+                item["price"] =customerData[userKey].history[histoKey].price;
+                item["paid"] =customerData[userKey].history[histoKey].paid;
+                item["status"] = customerData[userKey].history[histoKey].status;
+                item["closed"] = customerData[userKey].history[histoKey].closed;
+                item["notes"] = customerData[userKey].history[histoKey].notes;
+                item["attachment"] = customerData[userKey].history[histoKey].attachment;
+                item["customerId"] = customerData[userKey].id;
+                item["monthandyear"] = new Date(customerData[userKey].history[histoKey].date).toLocaleString(locale, { month: 'short' }) + " " + new Date(customerData[userKey].history[histoKey].date).getFullYear();
+                
+                jsonObj.push(item)
+                counter = counter +1;
+             
+          }
+      }
+  }
+  return jsonObj;
+}
+
+export const GetDepositsArrayForChart = (locale) =>{
+  var jsonObj = [];
+  const data = GetAllDepositsArray(locale);
+
+  //SORT DATA (USING UNDERSCORE)
+  const sortedData=_.sortBy(data,'date')
+
+  const groupedData = _.groupBy(sortedData, "monthandyear" )
+  var income = 0;
+  var loses = 0;
+  for (const [key, value] of Object.entries(groupedData)){
+    income = 0;
+    loses = 0;
+    var item={}
+    item["name"]= key;
+    for (let iter in value){
+      income += Number(value[iter].paid);
+      loses += Number(value[iter].price) - Number(value[iter].paid)
+    }
+    item["earnings"]= income;
+    item["debts"]=loses;
+    jsonObj.push(item)
+    
+  }
+  
+  return jsonObj;
+}
+
+
+export const GetDepositsArrayFromDate = (startdate, endDate, status, locale) =>{
+
+  var jsonObj = [];
+  const start = new Date (startdate);
+  const end = new Date (endDate);
+  var counter = 0;
+  if (!locale){locale='default'}
+
+  for (let userKey in customerData){
+      if(customerData[userKey].history.length >=0){
+          for (let histoKey in customerData[userKey].history){   
+             const eventDate = new Date(customerData[userKey].history[histoKey].date)
+             if (!status || (customerData[userKey].history[histoKey].status===status && eventDate > start && eventDate < end )){
                 var item = {};
                 item["id"]= counter
                 item["histoId"] = customerData[userKey].history[histoKey].id
@@ -804,6 +846,7 @@ export const GetDepositsArrayFromDate = (startdate, endDate, status) =>{
                 item["customerId"] = customerData[userKey].id;
                 item["periodStart"] = new Date (startdate).toISOString();
                 item["periodEnd"] =  new Date (endDate).toISOString();
+                item["monthandyear"] = new Date(customerData[userKey].history[histoKey].date).toLocaleString(locale, { month: 'short' }) + " " + new Date(customerData[userKey].history[histoKey].date).getFullYear();
                 
                 jsonObj.push(item)
                 counter = counter +1;
@@ -854,6 +897,42 @@ export const GetCabinNameById =(_id)=>{
         }
     }
     return found +"";
+}
+
+export const GetCabinsForChart = ()=>{
+  var jsonObj = []
+  const cabins = GetCabins();
+  for (let key in cabins){
+     const cabinId = cabins[key].id;
+    
+     const services = getServicesByCabin(cabinId);
+     const cabinName = cabins[key].localization;
+     var item = {};
+     item["id"]=cabinId;
+     item["services"] = services;
+     item["cabinName"] =  cabinName;
+     jsonObj.push(item)
+  }
+  return jsonObj;
+  
+}
+
+export const GetServicesForChart = ()=>{
+  var jsonObj = []
+  const services = getServices();
+  for (let key in services){
+     const serviceId = services[key].id;
+    
+     const realized = getServicesRealized(serviceId);
+     const serviceName = services[key].serviceName;
+     var item = {};
+     item["id"]=serviceId;
+     item["realized"] = realized;
+     item["service"] =  serviceName;
+     jsonObj.push(item)
+  }
+  return jsonObj;
+  
 }
 
 export const GetCommunicationActions = () =>{

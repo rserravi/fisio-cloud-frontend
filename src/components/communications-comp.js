@@ -7,16 +7,12 @@ import { useNavigate } from 'react-router-dom';
 //MUI IMPORTS
 import { Button, Grid, Paper } from '@mui/material';
 import { DataGrid,  GridToolbar } from '@mui/x-data-grid';
-import Tooltip from '@mui/material/Tooltip';
 import { Container } from '@mui/system';
 
 
 //CUSTOM IMPORTS
-import Title from './Title';
-import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-import { nameInitial } from '../utils/name-utils.js';
-import { LocalTextForDataGrid, paperColor } from '../utils/mui-custom-utils';
-import { GetCommunications, getCustomerNameFromId, GetLocales, GetReceiverName, GetRowById, GetSenderName, getUserById } from '../utils/dataFetch-utils';
+import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
+import { GetCommunications, GetReceiverName, GetRowById, GetSenderName } from '../utils/dataFetch-utils';
 import { ConversationComponent } from './conversation-comp';
 
 //ICONS
