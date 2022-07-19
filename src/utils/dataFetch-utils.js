@@ -1,8 +1,9 @@
 import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
-import { addMinutesToDate, timeDifference } from "./date-utils";
+import { addMinutesToDate, addMonthtoDate, timeDifference } from "./date-utils";
 import { useTranslation } from 'react-i18next';
-import _, { map } from 'underscore';
+import _, { map, object } from 'underscore';
+import { nameInitial } from "./name-utils";
 
 
 export const getCustomer = (_id) =>{
@@ -111,6 +112,7 @@ export const GetCommunications = (props)=>{
           item["thread"] = data[key].contacthistory[histoKey].thread;
           item["readed"] =  data[key].contacthistory[histoKey].readed;
           item["answered"] =  data[key].contacthistory[histoKey].answered;
+          item["customerName"] = data[key].firstname +" "+ data[key].lastname;
           
           jsonObj.push(item)
         }
@@ -471,7 +473,6 @@ export const GetAppointmentById = (props) =>{
         }
       }
       }
-    console.log(jsonObj)
     return jsonObj  
 }
 
@@ -502,7 +503,6 @@ export const GetHistoryById = (props) =>{
       }
     }
     }
-  console.log(jsonObj)
   return jsonObj  
 }
 
@@ -746,7 +746,6 @@ export const GetDepositsFromDate = (startdate, endDate) =>{
 }
 
 export const GetFormattedAttachments = (attachments) =>{ 
-  console.log(attachments);
   var text = "";
   const linkbase = "https://localhost:3000/docs/"
   for (let key in attachments){
@@ -781,11 +780,37 @@ export const GetAllDepositsArray = (locale) =>{
                 item["monthandyear"] = new Date(customerData[userKey].history[histoKey].date).toLocaleString(locale, { month: 'short' }) + " " + new Date(customerData[userKey].history[histoKey].date).getFullYear();
                 
                 jsonObj.push(item)
-                counter = counter +1;
-             
+                counter = counter +1;           
           }
       }
   }
+  return jsonObj;
+}
+
+export const GetArrayOfMonthAndYear = (mandy, data) =>{
+  let found = {}
+    for (const [key, value] of Object.entries(data)){
+      if (key === mandy){
+        found = value
+      }
+     
+    }
+return found;
+
+}
+
+export const fillData = (data, locale)=>{
+  var jsonObj = []
+  const firstDay = Object.values(data)[0][0].date;
+  const lastDay =  Object.values(data)[Object.values(data).length -1][0].date;
+  for (let actualDay = new Date(firstDay); actualDay<=new Date(lastDay); actualDay= addMonthtoDate(actualDay,1)){
+    const actualMonth = new Date(actualDay).toLocaleDateString(locale, { month: 'short' });
+    const actualYear = new Date(actualDay).getFullYear();
+    const monthandyear = actualMonth + " " + actualYear;
+    jsonObj[monthandyear] = GetArrayOfMonthAndYear(monthandyear, data);
+  }
+
+
   return jsonObj;
 }
 
@@ -797,9 +822,12 @@ export const GetDepositsArrayForChart = (locale) =>{
   const sortedData=_.sortBy(data,'date')
 
   const groupedData = _.groupBy(sortedData, "monthandyear" )
+
+  const filledData = fillData(groupedData, locale);
+
   var income = 0;
   var loses = 0;
-  for (const [key, value] of Object.entries(groupedData)){
+  for (const [key, value] of Object.entries(filledData)){
     income = 0;
     loses = 0;
     var item={}
@@ -858,7 +886,6 @@ export const GetDepositsArrayFromDate = (startdate, endDate, status, locale) =>{
 }
 
 export const GetDebtsToDate = (endDate) =>{
-
     const end = new Date (endDate)    
     var accumulated = 0;
     for (let userKey in customerData){
@@ -871,7 +898,6 @@ export const GetDebtsToDate = (endDate) =>{
             }
         }
     }
-
     return accumulated;
 }
 
@@ -909,7 +935,7 @@ export const GetCabinsForChart = ()=>{
      const cabinName = cabins[key].localization;
      var item = {};
      item["id"]=cabinId;
-     item["services"] = services;
+     item["realized"] = services;
      item["cabinName"] =  cabinName;
      jsonObj.push(item)
   }
@@ -933,6 +959,36 @@ export const GetServicesForChart = ()=>{
   }
   return jsonObj;
   
+}
+
+export const GetServicesTotalByUser = (userId) =>{
+  var count = 0;
+  for (let userKey in customerData){
+    if (customerData[userKey].history){
+      for (let histoKey in customerData[userKey].history){
+
+        if (Number(customerData[userKey].history[histoKey].user) === Number(userId)){
+          count +=1;
+        }
+      }
+
+    }
+  }
+  return count;
+}
+
+export const GetServicesRealizedByUsersForChart = ()=>{
+  var jsonObj = []
+  const users = getUserList();
+  for (let key in users){
+    var item = {};
+    item["id"] = users[key].id;
+    item["name"] = nameInitial(users[key].firstname) + " " +users[key].lastname;
+    item["realized"] = GetServicesTotalByUser(users[key].id);
+    jsonObj.push(item);
+
+  }
+  return jsonObj;
 }
 
 export const GetCommunicationActions = () =>{
@@ -1018,11 +1074,11 @@ export const notAnsweredMessages = (customerId)=>{
           }
         }
       }
-    }
-   
+    }   
     return count
   }
 }
+
 
 export const GetThread = (data)=>{
   const customerID = data.customerId;
@@ -1073,40 +1129,118 @@ export const GetBadgeAlerts = () =>{
           idCounter= idCounter +1;
           item["id"]= idCounter;
           item["title"] = t("pastdate") +" "+ appo[key].customerName
-          item["link"] = "/addappointment/"+ appo[key].customerId +"/" + appo[key].id;
+          item["link"] = "/customer/"+ appo[key].customerId +"/appo"
           item["date"] = appo[key].date
           jsonObj.push(item)
         }
-        if (timeDifference(appo[key].date)>=alertsSetup.commingDaysPeriod){
-          item = {};
-          idCounter= idCounter +1;
-          item["id"]= idCounter;
-          item["title"] = t("nextdate") +" "+ appo[key].customerName
-          item["link"] = "/addappointment/"+ appo[key].customerId +"/" + appo[key].id;
-          item["date"] = appo[key].date
-          jsonObj.push(item)
+        if (alertsSetup.showComming){
+          if (timeDifference(appo[key].date)>=alertsSetup.commingDaysPeriod){
+            item = {};
+            idCounter= idCounter +1;
+            item["id"]= idCounter;
+            item["title"] = t("nextdate") +" "+ appo[key].customerName
+            item["link"] = "/customer/"+ appo[key].customerId +"/appo"
+            item["date"] = appo[key].date
+            jsonObj.push(item)
+          }
+        }
+      }
+    }
+    if(alertsSetup.showCommAlerts){
+      const comm = GetCommunications();
+      if (alertsSetup.showPast){
+        for (let key in comm){
+          if (timeDifference(comm[key].date)<=alertsSetup.pastDaysPeriod){
+            if (!comm[key].readed){
+              var item = {};
+              idCounter= idCounter +1;
+              item["id"]= idCounter;
+              item["title"] = t("notreaded") +" "+ comm[key].customerName
+              item["link"] = "/customer/"+ comm[key].customerId +"/comm";
+              item["date"] = comm[key].date
+              jsonObj.push(item)       
+            }
+            if (!comm[key].answered){
+              var item = {};
+              idCounter= idCounter +1;
+              item["id"]= idCounter;
+              item["title"] = t("notanswered") +" "+ comm[key].customerName
+              item["link"] = "/customer/"+ comm[key].customerId +"/comm";
+              item["date"] = comm[key].date
+              jsonObj.push(item)       
+            }
+          }
         }
       }
     }
     
     return jsonObj
   }
-
-  
- /* [
-      {
-        "id":"1",
-        "title":"alerta 1",
-        "link": "page 1"
-      },
-      {
-        "id":"2",
-        "title":"alerta 2",
-        "link": "page 2"
-      }
-    
-    ] */
 }
+
+export const GetLeadsByDate = (locale)=>{
+  var jsonObj = [];
+  var data = customerData
+
+  //SORT DATA (USING UNDERSCORE)
+  const sortedData=_.sortBy(data,'addedAt')
+  const expandedData = (()=>{
+    var newData = [];
+    for (let key in sortedData){
+      var item = {}
+      item["custoName"] = sortedData[key].firstname + " " +sortedData[key].lastname;
+      item["monthandyear"] = new Date(sortedData[key].addedAt).toLocaleString(locale, { month: 'short' }) + " " + new Date(sortedData[key].addedAt).getFullYear();
+      item["date"]=sortedData[key].addedAt;
+      item["inbound"]=sortedData[key].inbound;
+      item["custoName"]= sortedData[key].firstname + " " + sortedData[key].lastname;
+      newData.push(item)
+    }
+    
+    return newData;
+  })
+
+  const groupedData = _.groupBy(expandedData(), "monthandyear" )
+  const filledData = fillData(groupedData, locale);
+
+  for (const [key, value] of Object.entries(filledData)){
+
+    var item={}
+    item["name"]= key;
+    const leads = _.filter(value, ((item)=>{return item.inbound==="lead"}))
+    item["leads"]= leads.length?leads.length:0
+    const custo = _.filter(value, ((item)=>{return item.inbound!=="lead"}))
+    item["customers"]= custo.length?custo.length:0;
+   
+    const custoname = (()=>{
+      var nameResult = ""
+      for (let key in value){
+        console.log("VALUE INBOUND",value)
+        if (value[key].inbound!=="lead")
+        nameResult += " - " + value[key].custoName;
+        
+      }
+      return nameResult; 
+    })
+    item["custoName"]= custoname()?custoname():"";
+    
+    const leadname = (()=>{
+      var nameResult = ""
+      for (let key in value){
+        if (value[key].inbound==="lead")
+        nameResult += " - " + value[key].custoName;
+        
+      }
+      return nameResult; 
+    })
+    item["leadName"]= leadname()?leadname():"";
+    jsonObj.push(item)
+    
+  }
+  console.log("JSON", jsonObj)
+  
+  return jsonObj;
+}
+
 
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js
 export const countries = [

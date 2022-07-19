@@ -1,7 +1,8 @@
 [
     {
         "id":1,
-        "addedAt": "1-10-2021",
+        "addedAt": "2019-04-02T16:30:00.000Z",
+        "promotedToCustomer":"2019-04-02T17:30:00.000Z",
         "firstname": "Juanjo",
         "lastname": "Rubio Burguillos",
         "dni":"43444444G",
@@ -215,7 +216,8 @@
     },
     {
         "id":2,
-        "addedAt": "1-10-2018",
+        "addedAt": "2020-09-19T11:00:00.000Z",
+        "promotedToCustomer":"2020-09-20T11:00:00.000Z",
         "firstname": "Adel",
         "lastname": "Khader",
         "birthdate": "1974-04-04T17:30:00.000Z",
@@ -381,14 +383,15 @@
     },
     {
         "id":3,
-        "addedAt": "1-10-2015",
+        "addedAt": "2022-02-02T17:30:00.000Z",
+        "promotedToCustomer":"2022-02-02T17:30:00.000Z",
         "firstname": "Maria",
         "lastname": "Lapuerta",
         "dni":"",
         "birthdate": "",
         "image": "marialapuerta.jpg",
         "gender": "female",
-        "inbound": "lead",
+        "inbound": "customer",
         "email":
         [
             {
@@ -504,7 +507,8 @@
     },
     {
         "id":4,
-        "addedAt": "1-10-2015",
+        "addedAt": "2021-07-10T17:30:00.000Z",
+        "promotedToCustomer":"",
         "firstname": "Ines",
         "lastname": "Arrimadas",
         "image": "",
@@ -577,12 +581,13 @@
     },
     {
         "id":5,
-        "addedAt": "1-10-2015",
+        "addedAt": "2022-05-11T11:30:00.000Z",
+        "promotedToCustomer":"",
         "firstname": "Ana",
         "lastname": "Torroja",
         "birthdate": "",
         "dni":"",
-        "image": "marialapuerta.jpg",
+        "image": "Ana-Torroja.jpg",
         "gender": "female",
         "inbound": "lead",
         "email":
@@ -649,12 +654,13 @@
     },
     {
         "id":6,
-        "addedAt": "1-10-2015",
+        "addedAt": "2021-10-02T17:30:00.000Z",
+        "promotedToCustomer":"",
         "firstname": "Bo",
         "lastname": "Derek",
         "birthdate": "",
         "dni":"",
-        "image": "marialapuerta.jpg",
+        "image": "boderek.jpeg",
         "gender": "female",
         "inbound": "lead",
         "email":
@@ -758,6 +764,79 @@
                 "notes": "Cancelación de cita",
                 "follow": "email",
                 "alertfollow": "2022-08-22T16:30:00.000Z",
+                "thread":"1",
+                "readed":true,
+                "answered":false
+            }
+        ]
+    },
+    {
+        "id":6,
+        "addedAt": "2022-05-15T11:30:00.000Z",
+        "promotedToCustomer":"",
+        "firstname": "Teresa",
+        "lastname": "Pamies",
+        "birthdate": "",
+        "dni":"",
+        "image": "Portrait_Placeholder.png",
+        "gender": "female",
+        "inbound": "lead",
+        "email":
+        [
+            {
+              "type": "home",
+              "emailAddress": ""
+            }
+        ],
+
+        "address":
+        {
+            "streetAddress": "",
+            "city": "",
+            "state": "",
+            "postalCode": "",
+            "country":""
+        },
+        "phoneNumber":
+        [
+            {
+              "type": "home",
+              "number": ""
+            },
+            {
+              "type": "mobile",
+              "number": "+34633279233"
+            }
+        ],
+        "whatsapp": "+34633279233",
+        "socialMedia":
+        [
+
+        ],
+ 
+        "history":[
+
+        ],
+        "appointments":[
+            
+        ],
+        "releaseForm":{
+            "file":"",
+            "generated":false,
+            "signed":false
+        },
+        "contacthistory":[
+            {
+                "id": "1",
+                "user":"1",
+                "direction":"send",
+                "date": "2022-05-11T11:30:00.000Z",
+                "type": "call",
+                "duration": "80",
+                "subject": "Información",
+                "notes": "Preguntó por horarios. Ya se pasará",
+                "follow": "mail",
+                "alertfollow": "2022-08-13T16:30:00.000Z",
                 "thread":"1",
                 "readed":true,
                 "answered":false

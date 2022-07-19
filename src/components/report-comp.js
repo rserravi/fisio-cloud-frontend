@@ -16,7 +16,7 @@ import Title from './Title';
 //ICONS
 
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
-import { GetCabinsForChart, GetDepositsArrayForChart, GetServicesForChart } from '../utils/dataFetch-utils';
+import { GetCabinsForChart, GetDepositsArrayForChart, GetLeadsByDate, GetServicesForChart, GetServicesRealizedByUsersForChart } from '../utils/dataFetch-utils';
 
 
 /////////////////////////////////
@@ -35,6 +35,9 @@ export const ReportsComponent = (props)=> {
   const depositsMonth = GetDepositsArrayForChart(locale);
   const servicesForCabin= GetCabinsForChart();
   const servicesrealized = GetServicesForChart();
+  const servicesByUser = GetServicesRealizedByUsersForChart();
+  const leadsbyDate = GetLeadsByDate();
+  
    
   // Set if Toolbar is visible depending on var compact
   const CustomerToolBar = () =>{
@@ -62,6 +65,23 @@ export const ReportsComponent = (props)=> {
   const translatedLegend = (value, entry) =>{
     return t(value);
   }
+
+  function CustomerToolTip({ payload, label, active }) {
+    if (active) {
+     // console.log("PAYLOAD TOOLTIP", payload )
+      return (
+        <div className="custom-tooltip">
+          <p className="label">{label}</p>
+          <p className="label">{payload[0].payload?payload[0].dataKey + " " + payload[0].payload.leadName:""}</p>
+          <p className="label">{`${payload[1].dataKey} ${payload[1].payload.custoName}`}</p>
+        </div>
+      );
+    }
+  
+    return null;
+  }
+  
+  
 
   //MAIN DOM RETURN
   return (
@@ -99,7 +119,7 @@ export const ReportsComponent = (props)=> {
             </LineChart>
             </ResponsiveContainer>
           </Grid>
-          <Grid item xs={12} sm={6} md={6} sx={{mt:2}}>
+          <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
             <Typography variant="h6" align='left' component="h2">{t("services")} {t("for")} {t("cabin")}</Typography>
             <ResponsiveContainer width={'100%'} height={400}>
             <BarChart
@@ -113,7 +133,7 @@ export const ReportsComponent = (props)=> {
                   bottom: 5
                 }}
               >
-                <Bar dataKey="services" fill="#8884d8" />
+                <Bar dataKey="realized" fill="#8884d8" />
                 <XAxis dataKey="cabinName" />
                 <YAxis />
                 <Tooltip />
@@ -121,7 +141,7 @@ export const ReportsComponent = (props)=> {
             </BarChart>
             </ResponsiveContainer>
         </Grid>
-        <Grid item xs={12} sm={6} md={6} sx={{mt:2}}>
+        <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
             <Typography variant="h6" align='left' component="h2">{t("realized")}</Typography>
             <ResponsiveContainer width={'100%'} height={400}>
             <BarChart
@@ -143,6 +163,64 @@ export const ReportsComponent = (props)=> {
             </BarChart>
             </ResponsiveContainer>
         </Grid>
+        <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
+            <Typography variant="h6" align='left' component="h2">{t("users")}</Typography>
+            <ResponsiveContainer width={'100%'} height={400}>
+            <BarChart
+                width={570}
+                height={350}
+                data={servicesByUser}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 0,
+                  bottom: 5
+                }}
+              >
+                <Bar dataKey="realized" fill="#8884d8" />
+                <XAxis dataKey="name" />
+                <YAxis />
+                <Tooltip />
+                <Legend formatter={translatedLegend}/>
+            </BarChart>
+            </ResponsiveContainer>
+        </Grid>
+        <Grid item xs={12} sm={12} md={12} sx={{mt:2}}>
+        
+          <Typography variant="h6" align='left' component="h2">{t("leadsgained")}</Typography>
+          <ResponsiveContainer width={'100%'} height={400}>
+          <LineChart
+              width={570}
+              height={350}
+              data={leadsbyDate}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 0,
+                bottom: 5
+              }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip content={<CustomerToolTip />}/>
+              <Legend formatter={translatedLegend}/>
+              <Line
+                type="monotone"
+                dataKey="leads"
+                stroke="#118811"
+                activeDot={{ r: 8 }}
+              />
+              <Line
+                type="monotone"
+                dataKey="customers"
+                stroke="#111188"
+                activeDot={{ r: 8 }}
+              />
+            
+            </LineChart>
+            </ResponsiveContainer>
+          </Grid>
       </Grid>     
     </React.Fragment>
   );

@@ -56,6 +56,7 @@ export default function SeeCustomerComponent(props) {
     
     React.useEffect(()=>{
         dispatch(nc_loadFromBackend(customer));
+       
 
     },[customer, dispatch])
 
@@ -352,7 +353,7 @@ export default function SeeCustomerComponent(props) {
                                 <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("name")}: <b>{customer.firstname} {customer.lastname}</b>. {t("gender")}: <GenderIcon name={customer.gender} /> ({t(customer.gender)})</Typography>
                                 <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("birthdate")}: <BirthdateText /></Typography>
                                 <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("dni")}: <b>{customer.dni}</b></Typography>
-                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("addedat")}: {customer.addedAt}</Typography>
+                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("addedat")} {new Date(customer.addedAt).toLocaleDateString(locale)} </Typography>
                             </Grid>
                             <Grid item>
                                 <Button onClick={editNameDialogClick} align='left'>{t("edit")} {t("name")}</Button>

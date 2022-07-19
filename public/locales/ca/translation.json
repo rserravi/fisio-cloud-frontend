@@ -415,6 +415,8 @@
     "earnings":"Guanys",
     "cabinName":"Serveis per consultori",
     "and":"i",
-    "realized":"Serveis realitzats"
-
+    "realized":"Serveis realitzats",
+    "leadsgained":"Leads i  clients aconseguits per data",
+    "quantity":"Quantitat",
+    "leads":"Leads"
 }

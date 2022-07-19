@@ -78,8 +78,8 @@ export const addMinutesToDate = (date, minutes)=>{
 }
 
 export const addMonthtoDate= (date, months) =>{
-  var oldDate = new Date()
-  var newd = new Date(date);
+  var oldDate = new Date(date)
+  var newd = new Date(date)
   newd.setMonth(oldDate.getMonth()+Number(months));
   return newd
 }
