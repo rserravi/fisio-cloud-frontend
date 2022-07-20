@@ -198,9 +198,6 @@ const RenderAppointmentCell = (props) => {
 };
 
 
-
-
-
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
 
 const data = (infoType) =>{
@@ -246,9 +243,6 @@ const appointmentsWidth = () =>{
     return 130
   }
 }
-
-
-
 
 /////////////////////////////////
 //                             //
@@ -572,7 +566,6 @@ export const CustomersComponent = (props)=> {
     dispatch(navigationSuccess(actualScreen))
   }
  
-
   // Select has an array of selected rows
   const [select, setSelection] = React.useState([]);
 

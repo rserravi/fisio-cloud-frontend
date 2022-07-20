@@ -418,5 +418,10 @@
     "realized":"Serveis realitzats",
     "leadsgained":"Leads i  clients aconseguits per data",
     "quantity":"Quantitat",
-    "leads":"Leads"
+    "leads":"Leads",
+    "servicesbyuser":"Serveis per usuari",
+    "printreports": "Imprimir informes",
+    "reportall":"Informe tot",
+    "seequarter":"Informe quart actual",
+    "seeyear":"Informe tot any"
 }

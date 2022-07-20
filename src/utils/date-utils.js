@@ -84,6 +84,64 @@ export const addMonthtoDate= (date, months) =>{
   return newd
 }
 
+export const addYeartoDate= (date, years) =>{
+  var oldDate = new Date(date)
+  var newd = new Date(date)
+  newd.setFullYear(oldDate.getFullYear()+Number(years));
+  return newd
+}
+
+export const getActualQuarter = (date)=>{
+  const year = new Date(date).getFullYear();
+  //const QuarterStart1 = new Date (year,1,1);
+  const QuarterEnd1 = new Date (year,4,30);
+  const QuarterStart2 = new Date (year,4,1);
+  const QuarterEnd2 = new Date (year,8,31);
+  const QuarterStart3 = new Date (year,9,1);
+  //const QuarterEnd3 = new Date (year,12,31);
+  if (date <= QuarterEnd1){
+    return 1
+  }
+  if (date >= QuarterStart2 && date <=QuarterEnd2){
+    return 2
+  }
+  if (date >= QuarterStart3){
+    return 3
+  }
+}
+
+export const getActualQuarterStartDate = ()=>{
+  const today = new Date();
+  const quarter = getActualQuarter(today);
+  const year = today.getFullYear();
+  switch (quarter) {
+    case 1:
+      return new Date (year,1,1);  
+    case 2:
+      return new Date (year,4,1);
+    case 3:
+      return new Date (year,9,1);
+    default:
+      return new Date();
+  }
+}
+
+export const getActualQuarterEndDate = ()=>{
+  const today = new Date();
+  const quarter = getActualQuarter(today);
+  const year = today.getFullYear();
+  switch (quarter) {
+    case 1:
+      return new Date (year,4,30);
+    case 2:
+      return new Date (year,8,31);
+    case 3:
+      return new Date (year,12,31);
+    default:
+      return new Date();
+  }
+}
+
 export const twoDigitsDateOptions = {
   day : "2-digit",
   month : "2-digit",

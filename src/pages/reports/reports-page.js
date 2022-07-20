@@ -12,6 +12,11 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { ReportsComponent } from '../../components/report-comp';
+import { useParams } from 'react-router-dom';
+import { useNavigate} from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
+
 
 
 const mdTheme = createTheme();
@@ -21,6 +26,15 @@ function ReportsContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const _period = useParams().period;
+  if (_period !=="quarter" && _period !=="year" && _period !=="all" ){
+    const actualScreen = "/404"
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
   const { t } = useTranslation();
 
   return (
@@ -50,7 +64,7 @@ function ReportsContent() {
              <Grid item xs={12}>
                 <Paper sx={{ p: 1, display: 'flex', flexDirection: 'column' }}>
                   
-                  <ReportsComponent locale={localization} compact={false} info="all"/>
+                  <ReportsComponent locale={localization} compact={false} period={_period}/>
                   
                 </Paper>
               </Grid>

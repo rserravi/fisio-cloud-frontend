@@ -2,7 +2,7 @@ import customerData from "../assets/data/dummy-data.json"
 import configData from "../assets/data/config-data.json"
 import { addMinutesToDate, addMonthtoDate, timeDifference } from "./date-utils";
 import { useTranslation } from 'react-i18next';
-import _, { map, object } from 'underscore';
+import _ from 'underscore';
 import { nameInitial } from "./name-utils";
 
 
@@ -763,7 +763,7 @@ export const GetAllDepositsArray = (locale) =>{
   for (let userKey in customerData){
       if(customerData[userKey].history.length >=0){
           for (let histoKey in customerData[userKey].history){   
-             const eventDate = new Date(customerData[userKey].history[histoKey].date)
+             //const eventDate = new Date(customerData[userKey].history[histoKey].date)
                 var item = {};
                 item["id"]= counter
                 item["histoId"] = customerData[userKey].history[histoKey].id
@@ -827,6 +827,7 @@ export const GetDepositsArrayForChart = (locale) =>{
 
   var income = 0;
   var loses = 0;
+  var date = "";
   for (const [key, value] of Object.entries(filledData)){
     income = 0;
     loses = 0;
@@ -835,9 +836,11 @@ export const GetDepositsArrayForChart = (locale) =>{
     for (let iter in value){
       income += Number(value[iter].paid);
       loses += Number(value[iter].price) - Number(value[iter].paid)
+      date = value[iter].date;
     }
     item["earnings"]= income;
     item["debts"]=loses;
+    item["date"]= date;
     jsonObj.push(item)
     
   }
@@ -1152,7 +1155,7 @@ export const GetBadgeAlerts = () =>{
         for (let key in comm){
           if (timeDifference(comm[key].date)<=alertsSetup.pastDaysPeriod){
             if (!comm[key].readed){
-              var item = {};
+              item = {};
               idCounter= idCounter +1;
               item["id"]= idCounter;
               item["title"] = t("notreaded") +" "+ comm[key].customerName
@@ -1161,7 +1164,7 @@ export const GetBadgeAlerts = () =>{
               jsonObj.push(item)       
             }
             if (!comm[key].answered){
-              var item = {};
+              item = {};
               idCounter= idCounter +1;
               item["id"]= idCounter;
               item["title"] = t("notanswered") +" "+ comm[key].customerName
@@ -1214,7 +1217,6 @@ export const GetLeadsByDate = (locale)=>{
     const custoname = (()=>{
       var nameResult = ""
       for (let key in value){
-        console.log("VALUE INBOUND",value)
         if (value[key].inbound!=="lead")
         nameResult += " - " + value[key].custoName;
         
@@ -1236,7 +1238,6 @@ export const GetLeadsByDate = (locale)=>{
     jsonObj.push(item)
     
   }
-  console.log("JSON", jsonObj)
   
   return jsonObj;
 }

@@ -12,7 +12,7 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { AppointmentsComponent } from '../../components/appointments-comp';
-import CalendarComp from '../../components/calendar-comp';
+import BigCalendarComp from '../../components/big-calendar-comp';
 
 
 const mdTheme = createTheme();
@@ -54,7 +54,7 @@ function AppoinmentsContent() {
               </Grid>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-               <CalendarComp locale={localization} />
+               <BigCalendarComp locale={localization} onlyAppo={true}/>
                 </Paper>
               </Grid>
             </Grid>

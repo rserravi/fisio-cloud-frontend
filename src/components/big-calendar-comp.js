@@ -61,6 +61,7 @@ export default function BigCalendarComp(props) {
   const localizer = momentLocalizer(moment)
   const { t } = useTranslation();
   const compact =props.compact;
+  const onlyAppo = props.onlyAppo;
 
   const getCalDataWithTitleInData = (data)=> {
     const datos2 = data;
@@ -76,7 +77,13 @@ export default function BigCalendarComp(props) {
   }
 
   const [data, setData]= React.useState(getCalDataWithTitleInData(GetAllItemsCalendarFormat()));
-  const [filterMode, setFilterMode] = React.useState("seeall");
+  const [filterMode, setFilterMode] = React.useState(()=>{
+    const datos = GetAllItemsCalendarFormat(onlyAppo?"allcal":"seeall");
+        if (datos){
+          setData(getCalDataWithTitleInData(datos));
+        }
+    return onlyAppo?"allcal":"seeall";
+  })
  
   const [seeAppointmentDlg, setSeeAppointmentDlgOpen] = React.useState(false);
   const [seeCommDlg, setSeeCommDlgOpen] = React.useState(false);
@@ -251,10 +258,7 @@ export default function BigCalendarComp(props) {
         if (datos){
           setData(getCalDataWithTitleInData(datos));
         }
-    }
-
-   
-  
+    }  
 
     return (
       <React.Fragment>
@@ -264,10 +268,10 @@ export default function BigCalendarComp(props) {
                   <IndianRedButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastdate")})} size="small" sx={{mr:1}}>{t("pastdate")}  </IndianRedButton>
                   <OrangeButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notanswered")})}  size="small" sx={{mr:1}}>{t("nextdate")} </OrangeButton>
                   <DodgerBlueButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcal")})} size="small" sx={{mr:1}}>{t("seealldates")} </DodgerBlueButton>
-                  <FireBrickButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastcomm")})} size="small" sx={{mr:1}}>{t("pastcomm")} </FireBrickButton>
-                  <TanButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("nextcomm")})} size="small" sx={{mr:1}}>{t("nextcomm")} </TanButton>
-                  <MediumTurquoiseButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcomm")})} size="small" sx={{mr:1}}>{t("allcomm")} </MediumTurquoiseButton>
-                  <Button onClick={((event)=>{event.stopPropagation(); setModeForFilter("seeall")})} sx={2} size="small">{t("seeall")} </Button>
+                  {!onlyAppo?<FireBrickButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastcomm")})} size="small" sx={{mr:1}}>{t("pastcomm")} </FireBrickButton>:<></>}
+                  {!onlyAppo?<TanButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("nextcomm")})} size="small" sx={{mr:1}}>{t("nextcomm")} </TanButton>:<></>}
+                  {!onlyAppo?<MediumTurquoiseButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcomm")})} size="small" sx={{mr:1}}>{t("allcomm")} </MediumTurquoiseButton>:<></>}
+                  {!onlyAppo?<Button onClick={((event)=>{event.stopPropagation(); setModeForFilter("seeall")})} sx={2} size="small">{t("seeall")} </Button>:<></>}
               </Grid>
           </Grid>
       </React.Fragment>

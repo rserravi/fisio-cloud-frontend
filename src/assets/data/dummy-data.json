@@ -328,7 +328,7 @@
             {
                 "id":"2",
                 "user":"1",
-                "date": "2022-07-19T12:00:00.000Z",
+                "date": "2022-07-24T12:00:00.000Z",
                 "startingTime": "11:00",
                 "duration": "60", 
                 "service": "1",
@@ -655,14 +655,14 @@
     {
         "id":6,
         "addedAt": "2021-10-02T17:30:00.000Z",
-        "promotedToCustomer":"",
+        "promotedToCustomer":"2022-05-20T17:30:00.000Z",
         "firstname": "Bo",
         "lastname": "Derek",
         "birthdate": "",
         "dni":"",
         "image": "boderek.jpeg",
         "gender": "female",
-        "inbound": "lead",
+        "inbound": "customer",
         "email":
         [
             {
@@ -696,7 +696,22 @@
 
         ],
  
-        "history":[
+        "history":[ 
+            {
+            "id":"1",
+            "user":"1",
+            "date": "2022-05-20T17:30:00.000Z",
+            "duration": "120",
+            "service": "1",
+            "cabin":"2",
+            "price":"80",
+            "paid":"80",
+            "status":"paid",
+            "closed":"2022-05-20T20:30:00.000Z",
+            "notes":"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            "attachment":[
+            ]
+        }
 
         ],
         "appointments":[
@@ -767,11 +782,26 @@
                 "thread":"1",
                 "readed":true,
                 "answered":false
+            },
+            {
+                "id": "5",
+                "user":"1",
+                "direction":"send",
+                "date": "2022-05-18T17:30:00.000Z",
+                "type": "call",
+                "duration": "5",
+                "subject": "Nueva Cita",
+                "notes": "Cita para el 20 de mayo",
+                "follow": "email",
+                "alertfollow": "",
+                "thread":"1",
+                "readed":true,
+                "answered":false
             }
         ]
     },
     {
-        "id":6,
+        "id":7,
         "addedAt": "2022-05-15T11:30:00.000Z",
         "promotedToCustomer":"",
         "firstname": "Teresa",

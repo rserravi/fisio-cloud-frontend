@@ -11,10 +11,10 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { paperColor } from '../utils/mui-custom-utils';
-import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, TextField, Toolbar } from '@mui/material';
+import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Toolbar } from '@mui/material';
 import Grid from '@mui/material/Grid';
-//MUI ICONS
 
+//MUI ICONS
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { GenderIcon } from '../utils/mui-custom-utils';

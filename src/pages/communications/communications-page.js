@@ -11,7 +11,6 @@ import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { CommunicationsComponent } from '../../components/communications-comp';
 import { CommTab } from '../../components/tabs/comm-tab-comp';
 
 

@@ -169,8 +169,8 @@ function SideMenu(boardState) {
   }
 
 
-  const toogleSeeMonthReports = ()=>{
-    goTo("/reports/month")
+  const toogleSeeAllReports = ()=>{
+    goTo("/reports/all")
   }
 
 
@@ -304,25 +304,11 @@ function SideMenu(boardState) {
             {t("savedReports")}
             </ListSubheader>
 
-            <ListItemButton onClick={toogleSeeMonthReports}>
+            <ListItemButton onClick={toogleSeeAllReports}>
               <ListItemIcon>
                   <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary={t("currentMonth")} />
-            </ListItemButton>
-
-            <ListItemButton >
-              <ListItemIcon>
-                  <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary={t("lastQuarter")} />
-            </ListItemButton>
-            
-            <ListItemButton>
-              <ListItemIcon >
-                  <AssignmentIcon />
-              </ListItemIcon>
-              <ListItemText primary={t("yearEndSale")} />
+              <ListItemText primary={t("reportall")} />
             </ListItemButton>
             
           </List>
