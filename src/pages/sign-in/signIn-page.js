@@ -16,6 +16,12 @@ import { useState } from 'react';
 import { Copyright } from '../../components/copyright-component';
 import { useTranslation } from 'react-i18next';
 import { Alert } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import { useNavigate} from "react-router-dom";
+import { loginFail, loginPending, loginSuccess } from '../../slices/login-slice';
+import { userLogin } from '../../api/user.api';
+import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
+import { user_loadFromApi, user_set_locale } from '../../slices/user-slice';
 
 const theme = createTheme();
 
@@ -24,17 +30,50 @@ export default function SignInSide() {
   const { t } = useTranslation();
   const [isPassword, setIsPassword] = useState(true);
   const [isEmail, setIsEmail] = useState(true);
+  const [errorMsg, setErrorMsg]= useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
-    
-    setIsPassword((data.get("password")));
-    setIsEmail ((data.get("email"))); 
+  const handleSubmit = async(event) => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      console.log({
+        email: data.get('email'),
+        password: data.get('password'),
+      });
+
+      setIsPassword((data.get("password")));
+      setIsEmail ((data.get("email"))); 
+
+      if (!isEmail || !isPassword){
+        return alert("Fill up all the form")
+      }
+      dispatch(loginPending());
+
+      
+      try {
+        const isAuth = await userLogin({"email":isEmail, "password":isPassword});
+        console.log("Email", isEmail, "Password", isPassword, "IS AUTH",isAuth);
+
+        if(isAuth.status === "error" || isAuth.status==="unauthorized"){
+          setErrorMsg(isAuth.message);  
+          return dispatch(loginFail(isAuth.message));
+        }
+
+        dispatch(user_loadFromApi(isAuth.user))
+        dispatch(user_set_locale())
+        
+        const actualScreen = "/dashboard";
+        dispatch(navigationLoading());
+        navigate(actualScreen,{replace: true});
+        dispatch(navigationSuccess(actualScreen))
+        
+        return dispatch (loginSuccess());
+        
+    } catch (error) {
+        dispatch(loginFail(error.message));
+    }
+
   };
 
 
@@ -96,6 +135,7 @@ export default function SignInSide() {
               />
               {!isEmail ? <Alert severity="error">{t("emailmissing")}</Alert>: " "}
               {!isPassword ? <Alert severity="error">{t("passwordmissing")}</Alert>: " "}
+              {errorMsg!==""? <Alert severity="error">{t(errorMsg)}</Alert>: " "}
 
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}

@@ -34,7 +34,8 @@ const initialState = {
     countryPhoneCode:"+34",
     locale:"es-ES",
     role:"user",
-    lastConnect:""
+    lastConnect:"",
+    password:"",
 }
 
 const createCustomerSlice = createSlice({
@@ -183,6 +184,43 @@ const createCustomerSlice = createSlice({
             state.lastConnect = action.payload.lastConect
         },
 
+
+        user_loadFromApi:(state, action)=>{
+            state.id = action.payload._id
+            state.isSubmited=false
+            state.isValidated=false
+            state.error=action.payload.error
+            state.isEditing=false
+            state.firstname=action.payload.firstname
+            state.lastname=action.payload.lastname
+            state.image=action.payload.image
+            state.birthdate=action.payload.birthdate
+            state.dni = action.payload.dni
+            state.gender=action.payload.gender
+            state.emailhome=action.payload.emailhome
+            state.emailwork=action.payload.emailwork
+            state.streetaddress=action.payload.streetaddress
+            state.city=action.payload.cityaddress
+            state.state=action.payload.state
+            state.postalCode=action.payload.postalcodeaddress
+            state.country=action.payload.countryaddress
+            state.homephone=action.payload.homephone
+            state.mobilephone=action.payload.mobilephone
+            state.whatsapp=action.payload.whatsapp
+            state.social1=action.payload.socialmedia1
+            state.social2=action.payload.socialmedia2
+            state.social3=action.payload.socialmedia3
+            state.socialUser1=action.payload.socialuser1
+            state.socialUser2=action.payload.socialuser2
+            state.socialUser3=action.payload.socialuser3
+            state.countryPhoneCode=""
+            state.locale=action.payload.locales
+            state.role=action.payload.role
+            state.isNew=false
+            state.lastConnect = action.payload.lastConect
+            state.password = action.payload.password
+        },
+
         user_set_user: (state, action) =>{
             const userData = getUserDataFromDb(action.payload)
             //console.log("USER DATA",userData, "PAYLOAD", action.payload);
@@ -217,6 +255,7 @@ const createCustomerSlice = createSlice({
             state.role=userData.role
             state.isNew=userData.isNew
             state.lastConnect = userData.lastConect
+            
            
         },
         
@@ -257,6 +296,7 @@ export const {
     user_locale_Commit,
     user_role_Commit,
     user_loadFromBackend,
+    user_loadFromApi,
     user_reset_slice,
     user_isNewCommit,
     user_set_locale,

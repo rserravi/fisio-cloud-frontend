@@ -423,5 +423,6 @@
     "printreports": "Imprimir informes",
     "reportall":"Informe tot",
     "seequarter":"Informe quart actual",
-    "seeyear":"Informe tot any"
+    "seeyear":"Informe tot any",
+    "Incorrect Password":"Password incorrecte"
 }
