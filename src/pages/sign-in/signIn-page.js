@@ -34,6 +34,7 @@ export default function SignInSide() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  
   const handleSubmit = async(event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
@@ -69,7 +70,7 @@ export default function SignInSide() {
         dispatch(navigationSuccess(actualScreen))
         
         return dispatch (loginSuccess());
-        
+
     } catch (error) {
         dispatch(loginFail(error.message));
     }

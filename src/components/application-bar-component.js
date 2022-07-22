@@ -25,6 +25,9 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
 import { GetBadgeAlerts } from '../utils/dataFetch-utils';
+import { user_loadFromApi } from '../slices/user-slice';
+import { fetchUser } from '../api/user.api';
+import { getUserProfile } from '../slices/user-action';
 
 
 const drawerWidth = 240;
@@ -52,9 +55,16 @@ function ApplicationBar(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userSelector = useSelector(state => state.user);
+  const userId = userSelector.id;
+
+  if(!userId || userId===""){
+    console.log("NO HAY USER")
+    dispatch (getUserProfile());
+  }
+
   const srcImage = userSelector.image;
   const labelImage = userSelector.firstname + " " + userSelector.lastname;
-  const userId = userSelector.id;
+
 
   const [width, setWidth] = React.useState(Number(window.innerWidth));
 

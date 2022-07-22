@@ -2,9 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import i18n from 'i18next';
 import { getUserDataFromDb } from "../utils/dataFetch-utils";
 
+const localeFromNav = navigator.language
+
 const initialState = {
     isSubmited:false,
     isValidated: false,
+    isLoading:false,
     error: "",
     isEditing:false,
     isNew: true,
@@ -32,7 +35,7 @@ const initialState = {
     socialUser2:"@",
     socialUser3:"@",
     countryPhoneCode:"+34",
-    locale:"es-ES",
+    locale:localeFromNav,
     role:"user",
     lastConnect:"",
     password:"",
@@ -139,15 +142,20 @@ const createCustomerSlice = createSlice({
             state.dni = action.payload; 
         },
         user_set_locale: (state)=>{
+
+            if(!i18n.isInitialized){
             i18n.init({
                 lng:state.locale,
-                fallbackLng: 'en',
+                fallbackLng: 'es-ES',
                 debug: true,
             
                 interpolation: {
                   escapeValue: false, // not needed for react as it escapes by default
                 }
               });
+            }else{
+                i18n.changeLanguage(state.locale);
+            }
         },
        
         user_loadFromBackend:(state, action)=>{
@@ -255,16 +263,29 @@ const createCustomerSlice = createSlice({
             state.role=userData.role
             state.isNew=userData.isNew
             state.lastConnect = userData.lastConect
-            
-           
         },
         
-        user_reset_slice:()=>initialState
+        user_reset_slice:()=>initialState,
+        getUserPending: (state)=>{
+            state.isLoading = true;
+        },
+        getUserSuccess: (state, {payload})=>{
+            state.isloading = false
+            state.user = payload
+            state.error = ""
+        },
+        getUserFail: (state, {payload})=>{
+            state.isloading = false;
+            state.error = payload;
+        }, 
     }
 });
 
 const {reducer, actions} = createCustomerSlice;
 export const {
+    getUserPending,
+    getUserSuccess,
+    getUserFail,
     user_editingStart,
     user_submittedFailed,
     user_submmitedSucceed,
