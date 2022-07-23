@@ -4,6 +4,8 @@ import axios from "axios";
 const rootUrl = "http://localhost:3001/v1";
 const loginUrl = rootUrl + "/user/login";
 const userUrl = rootUrl + "/user"
+const logOutUrl = rootUrl + "/user/logout";
+const newAccessJWTurl = rootUrl + "/tokens";
 
 export const userLogin = (frmData) =>{
     return new Promise( async(resolve, reject)=>{
@@ -32,6 +34,7 @@ export const fetchUser = () =>{
             if (!accessJWT){
                 reject("Token not found!");
             }
+
             
             console.log("JWT",accessJWT)
             const res = await axios.get(userUrl, {
@@ -39,7 +42,6 @@ export const fetchUser = () =>{
                     Authorization :accessJWT,
                 }
             });
-            console.log("DATOS DESPUES DE AXIOS", res.data)
             resolve(res.data);
             
         } catch (error) {
@@ -48,3 +50,47 @@ export const fetchUser = () =>{
         }
     })
 }
+
+export const userLogout = async() =>{
+    try {
+        const accessJWT = sessionStorage.getItem("accessJWT");
+    if (!accessJWT){
+        console.log("Token not found!");
+    }
+  
+    await axios.delete(logOutUrl, {
+        headers: {
+            Authorization :accessJWT,
+        }
+    });
+    } catch (error) {
+        console.log(error);
+    }
+ }
+
+ export const fetchNewAccessJWT = () =>{
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const {refreshJWT} = JSON.parse(localStorage.getItem("fisioCloudSite"));
+            if (!refreshJWT){
+                reject("Token not found!");
+            }
+            const res = await axios.get(newAccessJWTurl, {
+                headers: {
+                    Authorization :refreshJWT,
+                }
+            });
+            if(res.data.status ==="success"){
+                sessionStorage.setItem("accessJWT", res.data.accessJWT);   
+            } 
+            resolve(true);
+            
+        } catch (error) {
+            if (error.message === "Request failed with status code 403"){
+                localStorage.removeItem("fisioCloudSite");
+            }
+            reject(false);
+        }
+    })
+}
+ 

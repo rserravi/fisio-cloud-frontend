@@ -25,10 +25,9 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types'; // ES6
 import { GetBadgeAlerts } from '../utils/dataFetch-utils';
-import { user_loadFromApi } from '../slices/user-slice';
-import { fetchUser } from '../api/user.api';
 import { getUserProfile } from '../slices/user-action';
-
+import { fetchNewAccessJWT, userLogout } from '../api/user.api';
+import { loginSuccess} from '../slices/login-slice';
 
 const drawerWidth = 240;
 
@@ -50,18 +49,46 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
-
 function ApplicationBar(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userSelector = useSelector(state => state.user);
   const userId = userSelector.id;
-
-  if(!userId || userId===""){
-    console.log("NO HAY USER")
-    dispatch (getUserProfile());
+  
+  const goTo = (actualScreen) =>{
+    dispatch(navigationLoading());
+    navigate(actualScreen,{replace: true});
+    dispatch(navigationSuccess(actualScreen))
   }
 
+ /*  // FALTA QUE BUSQUE EL REFRESH TOKEN
+
+  if(!userId || userId===""){
+    dispatch (getUserProfile());
+    if (userSelector.error==="Token not found!"){
+      goTo("/signin");
+    }
+  } */
+
+  React.useEffect(()=>{
+    if(!userId || userId===""){
+      dispatch (getUserProfile());
+      if (userSelector.error==="Token not found!"){
+        goTo("/signin");
+      }
+    } 
+
+    const udpdateAccessJWT = async() =>{
+      const result = await fetchNewAccessJWT();
+      result && dispatch(loginSuccess());
+    };
+
+    udpdateAccessJWT();
+    sessionStorage.getItem("accessJWT") && dispatch(loginSuccess());
+    
+  },[dispatch, goTo, userId, userSelector.error]);
+ 
+  
   const srcImage = userSelector.image;
   const labelImage = userSelector.firstname + " " + userSelector.lastname;
 
@@ -104,12 +131,6 @@ function ApplicationBar(boardState) {
 
   const [openDialog, setOpenDialog]= React.useState(false);
 
-  const goTo = (actualScreen) =>{
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
-  }
-
   const handleOpenUserMenu = (event) => {
   setAnchorElUser(event.currentTarget);
   };
@@ -147,7 +168,9 @@ function ApplicationBar(boardState) {
 
   const doLogOut = () => {
     // API CALL FOR LOGGIN OUT
-    console.log("LOGGIN OUT");
+    userLogout();
+    sessionStorage.removeItem("accessJWT");
+    localStorage.removeItem("fisioCloudSite");
     goTo("/");
   }
 
@@ -155,9 +178,6 @@ function ApplicationBar(boardState) {
     console.log(event, link)
     goTo(link)
   }
-
-
-  
   
 
   return (
