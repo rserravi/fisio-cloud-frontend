@@ -424,5 +424,7 @@
     "reportall":"Informe todo",
     "seequarter":"Informe cuatrimestre actual",
     "seeyear":"Informe todo año",
-    "Incorrect Password":"Password incorrecto"
+    "Incorrect Password":"Password incorrecto",
+    "duplicatedemail":"Este email ya existe en la base de datos. Pruebe otro o vaya a Sign In"
+
 }

@@ -1,4 +1,4 @@
-import { getUserPending, getUserSuccess, getUserFail, user_loadFromApi } from "./user-slice";
+import { getUserPending, getUserSuccess, getUserFail, user_loadFromApi, user_set_locale } from "./user-slice";
 import { fetchUser } from "../api/user.api"
  
 export const getUserProfile = () => async(dispatch) =>{
@@ -8,6 +8,7 @@ export const getUserProfile = () => async(dispatch) =>{
         
         if (result.user && result.user._id){
             dispatch(user_loadFromApi(result.user))
+            dispatch(user_set_locale())
             return dispatch(getUserSuccess(result.user));
         }
 

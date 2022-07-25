@@ -5,7 +5,41 @@ import { useTranslation } from 'react-i18next';
 import _ from 'underscore';
 import { nameInitial } from "./name-utils";
 
+//UTILS
 
+export const GetAllData = () =>{
+  return customerData;
+}
+
+
+export const OrderArrayByDate = (datedArray)=>{
+  const data = datedArray;
+  const sorted = data.sort((a,b)=> new Date(b.date) - new Date(a.date))
+  return sorted;
+}
+
+
+export const firstItemId = ()=>{
+  return customerData[0].id;
+}
+
+export const lastItemId = () =>{
+  return customerData[customerData.length -1].id;
+}
+
+
+export const GetRowById = (row,_id)=>{
+  var found = {}
+  for (let key in row){
+    if (Number(row[key].id) === Number(_id)){
+        found = row[key];
+        break
+    }
+}
+return found;
+}
+
+// CUSTOMER
 export const getCustomer = (_id) =>{
     let found = null;
     for (let key in customerData){
@@ -87,74 +121,57 @@ export const getCompanyData = ()=>{
   return (data);
 }
 
-export const GetCommunications = (props)=>{
-  var jsonObj = [];
-  var newIdCount =0;
-  var item = {};
-  if (!props){
-    const data = customerData;
-    for (let key in data){
-      if (data[key].contacthistory){
-        for (let histoKey in data[key].contacthistory){
-          newIdCount = newIdCount + 1;
-          item = {};
-          item["id"]= newIdCount;
-          item["customerId"]= data[key].id;
-          item["userId"]= data[key].contacthistory[histoKey].user;
-          item["direction"]= data[key].contacthistory[histoKey].direction;
-          item["communicationId"]= data[key].contacthistory[histoKey].id;
-          item["date"] = data[key].contacthistory[histoKey].date;
-          item["type"] =  data[key].contacthistory[histoKey].type;
-          item["duration"] = data[key].contacthistory[histoKey].duration;
-          item["subject"] =  data[key].contacthistory[histoKey].subject;
-          item["notes"] =data[key].contacthistory[histoKey].notes;
-          item["follow"] =data[key].contacthistory[histoKey].follow;
-          item["thread"] = data[key].contacthistory[histoKey].thread;
-          item["readed"] =  data[key].contacthistory[histoKey].readed;
-          item["answered"] =  data[key].contacthistory[histoKey].answered;
-          item["customerName"] = data[key].firstname +" "+ data[key].lastname;
-          
-          jsonObj.push(item)
-        }
+
+
+export const getCustomerNameFromId = (_id) =>{
+  let found = null;
+  for (let key in customerData){
+    
+      if (customerData[key].id === _id){
+          found = customerData[key];
+          break
+      }
+  }
+  if (found){
+  return found.firstname + " " + found.lastname;
+  }
+  else {
+    return("error");
+  }
+}
+
+export const GetCustomerIdFromName = (name) =>{
+  var found = 0
+  const separated = name.split(" ")
+  for (let userKey in customerData){
+    if (customerData[userKey].firstname.includes(separated[0])){
+      if (customerData[userKey].lastname.includes(separated[separated.length-1])){
+        found = customerData[userKey].id;
+        return found
       }
     }
   }
-  else {
-    const data = getCustomer(props.id);
-   
-      if (data.contacthistory){
-        for (let histoKey in data.contacthistory){
-          newIdCount = newIdCount + 1;
-          item = {};
-          item["id"]= newIdCount;
-          item["customerId"]= data.id;
-          item["userId"]= data.contacthistory[histoKey].user;
-          item["direction"]= data.contacthistory[histoKey].direction;
-          item["communicationId"]= data.contacthistory[histoKey].id;
-          item["date"] = data.contacthistory[histoKey].date;
-          item["type"] =  data.contacthistory[histoKey].type;
-          item["duration"] = data.contacthistory[histoKey].duration;
-          item["subject"] =  data.contacthistory[histoKey].subject;
-          item["notes"] =data.contacthistory[histoKey].notes;
-          item["follow"] =data.contacthistory[histoKey].follow;
-          item["thread"] = data.contacthistory[histoKey].thread;
-          item["readed"] =  data.contacthistory[histoKey].readed;
-          item["answered"] =  data.contacthistory[histoKey].answered;
-          
-          jsonObj.push(item)
-        }
-      }
-  }
-    
+  return found;
+}
 
+
+export const getCustomerList = () =>{
+  var jsonObj = [];
+  for (let userKey in customerData){
+      var _id = customerData[userKey].id;
+      var customerName = customerData[userKey].firstname + " " + customerData[userKey].lastname;
+
+      var item = {}
+      item["_id"] = _id;
+      item["customerName"] = customerName;
+
+      jsonObj.push(item)
+  }
   return jsonObj;
 }
 
-export const OrderArrayByDate = (datedArray)=>{
-    const data = datedArray;
-    const sorted = data.sort((a,b)=> new Date(b.date) - new Date(a.date))
-    return sorted;
-}
+
+//USERS
 
 export const getUserList = (props) =>{
   return configData[0].user
@@ -265,37 +282,8 @@ export const getUserDataFromDb = (_id)=>{
   return item;
 }
 
-export const getCustomerNameFromId = (_id) =>{
-  let found = null;
-  for (let key in customerData){
-    
-      if (customerData[key].id === _id){
-          found = customerData[key];
-          break
-      }
-  }
-  if (found){
-  return found.firstname + " " + found.lastname;
-  }
-  else {
-    return("error");
-  }
-}
 
-export const getCustomerList = () =>{
-  var jsonObj = [];
-  for (let userKey in customerData){
-      var _id = customerData[userKey].id;
-      var customerName = customerData[userKey].firstname + " " + customerData[userKey].lastname;
-
-      var item = {}
-      item["_id"] = _id;
-      item["customerName"] = customerName;
-
-      jsonObj.push(item)
-  }
-  return jsonObj;
-}
+//SERVICES
 
 export const getServices= () =>{
   return configData[0].services;
@@ -363,27 +351,9 @@ export const getServiceNameById = (_id)=>{
     return found +"";
 }
 
-export const GetCustomerIdFromName = (name) =>{
-  var found = 0
-  const separated = name.split(" ")
-  for (let userKey in customerData){
-    if (customerData[userKey].firstname.includes(separated[0])){
-      if (customerData[userKey].lastname.includes(separated[separated.length-1])){
-        found = customerData[userKey].id;
-        return found
-      }
-    }
-  }
-  return found;
-}
 
-export const firstItemId = ()=>{
-    return customerData[0].id;
-}
 
-export const lastItemId = () =>{
-    return customerData[customerData.length -1].id;
-}
+//APPOINTMENTS
 
 export const GetAppointments = ()=>{
     var jsonObj = [];
@@ -416,36 +386,6 @@ export const GetAppointments = ()=>{
     return jsonObj  
 }
 
-export const GetHistories = ()=>{
-  var jsonObj = [];
-  var newIdCount =0;
-  for (let userKey in customerData){
-      if(customerData[userKey].history.length >=0){
-          for (let appoKey in customerData[userKey].history){
-              newIdCount = newIdCount +1;
-              var item = {}
-              item["id"] = newIdCount;
-              item["customerId"] = customerData[userKey].id;
-              item["customerName"] = customerData[userKey].firstname + " " + customerData[userKey].lastname;
-              item["date"] = customerData[userKey].apphistoryointments[appoKey].date;
-              item["startingTime"] = customerData[userKey].history[appoKey].startingTime;
-              item["duration"] = customerData[userKey].history[appoKey].duration;
-              item["service"] = customerData[userKey].history[appoKey].service;
-              item["cabin"]= customerData[userKey].history[appoKey].cabin;
-              item["price"] = customerData[userKey].history[appoKey].price;
-              item["paid"] = customerData[userKey].history[appoKey].paid;
-              item["status"] = customerData[userKey].history[appoKey].status;
-              item["closed"] = customerData[userKey].history[appoKey].closed;
-              item["notes"] = customerData[userKey].history[appoKey].notes;
-              item["attachment"] = customerData[userKey].history[appoKey].attachment;
-
-              jsonObj.push(item)
-          }
-      }
-  }
-  return jsonObj  
-}
-
 export const GetAppointmentById = (props) =>{
   var jsonObj = [];
     for (let userKey in customerData){
@@ -476,36 +416,6 @@ export const GetAppointmentById = (props) =>{
     return jsonObj  
 }
 
-export const GetHistoryById = (props) =>{
-  var jsonObj = [];
-  for (let userKey in customerData){
-    if (Number(customerData[userKey].id )=== Number(props.userId)){
-      for (let histKey in customerData[userKey].history){
-        if (Number(customerData[userKey].history[histKey].id) ===  Number(props.appoId)){
-          var item = {}
-              item["id"] = customerData[userKey].history[histKey].id
-              item["customerId"] = customerData[userKey].id;
-              item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
-              item["date"] =  customerData[userKey].history[histKey].date;
-              item["duration"] = customerData[userKey].history[histKey].duration;
-              item["service"] =  customerData[userKey].history[histKey].service;
-              item["cabin"]=   customerData[userKey].history[histKey].cabin;
-              item["price"] =customerData[userKey].history[histKey].price;
-              item["paid"] =customerData[userKey].history[histKey].paid;
-              item["status"] = customerData[userKey].history[histKey].status;
-              item["closed"] = customerData[userKey].history[histKey].closed;
-              item["notes"] = customerData[userKey].history[histKey].notes;
-              item["attachment"] = customerData[userKey].history[histKey].attachment;
-
-              jsonObj.push(item)
-              return jsonObj  
-        }
-      }
-    }
-    }
-  return jsonObj  
-}
-
 export const GetAppointmentsByCustomerId = (customerID) =>{
   var jsonObj = [];
     for (let userKey in customerData){
@@ -526,34 +436,6 @@ export const GetAppointmentsByCustomerId = (customerID) =>{
                 item["closed"] = customerData[userKey].appointments[appoKey].closed;
                 item["notes"] = customerData[userKey].appointments[appoKey].notes;
                 item["attachment"] = customerData[userKey].appointments[appoKey].attachment;
-
-                jsonObj.push(item)
-        }
-      }
-      }
-    return jsonObj  
-}
-
-export const GetHistoryByCustomerId = (customerID) =>{
-  var jsonObj = [];
-    for (let userKey in customerData){
-      if (Number(customerData[userKey].id )=== Number(customerID)){
-        for (let appoKey in customerData[userKey].history){
-        
-            var item = {}
-                item["id"] = customerData[userKey].history[appoKey].id
-                item["customerId"] = customerData[userKey].id;
-                item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
-                item["date"] =  customerData[userKey].history[appoKey].date;
-                item["duration"] = customerData[userKey].history[appoKey].duration;
-                item["service"] =  customerData[userKey].history[appoKey].service;
-                item["cabin"]=   customerData[userKey].history[appoKey].cabin;
-                item["price"] =customerData[userKey].history[appoKey].price;
-                item["paid"] =customerData[userKey].history[appoKey].paid;
-                item["status"] = customerData[userKey].history[appoKey].status;
-                item["closed"] = customerData[userKey].history[appoKey].closed;
-                item["notes"] = customerData[userKey].history[appoKey].notes;
-                item["attachment"] = customerData[userKey].history[appoKey].attachment;
 
                 jsonObj.push(item)
         }
@@ -622,6 +504,104 @@ export const GetAppointmentsCalendarFormat = (mode)=>{
         }
     }
     return jsonObj  
+}
+
+//HISTORY
+
+export const GetHistories = ()=>{
+  var jsonObj = [];
+  var newIdCount =0;
+  for (let userKey in customerData){
+      if(customerData[userKey].history.length >=0){
+          for (let appoKey in customerData[userKey].history){
+              newIdCount = newIdCount +1;
+              var item = {}
+              item["id"] = newIdCount;
+              item["customerId"] = customerData[userKey].id;
+              item["customerName"] = customerData[userKey].firstname + " " + customerData[userKey].lastname;
+              item["date"] = customerData[userKey].apphistoryointments[appoKey].date;
+              item["startingTime"] = customerData[userKey].history[appoKey].startingTime;
+              item["duration"] = customerData[userKey].history[appoKey].duration;
+              item["service"] = customerData[userKey].history[appoKey].service;
+              item["cabin"]= customerData[userKey].history[appoKey].cabin;
+              item["price"] = customerData[userKey].history[appoKey].price;
+              item["paid"] = customerData[userKey].history[appoKey].paid;
+              item["status"] = customerData[userKey].history[appoKey].status;
+              item["closed"] = customerData[userKey].history[appoKey].closed;
+              item["notes"] = customerData[userKey].history[appoKey].notes;
+              item["attachment"] = customerData[userKey].history[appoKey].attachment;
+
+              jsonObj.push(item)
+          }
+      }
+  }
+  return jsonObj  
+}
+
+
+
+export const GetHistoryById = (props) =>{
+  var jsonObj = [];
+  for (let userKey in customerData){
+    if (Number(customerData[userKey].id )=== Number(props.userId)){
+      for (let histKey in customerData[userKey].history){
+        if (Number(customerData[userKey].history[histKey].id) ===  Number(props.appoId)){
+          var item = {}
+              item["id"] = customerData[userKey].history[histKey].id
+              item["customerId"] = customerData[userKey].id;
+              item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
+              item["date"] =  customerData[userKey].history[histKey].date;
+              item["duration"] = customerData[userKey].history[histKey].duration;
+              item["service"] =  customerData[userKey].history[histKey].service;
+              item["cabin"]=   customerData[userKey].history[histKey].cabin;
+              item["price"] =customerData[userKey].history[histKey].price;
+              item["paid"] =customerData[userKey].history[histKey].paid;
+              item["status"] = customerData[userKey].history[histKey].status;
+              item["closed"] = customerData[userKey].history[histKey].closed;
+              item["notes"] = customerData[userKey].history[histKey].notes;
+              item["attachment"] = customerData[userKey].history[histKey].attachment;
+
+              jsonObj.push(item)
+              return jsonObj  
+        }
+      }
+    }
+    }
+  return jsonObj  
+}
+
+export const GetHistoryByCustomerId = (customerID) =>{
+  var jsonObj = [];
+    for (let userKey in customerData){
+      if (Number(customerData[userKey].id )=== Number(customerID)){
+        for (let appoKey in customerData[userKey].history){
+        
+            var item = {}
+                item["id"] = customerData[userKey].history[appoKey].id
+                item["customerId"] = customerData[userKey].id;
+                item["customerName"] =  customerData[userKey].firstname + " " + customerData[userKey].lastname;
+                item["date"] =  customerData[userKey].history[appoKey].date;
+                item["duration"] = customerData[userKey].history[appoKey].duration;
+                item["service"] =  customerData[userKey].history[appoKey].service;
+                item["cabin"]=   customerData[userKey].history[appoKey].cabin;
+                item["price"] =customerData[userKey].history[appoKey].price;
+                item["paid"] =customerData[userKey].history[appoKey].paid;
+                item["status"] = customerData[userKey].history[appoKey].status;
+                item["closed"] = customerData[userKey].history[appoKey].closed;
+                item["notes"] = customerData[userKey].history[appoKey].notes;
+                item["attachment"] = customerData[userKey].history[appoKey].attachment;
+
+                jsonObj.push(item)
+        }
+      }
+      }
+    return jsonObj  
+}
+
+//ALERTS
+
+export const GetAlertsData = () =>{
+  return configData[0].alerts;
 }
 
 export const GetAlertsCalendarFormat = (mode)=>{
@@ -754,6 +734,8 @@ export const GetFormattedAttachments = (attachments) =>{
   return text;
 
 }
+
+//DEPOSITS
 
 export const GetAllDepositsArray = (locale) =>{
   var jsonObj = [];
@@ -904,13 +886,8 @@ export const GetDebtsToDate = (endDate) =>{
     return accumulated;
 }
 
-export const GetAlertsData = () =>{
-  return configData[0].alerts;
-}
+// CABINS
 
-export const GetAllData = () =>{
-  return customerData;
-}
 
 export const GetCabins = () =>{
   return configData[0].cabins
@@ -945,6 +922,8 @@ export const GetCabinsForChart = ()=>{
   return jsonObj;
   
 }
+
+//SERVICES
 
 export const GetServicesForChart = ()=>{
   var jsonObj = []
@@ -991,6 +970,71 @@ export const GetServicesRealizedByUsersForChart = ()=>{
     jsonObj.push(item);
 
   }
+  return jsonObj;
+}
+
+// COMMUNICATIONS
+
+export const GetCommunications = (props)=>{
+  var jsonObj = [];
+  var newIdCount =0;
+  var item = {};
+  if (!props){
+    const data = customerData;
+    for (let key in data){
+      if (data[key].contacthistory){
+        for (let histoKey in data[key].contacthistory){
+          newIdCount = newIdCount + 1;
+          item = {};
+          item["id"]= newIdCount;
+          item["customerId"]= data[key].id;
+          item["userId"]= data[key].contacthistory[histoKey].user;
+          item["direction"]= data[key].contacthistory[histoKey].direction;
+          item["communicationId"]= data[key].contacthistory[histoKey].id;
+          item["date"] = data[key].contacthistory[histoKey].date;
+          item["type"] =  data[key].contacthistory[histoKey].type;
+          item["duration"] = data[key].contacthistory[histoKey].duration;
+          item["subject"] =  data[key].contacthistory[histoKey].subject;
+          item["notes"] =data[key].contacthistory[histoKey].notes;
+          item["follow"] =data[key].contacthistory[histoKey].follow;
+          item["thread"] = data[key].contacthistory[histoKey].thread;
+          item["readed"] =  data[key].contacthistory[histoKey].readed;
+          item["answered"] =  data[key].contacthistory[histoKey].answered;
+          item["customerName"] = data[key].firstname +" "+ data[key].lastname;
+          
+          jsonObj.push(item)
+        }
+      }
+    }
+  }
+  else {
+    const data = getCustomer(props.id);
+   
+      if (data.contacthistory){
+        for (let histoKey in data.contacthistory){
+          newIdCount = newIdCount + 1;
+          item = {};
+          item["id"]= newIdCount;
+          item["customerId"]= data.id;
+          item["userId"]= data.contacthistory[histoKey].user;
+          item["direction"]= data.contacthistory[histoKey].direction;
+          item["communicationId"]= data.contacthistory[histoKey].id;
+          item["date"] = data.contacthistory[histoKey].date;
+          item["type"] =  data.contacthistory[histoKey].type;
+          item["duration"] = data.contacthistory[histoKey].duration;
+          item["subject"] =  data.contacthistory[histoKey].subject;
+          item["notes"] =data.contacthistory[histoKey].notes;
+          item["follow"] =data.contacthistory[histoKey].follow;
+          item["thread"] = data.contacthistory[histoKey].thread;
+          item["readed"] =  data.contacthistory[histoKey].readed;
+          item["answered"] =  data.contacthistory[histoKey].answered;
+          
+          jsonObj.push(item)
+        }
+      }
+  }
+    
+
   return jsonObj;
 }
 
@@ -1053,16 +1097,6 @@ export const GetReceiverName = (customerId, userId, direction) =>{
   }
 }
 
-export const GetRowById = (row,_id)=>{
-  var found = {}
-  for (let key in row){
-    if (Number(row[key].id) === Number(_id)){
-        found = row[key];
-        break
-    }
-}
-return found;
-}
 
 export const notAnsweredMessages = (customerId)=>{
   var count = 0;
@@ -1241,6 +1275,8 @@ export const GetLeadsByDate = (locale)=>{
   
   return jsonObj;
 }
+
+// UTILITY LISTS!
 
 
 // From https://bitbucket.org/atlassian/atlaskit-mk-2/raw/4ad0e56649c3e6c973e226b7efaeb28cb240ccb0/packages/core/select/src/data/countries.js

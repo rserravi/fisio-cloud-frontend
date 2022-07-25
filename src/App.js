@@ -53,6 +53,7 @@ function App() {
           <Route path='/addcommunication/:customerid/:thread/:action/:phonemail' element={<AddCommunication />} />
           <Route path='/edithistory/:customerId/:appoId' element={<EditHistory />} />
           <Route path="/reports/:period" element={<Reports />} />
+          <Route path='/usersetup/' element={<UserSetup/>} /> 
           <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
           <Route path='/setup' element={<Setup/>} />
           <Route path='/calendar' element={<BigCalendar />} />

@@ -16,6 +16,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { LocAndRoleForm } from './form-components/loc-and-role';
 import { getUserDataFromDb } from '../utils/dataFetch-utils';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
+import { userCreate } from '../api/user.api';
 
 var initValidation={
   firstname: true,
@@ -34,7 +35,7 @@ export default function UserSetupForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
  
-  const HandleSubmit = (event)=>{
+  const HandleSubmit = async (event)=>{
     event.preventDefault();
 
     const addedAt = new Date().toLocaleDateString(localization);
@@ -64,7 +65,6 @@ export default function UserSetupForm() {
       language: NcState.locale,
       role: NcState.role,
       isNew: NcState.isNew,
-      addedAt: addedAt,
       }
 
     const validation2 = CustomerValidation(frm);
@@ -73,13 +73,14 @@ export default function UserSetupForm() {
       console.log(validation)
 
       /// API PARA ENVIAR EL FORMULARIO AL BACKEND
+      const isSuccess = await userCreate(frm);
+      console.log(isSuccess);
 
       // NAVIGATE TO SEECUSTOMER(_id);
-
-      const actualScreen = "/dashboard";
+      /* const actualScreen = "/dashboard";
       dispatch(navigationLoading());
       navigate(actualScreen,{replace: true});
-      dispatch(navigationSuccess(actualScreen))
+      dispatch(navigationSuccess(actualScreen)) */
   }
 
   React.useEffect (()=>{

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
+import PropTypes from 'prop-types'; // ES6
 
 import MuiAppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -23,7 +24,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import PropTypes from 'prop-types'; // ES6
+
 import { GetBadgeAlerts } from '../utils/dataFetch-utils';
 import { getUserProfile } from '../slices/user-action';
 import { fetchNewAccessJWT, userLogout } from '../api/user.api';
@@ -91,7 +92,6 @@ function ApplicationBar(boardState) {
   
   const srcImage = userSelector.image;
   const labelImage = userSelector.firstname + " " + userSelector.lastname;
-
 
   const [width, setWidth] = React.useState(Number(window.innerWidth));
 

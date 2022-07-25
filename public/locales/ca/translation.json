@@ -424,5 +424,6 @@
     "reportall":"Informe tot",
     "seequarter":"Informe quart actual",
     "seeyear":"Informe tot any",
-    "Incorrect Password":"Password incorrecte"
+    "Incorrect Password":"Password incorrecte",
+    "duplicatedemail":"Aquest email ja existeix a la base de dadee. Prove un altre o fes login"
 }

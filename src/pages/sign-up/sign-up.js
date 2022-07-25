@@ -18,11 +18,14 @@ import { useState } from 'react';
 import { Alert, DialogContent } from '@mui/material';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
+import { useDispatch } from 'react-redux';
+import { createNewUser } from '../../api/user.actions';
 
 const theme = createTheme();
 
 export default function SignUp() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const dataVerificationInit = {
     hasName: false,
@@ -41,14 +44,26 @@ export default function SignUp() {
         hasNumber: false,
         hasSpecial: false  
     }
+  
+  const dataInit = {
+    firstName:"",
+    lastName:"",
+    email:"",
+    password:"",
+    confirmPass:"",
+    acceptConditions:false,
+  }
  
  const [openDialog, setOpenDialog]= useState(false);
  const [passwordError, setNewPasswordError] = useState(passVerificationError);
  const [dataVerification, setDataVerification] = useState(dataVerificationInit);
+ const [newUser, setNewUser] = useState(dataInit);
+ const [duplicated, setDuplicated] = useState(false);
  const handleOnChange = e => {
     const {name, value} = e.target;
 
-        //setNewUser({...newUser, [name]:value});
+        setNewUser({...newUser, [name]:value});
+        console.log(name, value)
 
         if(name === "password"){
             const isEight = value.length > 8;
@@ -58,20 +73,22 @@ export default function SignUp() {
             const hasSpecial = /[@,#,$,%,&,+,-,_,:,.,?,¿,!,",·,(,),=]/.test(value);;
             setNewPasswordError({...passwordError, isEight,isUpper, isLower,hasNumber, hasSpecial});
         }
-       
     }
 
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
+    
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    setDuplicated(false);
+    const data = newUser;
+    console.log(data);
 
-    const hasName = !data.get("firstName")==="";
-    const hasLastName = !data.get("lastName")==="";
-    const hasEmail = !data.get("email")==="";
-    const hasPassword = !data.get("password")==="";
-    const hasConfirmPass = !data.get("confirmPass")==="";
-    const hasAccepted = data.get("acceptConditions");
+    const hasName = data.firstName!=="";
+    const hasLastName =data.lastName!=="";
+    const hasEmail = data.email!=="";
+    const hasPassword =data.password!=="";
+    const hasConfirmPass = data.confirmPass!=="";
+    const hasAccepted  =data.acceptConditions!=="";
     const submitted = true;
     setDataVerification({...dataVerification, hasName, hasLastName, hasEmail, hasPassword, hasConfirmPass, hasAccepted, submitted});
     if (Object.values(dataVerification).includes(false)){
@@ -83,9 +100,25 @@ export default function SignUp() {
             console.log("Error en el password");
         }else
         {
-            ///CALL API TO CREATE USER
-            console.log("USUARIO CREADO");
-            setOpenDialog(true);
+          const frmData = {
+            firstname: newUser.firstName,
+            lastname: newUser.lastName,
+            birthdate: new Date(),
+            password: newUser.password,
+            emailwork:newUser.email,
+            addedAt: new Date(),
+            locales: navigator.language
+          }
+          ///CALL API TO CREATE USER
+          dispatch(createNewUser(frmData))
+          .then((msg)=>{
+            console.log(msg);
+            if (msg==="Duplicated email. Try another one"){
+              setDuplicated(true);
+            }else{
+            setOpenDialog(true)}
+          })
+          .catch((err)=>console.log(err))
         }
     }
     console.log(dataVerification);
@@ -125,11 +158,13 @@ export default function SignUp() {
                   fullWidth
                   id="firstName"
                   label={t("name")}
+                  onChange={handleOnChange}
                   autoFocus
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
+                  onChange={handleOnChange}
                   required
                   fullWidth
                   id="lastName"
@@ -139,7 +174,8 @@ export default function SignUp() {
                 />
               </Grid>
               <Grid item xs={12}>
-                <TextField
+                <TextField            ///CALL API TO CREATE USER
+                  onChange={handleOnChange}
                   required
                   fullWidth
                   label={t("emailAddress")}
@@ -180,9 +216,10 @@ export default function SignUp() {
               </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
-                  control={<Checkbox value="acceptConditions" color="primary" />}
+                  control={<Checkbox value={newUser.acceptConditions} color="primary" />}
                   label={t("termsaccept")}
                   name ="acceptConditions"
+                  onChange={handleOnChange}
                 />
               </Grid>
             </Grid>
@@ -192,6 +229,7 @@ export default function SignUp() {
             {dataVerification.submitted && !dataVerification.hasName ? <Alert severity="error">{t("namemissing")}</Alert>: " "}
             {dataVerification.submitted && !dataVerification.hasLastName ? <Alert severity="error">{t("lastnamemissing")}</Alert>: " "}
             {dataVerification.submitted && !dataVerification.hasAccepted ? <Alert severity="error">{t("termsacceptedmissing")}</Alert>: " "}
+            {duplicated ? <Alert severity="error">{t("duplicatedemail")}</Alert>: " "}
      
             <Button
               type="submit"
