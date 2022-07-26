@@ -1,7 +1,6 @@
 import { Avatar, Button, Card, Grid, IconButton, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import * as React from 'react';
-import { getNewUsersId } from '../../utils/dataFetch-utils';
 import { useTranslation } from 'react-i18next';
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
@@ -132,9 +131,7 @@ export default function UsersForm() {
                            <Typography variant="h6" align='left' sx={{ ml: 2, width: 300 }}> {t("lastlogin")}: </Typography>
                        </Grid>
                    </Card>
-               ))}
-               
-                    
+               ))}   
                 </Grid>
             </Grid>
         </Box>

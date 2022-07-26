@@ -425,5 +425,9 @@
     "seequarter":"Informe quart actual",
     "seeyear":"Informe tot any",
     "Incorrect Password":"Password incorrecte",
-    "duplicatedemail":"Aquest email ja existeix a la base de dadee. Prove un altre o fes login"
+    "duplicatedemail":"Aquest email ja existeix a la base de dadee. Prove un altre o fes login",
+    "doyouwanttokeepeditingorclose":"Vols seguir editant o tancar?",
+    "userupdatedcorrectly":"Usuari actualitzat correctament",
+    "desagree":"No",
+    "agree":"D'acord"
 }

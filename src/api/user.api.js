@@ -27,9 +27,24 @@ export const userLogin = (frmData) =>{
 }
 
 export const userCreate = (frmData) =>{
+    console.log("frmdata en USER CREATE", frmData)
     return new Promise( async(resolve, reject)=>{
         try {
             const res = await axios.post(userUrl, frmData);
+            resolve(res.data);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}
+
+export const userUpdate = (_id, frmData) =>{
+    const idUrl = userUrl + "/" + _id;
+    const newData = frmData
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.patch(idUrl, frmData);
+            console.log("RES en USERUPDATE", res)
             resolve(res.data);
         } catch (error) {
             reject(error);
@@ -71,7 +86,6 @@ export const fetchUser = () =>{
             }
 
             
-            console.log("JWT",accessJWT)
             const res = await axios.get(userUrl, {
                 headers: {
                     Authorization :accessJWT,

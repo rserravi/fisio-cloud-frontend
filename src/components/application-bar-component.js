@@ -187,8 +187,8 @@ function ApplicationBar(boardState) {
             <DialogTitle align='center'>{t("youareloggingout")}</DialogTitle>
             <DialogContent align='center'>{t("areyousure")}</DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>Disagree</Button>
-              <Button onClick={doLogOut}>Agree</Button>
+              <Button onClick={handleCloseDialog}>{t("desagree")}</Button>
+              <Button onClick={doLogOut}>{t("agree")}</Button>
             </DialogActions>
          
         </Dialog>

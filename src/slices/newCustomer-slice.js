@@ -52,7 +52,6 @@ const createCustomerSlice = createSlice({
         },
         nc_submmitedSucceed:(state)=>{
             state = initialState;
-            state.isSubmited = true;
         },
         nc_isNewCommit:(state, action)=>{
             state.isNew = action.payload;
@@ -146,9 +145,9 @@ const createCustomerSlice = createSlice({
         },
         
         nc_loadFromBackend:(state, action)=>{
-            state.isSubmited=action.payload.isSubmited
-            state.isValidated=action.payload.isValidated
-            state.error=action.payload.error
+            state.isSubmited=false
+            state.isValidated=false
+            state.error=false
             state.isEditing=action.payload.isEditing
             state.id = action.payload.id
             state.addedAt = action.payload.addedAt
@@ -158,49 +157,30 @@ const createCustomerSlice = createSlice({
             state.birthdate=action.payload.birthdate
             state.gender=action.payload.gender
             state.dni = action.payload.dni
-            if (action.payload.email){
-            if (action.payload.email[0]){
-                state.emailhome=action.payload.email[0].emailAddress
-            }
-            if (action.payload.email[1]){
-            state.emailwork=action.payload.email[1].emailAddress
-            }
-            }
-            if (action.payload.address){
-                state.streetaddress=action.payload.address.streetAddress
-                state.city=action.payload.address.city
-                state.state=action.payload.address.state
-                state.postalCode=action.payload.address.postalCode
-                state.country=action.payload.address.country
-            }
-            if (action.payload.phoneNumber){
-                state.homephone=action.payload.phoneNumber[0].number
-                state.mobilephone=action.payload.phoneNumber[1].number
-            }
+            state.emailhome=action.payload.emailhome
+            state.emailwork=action.payload.emailwork
+            state.streetaddress=action.payload.streetaddress
+            state.city=action.payload.cityaddress
+            state.state=action.payload.stateaddress
+            state.postalCode=action.payload.postalcodeaddress
+            state.country=action.payload.countryaddress
+            state.homephone=action.payload.phonehome
+            state.mobilephone=action.payload.phonework
             state.whatsapp=action.payload.whatsapp
-            if(action.payload.socialMedia){
-                if (action.payload.socialMedia[0]){
-                    state.social1=action.payload.socialMedia[0].media
-                    state.socialUser1=action.payload.socialMedia[0].user
-                }
-            
-                if (action.payload.socialMedia[1]){
-                    state.social2=action.payload.socialMedia[1].media
-                    state.socialUser2=action.payload.socialMedia[1].user
-                }
-                if (action.payload.socialMedia[2]){
-                    state.social3=action.payload.socialMedia[2].media
-                    state.socialUser3=action.payload.socialMedia[2].user
-                }    
-            }
-           
+            state.social1=action.payload.socialmedia1
+            state.socialUser1=action.payload.socialuser1
+            state.social2=action.payload.socialmedia2
+            state.socialUser2=action.payload.socialuser2
+            state.social3=action.payload.socialmedia3
+            state.socialUser3=action.payload.socialuser3        
             state.countryPhoneCode=action.payload.countryPhoneCode
+            
             if(action.payload.releaseForm){
                 state.releaseformFile=action.payload.releaseForm.file
                 state.releaseformGenerated=action.payload.releaseForm.generated
                 state.releaseformSigned=action.payload.releaseForm.signed
             }
-            state.locale=action.payload.locale
+            state.locale=action.payload.locales
             state.role=action.payload.role
             state.isNew=action.payload.isNew
         },

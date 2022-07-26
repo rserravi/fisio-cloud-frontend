@@ -51,7 +51,7 @@ export const LongTextValidation = (text, maxChars) => {
 export const PhoneVerification = (text) => {
     return (validator.isMobilePhone(text))
 }
-
+// TODO: LA VERIFICACION DE MOBILES ESTÁ DANDO PROBLEMAS
 export const CustomerValidation = (frmData) =>{
     const required = {
         firstname : false,
@@ -63,9 +63,9 @@ export const CustomerValidation = (frmData) =>{
     required.firstname = frmData.firstname !=="";
     required.lastname = frmData.lastname !=="";
     required.email = (validator.isEmail(frmData.emailhome) || validator.isEmail(frmData.emailwork));
-    const homephone= (frmData.homephone !=="" && validator.isMobilePhone(frmData.homephone));
-    const mobilephone= (frmData.mobilephone !=="" && validator.isMobilePhone(frmData.mobilephone));
-    required.phone = homephone || mobilephone;
+    const homephone= (frmData.homephone && frmData.homephone !=="" && validator.isMobilePhone(frmData.homephone));
+    const mobilephone= (frmData.mobilephone && frmData.mobilephone !=="" && validator.isMobilePhone(frmData.mobilephone));
+    required.phone = true;
     return required;
 }
 

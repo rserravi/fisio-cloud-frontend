@@ -21,7 +21,8 @@ const mdTheme = createTheme();
 function UserSetupContent() {
 
   const boardState = useSelector((state)=> state.navigator);
-  const _id = Number(useParams().tid);
+  const _id = useParams().tid;
+
 
   const { t } = useTranslation();
 
