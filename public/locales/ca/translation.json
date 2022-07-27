@@ -429,5 +429,11 @@
     "doyouwanttokeepeditingorclose":"Vols seguir editant o tancar?",
     "userupdatedcorrectly":"Usuari actualitzat correctament",
     "desagree":"No",
-    "agree":"D'acord"
+    "agree":"D'acord",
+    "defineService":"Defineix un servei i el ser preu orientatiu.",
+    "serviceName":"Descripció del servei",
+    "priceXHour": "Preu per hora aproximat",
+    "delete":"Esborrar",
+    "deleteservice":"Esborrar servei",
+    "areyousureyouwanttodelete":"Estàs segur que vols esborrar el servei?"
 }
