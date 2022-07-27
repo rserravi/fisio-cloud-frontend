@@ -413,7 +413,7 @@
     "cabins":"Consultoris (espais físics)",
     "addcabin":"Afegir consultori",
     "earnings":"Guanys",
-    "cabinName":"Serveis per consultori",
+    "cabinName":"Nom del consultori",
     "and":"i",
     "realized":"Serveis realitzats",
     "leadsgained":"Leads i  clients aconseguits per data",
@@ -435,5 +435,8 @@
     "priceXHour": "Preu per hora aproximat",
     "delete":"Esborrar",
     "deleteservice":"Esborrar servei",
-    "areyousureyouwanttodelete":"Estàs segur que vols esborrar el servei?"
+    "areyousureyouwanttodelete":"Estàs segur que vols esborrar?",
+    "description":"Descripció",
+    "definecabin":"Defineix un nou consultori (espai físic)",
+    "deletecabin":"Esborrar consultori"
 }

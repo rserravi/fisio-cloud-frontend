@@ -1,9 +1,9 @@
 import axios from "axios";
 
 const rootUrl = "http://localhost:3001/v1";
-const servicesUrl = rootUrl + "/services";
+const cabinsUrl = rootUrl + "/cabins";
 
-export const getServices= () =>{
+export const getCabins= () =>{
     return new Promise( async(resolve, reject)=>{
         try {
             const accessJWT = sessionStorage.getItem("accessJWT");
@@ -11,7 +11,7 @@ export const getServices= () =>{
                 reject("Token not found!");
             }
             
-            const res = await axios.get(servicesUrl, {
+            const res = await axios.get(cabinsUrl, {
                 headers: {
                     Authorization :accessJWT,
                 }
@@ -25,11 +25,11 @@ export const getServices= () =>{
     })
 }
 
-export const addServices = (frmData) =>{
-    console.log("frmdata en ADD SERVICES", frmData)
+export const addCabins = (frmData) =>{
+    console.log("frmdata en ADD CABINS", frmData)
     return new Promise( async(resolve, reject)=>{
         try {
-            const res = await axios.post(servicesUrl, frmData);
+            const res = await axios.post(cabinsUrl,frmData);
             resolve(res.data);
         } catch (error) {
             reject(error);
@@ -37,10 +37,10 @@ export const addServices = (frmData) =>{
     })
 }
 
-export const deleteServices = (_id) =>{
+export const deleteCabins = (_id) =>{
     return new Promise( async(resolve, reject)=>{
         try {
-            const res = await axios.delete(servicesUrl, 
+            const res = await axios.delete(cabinsUrl, 
                 { data:{
                     _id:_id
                 }
