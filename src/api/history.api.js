@@ -19,3 +19,22 @@ export const getCabinIdInHistory=(cabin)=>{
         }
     })
 }
+
+export const getHistoriesByCustomerId = (customerId)=>{
+    console.log("CUSTOMER ID EN GETHITORIES",customerId)
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.get(historyUrl, {
+                params:{
+                    "customerId":customerId
+                }
+            });
+            console.log(res.data.result);
+            resolve(res.data.result);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}

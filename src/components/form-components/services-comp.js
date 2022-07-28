@@ -36,11 +36,11 @@ export default function ServicesForm() {
     }
 
     const initData =[
-    {
-        "_id":1,
-        "serviceName":"",
-        "priceXHour":"",
-    }
+        {
+            "_id":1,
+            "serviceName":"",
+            "priceXHour":"",
+        }
     ]
 
     const initNewServData = 

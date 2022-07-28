@@ -14,10 +14,8 @@ import Tooltip from '@mui/material/Tooltip';
 //CUSTOM IMPORTS
 import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-import customerData from "../assets/data/dummy-data.json";
+//import customerData from "../assets/data/dummy-data.json";
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
-
-
 
 //ICONS
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -33,11 +31,13 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SendIcon from '@mui/icons-material/Send';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import { getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId } from '../utils/dataFetch-utils';
-
+import { getAllCustomers } from '../api/customer.api';
 
 
 var info = "";
 var compact = false;
+
+//const customerData = getAllCustomers()
 
 
 // FUNCTIONS FOR EXTERNAL ACTIONS
@@ -60,10 +60,6 @@ const osint = (customerId) => {
 
 
 //RENDER CELLS
-
-const RenderInboundCell = (props)=>{
-
-}
 
 const RenderAppointmentCell = (props) => {
   const {hasFocus, value } = props;
@@ -200,41 +196,7 @@ const RenderAppointmentCell = (props) => {
 
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
 
-const data = (infoType) =>{
 
-  if (!infoType){
-    
-    return customerData;
-  }
-    switch (infoType) {
-      case "all":
-
-        return customerData;
-      case "newCustomers" :
-        try {
-          return customerData.filter((newData)=>  {
-            return newData.inbound === 'lead';
-          });
-        } catch (error) {
-            console.log(error);
-          return customerData;
-        }       
-        
-      case "withAppointments" :
-
-        try {
-          return customerData.filter((newData)=>  {
-            return newData.inbound === 'customer';
-          });
-        } catch (error) {
-            console.log(error);
-          return customerData;
-        }       
-      default:
-        return customerData;
-    
-  }
-}
 
 const appointmentsWidth = () =>{
   if(compact){
@@ -253,6 +215,8 @@ const appointmentsWidth = () =>{
 export const CustomersComponent = (props)=> {
   //PROPS.INFO ("all","newCustomers", "withAppointments" )
   //PROPS.COMPACT (true, false)
+  const [firstLoad, setFirstLoad] = React.useState(true)
+  const [deleteId, setDeleteID]= React.useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -263,7 +227,57 @@ export const CustomersComponent = (props)=> {
     boxHeight = 330;
   }
 
-  const RenderPhoneCell = (props) => {
+  const initData =[
+    {
+        "_id":1,
+        "promotedToCustomer":"",
+        "firstname": "",
+        "lastname": "",
+        "dni":"",
+        "birthdate": "",
+        "image": "",
+        "gender": "",
+        "inbound": "",
+        "emailhome":"",
+        "emailwork":"",
+        "streetaddress": "",
+        "cityaddress": "",
+        "stateaddress": "",
+        "postalcodeaddress": "",
+        "countryaddress":"",
+        "phonehome":"",
+        "phonework":"",   
+        "whatsapp": "",
+        "socialmedia1":"Facebook",
+        "socialmedia2":"Twitter",
+        "socialmedia3":"Reddit",
+        "socialuser1": "",
+        "socialuser2": "",
+        "socialuser3": "",
+        "releaseForm":{
+                "file":"",
+                "generated":false,
+                "signed":false
+        },
+        "history":[],
+        "appointments":[],
+        "communications":[]
+    }]
+    
+  const [customerList, setCustomerList] = React.useState(initData);
+
+  React.useEffect(() => {
+    console.log("ESTAMOS EN USE EFFECT")
+    if(firstLoad){
+        getAllCustomers().then(data =>{
+            console.log(data.result);
+            setCustomerList(data.result);
+            setFirstLoad(false);
+        })
+    }
+  },[firstLoad]) 
+
+    const RenderPhoneCell = (props) => {
     const {hasFocus, value } = props;
     const {id, whatsapp} = props.row;
     const phone = getCustomerPhoneFromId(id);
@@ -428,36 +442,33 @@ export const CustomersComponent = (props)=> {
   
   const getMail= (row)=>{
     var result=""
-    if(row.email[1]){
-      if (row.email[1].emailAddress!==""){
-        result = row.email[1].emailAddress + " (w)"
+    if(row.emailwork){
+        result = row.emailwork + " (w)"
         return result
-      }
     }
-    if(row.email[0]){
-      if (row.email[0].emailAddress!==""){
-        result = row.email[0].emailAddress + " (h)"
+    if(row.emailhome){
+        result = row.emailhome + " (h)"
         return result
-      }
     }
     return result;
   }
 
 
   const { t } = useTranslation();
- 
-  const rows = data(info).map((row) => 
+
+
+  const rows = customerList.map((row) => 
     (
       {
-      id: row.id, 
+      id: row._id, 
       inbound: row.inbound,
       image: row.image, 
       firstName: row.firstname, 
       lastName: row.lastname,
       email: getMail(row),
-      phoneNumber: row.phoneNumber[1].number,
+      phoneNumber: row.phonework,
       whatsapp: row.whatsapp,
-      appointments: {"next": row.appointments.length, "past": row.history.length}, 
+      appointments: {"next": row.appointments?row.appointments.length:0, "past": row.history.length}, 
       }
     )
   );
