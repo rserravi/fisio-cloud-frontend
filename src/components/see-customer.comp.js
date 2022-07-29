@@ -25,7 +25,7 @@ import AssignmentTwoToneIcon from '@mui/icons-material/AssignmentTwoTone';
 
 //CUSTOM IMPORTS
 import { findSocialIcon } from '../utils/social-networks-utils';
-import { firstItemId, getCustomer, lastItemId, notAnsweredMessages } from '../utils/dataFetch-utils';
+import { notAnsweredMessages } from '../utils/dataFetch-utils';
 import { getAge } from '../utils/date-utils';
 import { CommTab } from './tabs/comm-tab-comp';
 import { AppoTab } from './tabs/appo-tab-comp';
@@ -37,11 +37,12 @@ import { EmailForm } from './form-components/emails-comp';
 import { SocialForm } from './form-components/social-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { AddressForm } from './form-components/address-comp';
+import { GetCustomer } from '../api/customer.api';
 
 export default function SeeCustomerComponent(props) {
-    const _id = Number(props._id);
     const locale = props.locale;
-    const customer = getCustomer(_id);
+    const customer = props._customer;
+    const _id = customer._id;
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [showTabs, setShowTabs] = React.useState(props._tab?props._tab:"none") // none, appo, comm, depo, hist
@@ -75,44 +76,30 @@ export default function SeeCustomerComponent(props) {
         dispatch(navigationSuccess(actualScreen))
     }
 
-    const SeePreviousCustomer = (event) =>{
+    const SeePreviousCustomer = async (event) =>{
         event.stopPropagation();
-        if (_id <= Number(firstItemId())){
-            const lastItem = lastItemId();
-            const actualScreen = "/customer/"+lastItem
-            dispatch(nc_loadFromBackend(getCustomer(lastItem)));
+        const actualScreen = "/customer/"+customer.prev_customer
+        await GetCustomer(customer.prev_customer).then(data =>{
+            dispatch(nc_loadFromBackend(data.result));
             navigate(actualScreen, {replace: true});
+            navigate(0);
             dispatch(navigationSuccess(actualScreen))
-            
-           
-        }else{
-            const actualScreen = "/customer/" + (_id-1);
-            dispatch(nc_loadFromBackend(getCustomer(_id-1)));
-            navigate(actualScreen, {replace: true});
-            dispatch(navigationSuccess(actualScreen))
-            
-        }
-        setShowTabs("none")
+            setShowTabs("none")
+        })
+        
     }
 
-    const SeeNextCustomer = (event) =>{
+    const SeeNextCustomer = async (event) =>{
         event.stopPropagation();
-        const lastItem = lastItemId();
-        const firstItem = firstItemId()
-        if (_id >= Number(lastItem)){
-            const actualScreen = "/customer/" + firstItem;
-            dispatch(nc_loadFromBackend(getCustomer(firstItem)));
+        const actualScreen = "/customer/"+customer.next_customer
+        await GetCustomer(customer.next_customer).then(data =>{
+            dispatch(nc_loadFromBackend(data.result));
             navigate(actualScreen, {replace: true});
+            navigate(0);
             dispatch(navigationSuccess(actualScreen))
-           
-        }else{
-            const actualScreen = "/customer/" + (_id+1);
-            dispatch(nc_loadFromBackend(getCustomer(_id+1)));
-            navigate(actualScreen, {replace: true});
-            dispatch(navigationSuccess(actualScreen))
-            
-        }
-        setShowTabs("none")
+            setShowTabs("none")
+        })  
+        
     }
 
     const sendEmail = (event)=>{
@@ -140,7 +127,7 @@ export default function SeeCustomerComponent(props) {
     const seeInGoogleMaps = (event)=>{
         console.log(event)
         event.stopPropagation();
-        var url = "https://maps.google.com/?q="+customer.address.streetAddress +" "+ customer.address.postalCode+" "+customer.address.city+" "+customer.address.state+", "+customer.address.country
+        var url = "https://maps.google.com/?q="+customer.streetaddress +" "+ customer.postalcodeaddress+" "+customer.cityaddress+" "+customer.stateaddress+", "+customer.countryaddress
         console.log(url)
         window.open(url);   
     }
@@ -365,13 +352,13 @@ export default function SeeCustomerComponent(props) {
                             <Grid item  xs={12} md={12} sm={12}>
                                 
                                 <Typography component="div" variant="p" align='left' >
-                                {customer.socialMedia[0] ? findSocialIcon(customer.socialMedia[0].media):<></>} {customer.socialMedia[0] ? customer.socialMedia[0].user : <></> } 
+                                {customer.socialmedia1 ? findSocialIcon(customer.socialmedia1):<></>} {customer.socialmedia1 ? customer.socialuser1 : <></> } 
                                 </Typography>
                                 <Typography component="div" variant="p" align='left'>
-                                {customer.socialMedia[1] ? findSocialIcon(customer.socialMedia[1].media):<></>} {customer.socialMedia[1] ? customer.socialMedia[1].user : <></> }
+                                {customer.socialmedia2 ? findSocialIcon(customer.socialmedia2):<></>} {customer.socialmedia2 ? customer.socialuser2 : <></> }
                                 </Typography>
                                 <Typography component="div" variant="p" align='left'>
-                                {customer.socialMedia[2] ? findSocialIcon(customer.socialMedia[2].media):<></>} {customer.socialMedia[2] ? customer.socialMedia[2].user : <></> }
+                                {customer.socialmedia3 ? findSocialIcon(customer.socialmedia3):<></>} {customer.socialmedia3 ? customer.socialuser3 : <></> }
                                 </Typography>
                             </Grid>
                             <Grid item>
@@ -405,8 +392,8 @@ export default function SeeCustomerComponent(props) {
                             <Paper sx={{p:1, width:"100%", mb:2}}>
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("home")}: {customer.email[0]?<Button onClick={sendEmail} size='small'>{customer.email[0].emailAddress}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("work")}: {customer.email[1]?<Button onClick={sendEmail} size='small'>{customer.email[1].emailAddress}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("home")}: {customer.emailhome?<Button onClick={sendEmail} size='small'>{customer.emailhome}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("work")}: {customer.emailwork?<Button onClick={sendEmail} size='small'>{customer.emailwork}</Button>:<></>}</Typography>
                                     </Grid>
                                     <Grid item>
                                         <Button onClick={editMailDialogClick} align='left'>{t("edit")}</Button>
@@ -416,8 +403,8 @@ export default function SeeCustomerComponent(props) {
                             <Paper sx={{p:1, width:"100%", mb:2}}>
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("home")}: {customer.phoneNumber[0]?<Button onClick={callPhone} size='small'>{customer.phoneNumber[0].number}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("work")}: {customer.phoneNumber[1]?<Button onClick={callPhone} size='small'>{customer.phoneNumber[1].number}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("home")}: {customer.phonehome?<Button onClick={callPhone} size='small'>{customer.phonehome}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("work")}: {customer.phonework?<Button onClick={callPhone} size='small'>{customer.phonework}</Button>:<></>}</Typography>
                                         <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("whatsapp")}: {customer.whatsapp?<Button size='small'>{customer.whatsapp}</Button>:<></>}</Typography>
                                     </Grid>
                                     <Grid item>
@@ -429,7 +416,7 @@ export default function SeeCustomerComponent(props) {
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
                                         <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>
-                                            {t("address")}: {customer.address.streetAddress}. {customer.address.postalCode} {customer.address.city} {customer.address.state}, {customer.address.country}.
+                                            {t("address")}: {customer.streetaddress}. {customer.postalcodeaddress} {customer.cityaddress} {customer.stateaddress}, {customer.countryaddress}.
                                         </Typography>
                                         
                                     </Grid>

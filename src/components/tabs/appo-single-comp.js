@@ -13,9 +13,10 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 
 
 export const AppoSingleComponent = (props) => {
- 
+
    const { t } = useTranslation();
    const data = props.select;
+   console.log("DATA EN APPOSIGLE", data)
    const locale = props.locale;
    const dispatch = useDispatch();
    const navigate = useNavigate();

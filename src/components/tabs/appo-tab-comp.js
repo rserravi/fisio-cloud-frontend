@@ -24,7 +24,7 @@ import FlagIcon from '@mui/icons-material/FlagTwoTone';
 
 //CUSTOM IMPORTS
 import { getDateFromISOTime, getWeekInYear, timeDifference } from '../../utils/date-utils';
-import { GetAppointments, GetAppointmentsByCustomerId, GetCabinNameById, GetRowById, getServiceNameById } from '../../utils/dataFetch-utils';
+import { GetRowById } from '../../utils/dataFetch-utils';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
@@ -58,7 +58,7 @@ export const AppoTab = (props) =>{
     
     // Select has an array of selected rows
     const [select, setSelection] = React.useState([]);
-    const appoInit = props.customer?(GetAppointmentsByCustomerId(customer.id)):GetAppointments()
+    const appoInit = props.customer?customer.appointments:{}
     const [appointments, setAppoinments]= React.useState(appoInit)
 
     // ACTIONS FROM BUTTONS
@@ -66,7 +66,7 @@ export const AppoTab = (props) =>{
     const doReport = (props) =>{
         console.log(props)
         console.log("Hacer informe de cita " + props.id);
-        const actualScreen = "/addAppointment/"+ customer.id+"/"+props.id
+        const actualScreen = "/addAppointment/"+ customer._id+"/"+props.id
         dispatch(navigationLoading())
         navigate(actualScreen,{replace: true});
         dispatch(navigationSuccess(actualScreen))
@@ -74,14 +74,14 @@ export const AppoTab = (props) =>{
     }
     const AddAppoButton= () =>{
         console.log("ADD APPO")
-        const actualScreen = "/addAppointment/"+ Number(customer.id);
+        const actualScreen = "/addAppointment/"+customer.id;
         dispatch(navigationLoading())
         navigate(actualScreen,{replace: true});
         dispatch(navigationSuccess(actualScreen))
     }
 
     const ShowOnlyPastDates = ()=>{
-        var datos = props.customer?(GetAppointmentsByCustomerId(customer.id)):GetAppointments();
+        var datos = props.customer?customer.appointments:{};
         try {
             setAppoinments(datos.filter((appo)=>{return new Date(appo.date) <= new Date()}))
             
@@ -94,7 +94,7 @@ export const AppoTab = (props) =>{
     }
 
     const ShowOnlyNextDates = ()=>{
-        var datos = props.customer?(GetAppointmentsByCustomerId(customer.id)):GetAppointments();
+        var datos = props.customer?customer.appointments:{};
         try {
             setAppoinments(datos.filter((appo)=>{return new Date(appo.date) >= new Date()}))
         } catch (error) {
@@ -118,7 +118,6 @@ export const AppoTab = (props) =>{
             date = props.row.date
         }
         const result = (timeDifference(date) <= 0);
-        console.log("PAST APPO",result)
         return (result);
     }
 
@@ -130,11 +129,9 @@ export const AppoTab = (props) =>{
         else {
             date = props.row.date
         }
-        console.log("DATE IN SETCLOSEAPPO",date)
         const thisWeek = getWeekInYear(Date.now());
         const dateWeek = getWeekInYear(date);
         const result = (dateWeek-thisWeek === 0)
-        console.log("CLOSE APPO", result)
         return (result)
     }
 
@@ -238,15 +235,15 @@ export const AppoTab = (props) =>{
 
     const rows = appointments.map((row) => 
     ({
-        id: row.id, 
+        id: row._id, 
         customerId: row.customerId,
         customerName: row.customerName,
         date: new Date(row.date),
         time: new Date(row.date).toLocaleTimeString(locale),
         duration: row.duration,
-        service: getServiceNameById(row.service),
+        service:row.serviceName,
         price: row.price,
-        cabin: GetCabinNameById(row.cabin),
+        cabin: row.cabinName,
         status: row.status,
         closed: row.closed,
         notes: row.notes,

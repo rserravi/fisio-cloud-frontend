@@ -30,12 +30,34 @@ export const getAllCustomers= ()=>{
                     Authorization :accessJWT,
                 }
             });
-            console.log("RESPUESTA DE GET ALL CUSTOMERS",res.data)
             resolve(res.data);
             
         } catch (error) {
             console.log(error);
             reject(error.message);
+        }
+    })
+}
+
+export const GetCustomer = (id) =>{
+   
+    const url = customerUrl + "/"+id;
+    //console.log("ID en GETCUSTOMER API", id, "URL:"+url)
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const accessJWT = sessionStorage.getItem("accessJWT");
+            if (!accessJWT){
+                reject("Token not found!");
+            }
+            
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization :accessJWT,
+                }
+            });
+            resolve(res.data);
+        } catch (error) {
+            reject(error);
         }
     })
 }

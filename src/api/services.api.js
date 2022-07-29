@@ -51,3 +51,27 @@ export const deleteServices = (_id) =>{
         }
     })
 }
+
+export const getServiceNameById=(_id)=>{
+    const url = servicesUrl+"/"+_id;
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const accessJWT = sessionStorage.getItem("accessJWT");
+            if (!accessJWT){
+                reject("Token not found!");
+            }
+            
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization :accessJWT,
+                }
+            });
+            console.log("GET SERVICE BY ID", res.data.result.serviceName)
+            resolve(res.data.result.serviceName);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}

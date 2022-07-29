@@ -12,10 +12,9 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import { t } from 'i18next';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getCustomer } from '../../utils/dataFetch-utils';
 import LinearProgress from '@mui/material/LinearProgress';
-import SeeCustomerComponent from '../../components/see-customer.-comp';
-
+import SeeCustomerComponent from '../../components/see-customer.comp';
+import {GetCustomer} from '../../api/customer.api'
 
 
 const mdTheme = createTheme();
@@ -23,18 +22,64 @@ const mdTheme = createTheme();
 function SeeCustomerContent() {
 
   const boardState = useSelector((state)=> state.navigator);
-  const _id = Number(useParams().tid);
+  const _id = useParams().tid;
   const _tab = useParams().tab; //appo, hist, depo, comm
-  const customer = getCustomer(_id);
   const navigate = useNavigate();
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
+  const [firstLoad, setFirstLoad] = React.useState(true)
+
+  const initData = {
+    "_id":1,
+    "promotedToCustomer":"",
+    "firstname": "",
+    "lastname": "",
+    "dni":"",
+    "birthdate": "",
+    "image": "",
+    "gender": "",
+    "inbound": "",
+    "emailhome":"",
+    "emailwork":"",
+    "streetaddress": "",
+    "cityaddress": "",
+    "stateaddress": "",
+    "postalcodeaddress": "",
+    "countryaddress":"",
+    "phonehome":"",
+    "phonework":"",   
+    "whatsapp": "",
+    "socialmedia1":"Facebook",
+    "socialmedia2":"Twitter",
+    "socialmedia3":"Reddit",
+    "socialuser1": "",
+    "socialuser2": "",
+    "socialuser3": "",
+    "releaseForm":{
+            "file":"",
+            "generated":false,
+            "signed":false
+    },
+    "history":[],
+    "appointments":[],
+    "communications":[],
+    "next_customer":"",
+    "prev_customer":""
+  }
+
+  const [customer, setCustomer]= React.useState(initData)
   
   React.useEffect(() => {
     if (!customer){
      navigate("/404")   
     }
-  },[customer,navigate])
+    if(firstLoad){
+      GetCustomer(_id).then(data =>{
+          setCustomer(data.result);
+          setFirstLoad(false);
+      })
+  }
+  },[customer,navigate, firstLoad,_id])
 
   if (!customer){
     console.log("NO HAY CLIENTE");
@@ -52,7 +97,7 @@ function SeeCustomerContent() {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("Customer") +": " + customer.firstname + " " + customer.lastname +". ID:" + customer.id} />
+        <ApplicationBar boardState={boardState} title={t("Customer") +": " + customer.firstname + " " + customer.lastname} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -74,7 +119,7 @@ function SeeCustomerContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 0, display: 'flex', flexDirection: 'column' }}>
-                  <SeeCustomerComponent _id={_id} locale={localization} _tab={_tab}/>
+                  <SeeCustomerComponent _customer ={customer} locale={localization} _tab={_tab}/>
                 </Paper>
               </Grid>
             </Grid>

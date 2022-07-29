@@ -30,7 +30,6 @@ import PrintIcon from '@mui/icons-material/Print';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SendIcon from '@mui/icons-material/Send';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import { getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId } from '../utils/dataFetch-utils';
 import { getAllCustomers } from '../api/customer.api';
 
 
@@ -277,11 +276,24 @@ export const CustomersComponent = (props)=> {
     }
   },[firstLoad]) 
 
-    const RenderPhoneCell = (props) => {
+  const getPhone= (row)=>{
+    var result=""
+    if(row.phonework){
+        result =row.phonework 
+        return result
+    }
+    if(row.phonehome){
+        result = row.phonehome
+        return result
+    }
+    return result;
+  }
+
+  const RenderPhoneCell = (props) => {
     const {hasFocus, value } = props;
     const {id, whatsapp} = props.row;
-    const phone = getCustomerPhoneFromId(id);
-    const whats = getCustomerWhatsappFromId(id);
+    const phone = getPhone(props.row);
+    //const whats = getCustomerWhatsappFromId(id);
     const buttonElement = React.useRef(null);
     const rippleRef = React.useRef(null);
     const { t } = useTranslation();
@@ -360,14 +372,29 @@ export const CustomersComponent = (props)=> {
     );
   };
 
+   
+  const getMail= (row)=>{
+    var result=""
+    if(row.emailwork){
+        result = row.email?row.emailwork: row.emailwork + " (w)"
+        return result
+    }
+    if(row.emailhome){
+        result = row.email?row.emailhome: row.emailhome + " (h)"
+        return result
+    }
+    return result;
+  }
+
+
   const RenderEmailCell = (props) => {
     const {hasFocus, value } = props;
     const {id} = props.row;
     const buttonElement = React.useRef(null);
     const rippleRef = React.useRef(null);
     const { t } = useTranslation();
-    const email = getCustomerMailFromId(id);
-
+   
+    const email = getMail(props.row);
   
     React.useLayoutEffect(() => {
       if (hasFocus) {
@@ -439,20 +466,7 @@ export const CustomersComponent = (props)=> {
       dispatch(navigationSuccess(actualScreen))
     }
   }
-  
-  const getMail= (row)=>{
-    var result=""
-    if(row.emailwork){
-        result = row.emailwork + " (w)"
-        return result
-    }
-    if(row.emailhome){
-        result = row.emailhome + " (h)"
-        return result
-    }
-    return result;
-  }
-
+ 
 
   const { t } = useTranslation();
 
@@ -466,7 +480,11 @@ export const CustomersComponent = (props)=> {
       firstName: row.firstname, 
       lastName: row.lastname,
       email: getMail(row),
-      phoneNumber: row.phonework,
+      emailwork: row.emailwork,
+      emailhome: row.emailhome,
+      phoneNumber: getPhone(row),
+      phonework: row.phonework,
+      phonehome: row.phonehome,
       whatsapp: row.whatsapp,
       appointments: {"next": row.appointments?row.appointments.length:0, "past": row.history.length}, 
       }

@@ -31,7 +31,7 @@ export const lastItemId = () =>{
 export const GetRowById = (row,_id)=>{
   var found = {}
   for (let key in row){
-    if (Number(row[key].id) === Number(_id)){
+    if (row[key].id === _id){
         found = row[key];
         break
     }
