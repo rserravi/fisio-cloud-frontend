@@ -56,6 +56,7 @@ export default function SeeCustomerComponent(props) {
     const { t } = useTranslation();
     
     React.useEffect(()=>{
+        //console.log("CUSTOMER AT USE EFFECT SEE-CUSTOMER", customer)
         dispatch(nc_loadFromBackend(customer));
        
 
@@ -234,7 +235,7 @@ export default function SeeCustomerComponent(props) {
     const CheckPendingNotes=()=>{
         const count = history.reduce((accumulatos, obj)=>{
          if (obj.status === "pending"){
-             return accumulatos + Number(obj.price);
+             return accumulatos + (Number(obj.price) - Number(obj.paid));
          }
          return accumulatos;      
         }, 0);

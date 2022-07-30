@@ -27,15 +27,16 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1TwoTone';
 import { getDateFromISOTime } from '../../utils/date-utils';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import { Box } from '@mui/system';
-import { GetCommunications, GetRowById, OrderArrayByDate } from '../../utils/dataFetch-utils';
+import { GetRowById } from '../../utils/dataFetch-utils';
 import { ConversationComponent } from '../conversation-comp';
+import { Dummy} from '../dummy.js'
 
 
 export const CommTab = (props) =>{
     const locale = props.locale;
     
     const customer = props.customer?props.customer:{};
-    const communications=props.customer?OrderArrayByDate(GetCommunications(customer)):OrderArrayByDate(GetCommunications());
+    const communications=props.customer?customer.communications:{}
     const tableHeight = props.customer?280:600;
     const mode=props.customer?"custoPage":"commPage";
     const dispatch = useDispatch();
@@ -87,12 +88,13 @@ export const CommTab = (props) =>{
     const RenderDirection = (props) =>{
         return(
             <React.Fragment>
-                {props.row.direction!=="send"?<ArrowRightIcon color='primary'/>:<ArrowLeftIcon color='primary'/>}
+                {!props.row.customerSent?<ArrowRightIcon color='primary'/>:<ArrowLeftIcon color='primary'/>}
             </React.Fragment>
         )
     }
 
     const handleRowSelection = (ids) =>{
+        console.log("HASTA AQUI BIEN",ids)
         setSelection(ids);
       }
 
@@ -172,11 +174,13 @@ export const CommTab = (props) =>{
 
     const rows = communications.map((row) => 
     ({
-        id: row.id, 
+        id: row._id, 
         customerId: row.customerId,
+        customerName: row.customerName,
+        customerSent: row.customerSent,
+        userName: row.userName,
         date: getDateFromISOTime(row.date, locale),
         type: row.type,
-        direction: row.direction,
         duration: row.duration,
         subject: row.subject,
         notes: row.notes,
@@ -295,8 +299,8 @@ export const CommTab = (props) =>{
                 />
               </Box>
               </Grid>
-              <Paper sx={{mt:5}}>
-                    {select.length>0?<ConversationComponent locale={locale} select={GetRowById(rows,select[select.length-1])} />:<></>}
+              <Paper sx={{mt:5}}>               
+                    {select.length>0?<ConversationComponent locale={locale} select={select[0]} />:<></>}
               </Paper>
             </Grid>
         </React.Fragment>

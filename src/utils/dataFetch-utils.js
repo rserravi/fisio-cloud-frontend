@@ -1073,27 +1073,21 @@ export const GetNextCommunicationId =(customerId)=>{
   }
 }
 
-export const GetSenderName = (customerId, userId, direction) =>{
-  switch (direction) {
-      case "send":
-          return getCustomerNameFromId(customerId);
-      case "receive":
-          return getUserById(userId); 
-  
-      default:
-          break;
+export const GetSenderName = (customerName, userName, customerSent) =>{
+  if (customerSent){
+    return customerName;
+  }
+  else {
+    return userName;
   }
 }
 
-export const GetReceiverName = (customerId, userId, direction) =>{
-
-  switch (direction) {
-      case "receive":
-          return getCustomerNameFromId(customerId);
-      case "send":
-          return getUserById(userId); 
-      default:
-          break;
+export const GetReceiverName = (customerName, userName, customerSent) =>{
+  if (customerSent){
+    return userName;
+  }
+  else {
+    return customerName;
   }
 }
 

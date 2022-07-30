@@ -62,15 +62,6 @@ function ApplicationBar(boardState) {
     dispatch(navigationSuccess(actualScreen))
   }
 
- /*  // FALTA QUE BUSQUE EL REFRESH TOKEN
-
-  if(!userId || userId===""){
-    dispatch (getUserProfile());
-    if (userSelector.error==="Token not found!"){
-      goTo("/signin");
-    }
-  } */
-
   React.useEffect(()=>{
     if(!userId || userId===""){
       dispatch (getUserProfile());
@@ -79,9 +70,17 @@ function ApplicationBar(boardState) {
       }
     } 
 
-    const udpdateAccessJWT = async() =>{
-      const result = await fetchNewAccessJWT();
-      result && dispatch(loginSuccess());
+    const udpdateAccessJWT = () =>{
+      return new Promise( async(resolve, reject)=>{
+        try {
+          const result = await fetchNewAccessJWT();
+          result && dispatch(loginSuccess());
+          resolve(result);
+        } catch (error) {
+          reject(error);
+        }
+      })
+      
     };
 
     udpdateAccessJWT();

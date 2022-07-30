@@ -16,7 +16,7 @@ export const AppoSingleComponent = (props) => {
 
    const { t } = useTranslation();
    const data = props.select;
-   console.log("DATA EN APPOSIGLE", data)
+   console.log("DATA EN APPOSINGLE", data)
    const locale = props.locale;
    const dispatch = useDispatch();
    const navigate = useNavigate();

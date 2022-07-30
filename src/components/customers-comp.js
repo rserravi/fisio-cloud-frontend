@@ -14,7 +14,6 @@ import Tooltip from '@mui/material/Tooltip';
 //CUSTOM IMPORTS
 import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-//import customerData from "../assets/data/dummy-data.json";
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
 
 //ICONS
@@ -35,8 +34,6 @@ import { getAllCustomers } from '../api/customer.api';
 
 var info = "";
 var compact = false;
-
-//const customerData = getAllCustomers()
 
 
 // FUNCTIONS FOR EXTERNAL ACTIONS
@@ -266,10 +263,8 @@ export const CustomersComponent = (props)=> {
   const [customerList, setCustomerList] = React.useState(initData);
 
   React.useEffect(() => {
-    console.log("ESTAMOS EN USE EFFECT")
     if(firstLoad){
         getAllCustomers().then(data =>{
-            console.log(data.result);
             setCustomerList(data.result);
             setFirstLoad(false);
         })
@@ -293,7 +288,6 @@ export const CustomersComponent = (props)=> {
     const {hasFocus, value } = props;
     const {id, whatsapp} = props.row;
     const phone = getPhone(props.row);
-    //const whats = getCustomerWhatsappFromId(id);
     const buttonElement = React.useRef(null);
     const rippleRef = React.useRef(null);
     const { t } = useTranslation();

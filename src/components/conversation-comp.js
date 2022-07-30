@@ -6,20 +6,19 @@ import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
+import { GetThreadByCommId } from '../api/communications.api';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-import { GetCommunicationActions, GetReceiverName, GetSenderName, GetThread } from '../utils/dataFetch-utils';
+import { GetCommunicationActions, GetReceiverName, GetSenderName  } from '../utils/dataFetch-utils';
 
-
-
-const textAlign = (dir)=>{
-    if (dir ==="send") {
+const textAlign = (customerSent)=>{
+    if (customerSent) {
         return "left"
     }
     return "right";
    }
 
-const BackgroundColor = (dir) =>{
-    if (dir ==="send") {
+const BackgroundColor = (customerSent) =>{
+    if (customerSent) {
         return "honeydew"
     }
     return "gainsboro";
@@ -27,13 +26,62 @@ const BackgroundColor = (dir) =>{
 
 const commActions = GetCommunicationActions();
 
+const initData = [
+    {
+        id: "", 
+        customerId: "",
+        customerName: "",
+        customerSent: false,
+        userName: "",
+        date: "",
+        type: "",
+        duration: "",
+        subject: "",
+        notes: "",
+        follow: "",
+        readed: "",
+        answered: "",
+        thread: 0
+    },
+    {
+        id: "", 
+        customerId: "",
+        customerName: "",
+        customerSent: false,
+        userName: "",
+        date: "",
+        type: "",
+        duration: "",
+        subject: "",
+        notes: "",
+        follow: "",
+        readed: "",
+        answered: "",
+        thread: 0
+    }
+]
+
 export const ConversationComponent = (props) => {
 
- 
+   console.log ("PROPS EN CONVERSATION COMPONENT", props)
    const { t } = useTranslation();
-   const threadData =GetThread(props.select);
+   const [threadData, setThreadData]= React.useState(initData)
    const locale = props.locale;
+   const commId = props.select;
    const [newActionDialogOpen, setNewActionDialogOpen] = React.useState(false);
+   const [firstLoad, setFirstLoad] = React.useState(true)
+   console.log("THREAD EN INICIO", threadData)
+
+   React.useEffect(() => {
+    console.log("ESTAMOS EN USE EFFECT")
+    if(firstLoad){
+        console.log("PRIMERA CARGA")
+        GetThreadByCommId(commId).then(data =>{
+            setThreadData(data.result);
+            setFirstLoad(false);
+            })
+        }
+    },[firstLoad,props.select.thread, commId])   
 
    const HandleNewActionClick = ()=>{
     setNewActionDialogOpen(true)
@@ -43,21 +91,19 @@ export const ConversationComponent = (props) => {
     setNewActionDialogOpen(false)
    }
 
-  
-
-   
-   
-   const Message = (msg)=>{
-        var msgId =msg.id
+   const Message = (props)=>{
+        const msg = props.msg;
+        const key = props.keyN;
+        console.log("EN MESSAGE", msg, key)
         const dispatch = useDispatch();
         const navigate = useNavigate();
-        const [msgCopy, setMsgCopy] = React.useState(threadData[msgId]);
+        const [msgCopy, setMsgCopy] = React.useState(threadData[key]);
 
         const handleAnswerClick = (event) =>{
 
             event.stopPropagation(); 
-            console.log(threadData, "CustomerID",threadData[msgId].customerId, "Thread", threadData[msgId].thread );
-            const actualScreen = "/addcommunication/" + threadData[msgId].customerId+"/" + threadData[msgId].thread
+            console.log(threadData, "CustomerID",threadData[key].customerId, "Thread", threadData[key].thread );
+            const actualScreen = "/addcommunication/" + threadData[key].customerId+"/" + threadData[key].thread
             dispatch(navigationLoading());
             navigate(actualScreen,{replace: true});
             dispatch(navigationSuccess(actualScreen))
@@ -79,7 +125,7 @@ export const ConversationComponent = (props) => {
         <React.Fragment>
             <div
                 style={{
-                backgroundColor: BackgroundColor(threadData[msgId].direction),
+                backgroundColor: BackgroundColor(threadData[key].customerSent),
                 paddingRight: "15px",
                 position: "relative",
                 border: "2px solid gainsboro",
@@ -90,16 +136,16 @@ export const ConversationComponent = (props) => {
                 justifyContent="flex-start"
                 alignItems="center">
                 
-                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)} sx={{mt:2, ml:2}}>
-                   <b>{t("from")}:</b> <Button>{GetSenderName(threadData[msgId].customerId, threadData[msgId].userId, threadData[msgId].direction)}</Button> <b>{t("subject")}: </b> {threadData[msgId].subject}.<b> {t("to")}: </b> <Button>{GetReceiverName(threadData[msgId].customerId, threadData[msgId].userId, threadData[msgId].direction)}</Button>, <b> {t("sendat")}:</b> {new Date(threadData[msgId].date).toLocaleDateString(locale)}, {new Date(threadData[msgId].date).toLocaleTimeString(locale)}
+                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)} sx={{mt:2, ml:2}}>
+                   <b>{t("from")}:</b> <Button>{GetSenderName(threadData[key].customerName, threadData[key].userName, threadData[key].customerSent)}</Button> <b>{t("subject")}: </b> {threadData[key].subject}.<b> {t("to")}: </b> <Button>{GetReceiverName(threadData[key].customerName, threadData[key].userName, threadData[key].customerSent)}</Button>, <b> {t("sendat")}:</b> {new Date(threadData[key].date).toLocaleDateString(locale)}, {new Date(threadData[key].date).toLocaleTimeString(locale)}
                 </Grid>
-                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)} sx={{ml:2}}>
+                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)} sx={{ml:2}}>
                   
                     <TextField
                       id="type"
                       name='type'
                       label={t("type")}
-                      value={threadData[msgId].type}
+                      value={threadData[key].type}
                       variant="standard"
                       sx={{mr:1}}
                       />
@@ -107,35 +153,35 @@ export const ConversationComponent = (props) => {
                       id="duration"
                       name='duration'
                       label={t("duration")}
-                      value={threadData[msgId].duration}
+                      value={threadData[key].duration}
                       variant="standard"
                       sx={{mr:1}}
                       />
-                      {threadData[msgId].follow!==""?<TextField
+                      {threadData[key].follow!==""?<TextField
                       id="action"
                       name='action'
                       label={t("nextaction")}
-                      value={threadData[msgId].follow + " " + new Date(threadData[msgId].alertfollow).toLocaleDateString(locale)}
+                      value={threadData[key].follow + " " + new Date(threadData[key].alertfollow).toLocaleDateString(locale)}
                       variant="standard"
                       sx={{mr:1}}
                       />:<></>}
                      
-                      <p style={{color:"red"}}>{!threadData[msgId].answered?<b>{t("notanswered")}. </b>:<></>}</p>
+                      <p style={{color:"red"}}>{!threadData[key].answered?<b>{t("notanswered")}. </b>:<></>}</p>
                     </Grid>
                     
-                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)}sx={{ml:2, mt:2}}>
+                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].direction)}sx={{ml:2, mt:2}}>
                    <TextField
                       id="notes"
                       name='notes'
                       label={t("notes")}
-                      value={threadData[msgId].notes}
+                      value={threadData[key].notes}
                       sx={{width:"60%"}}
                       multiline
                       rows={4}
                       />
                 </Grid>
-                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[msgId].direction)} sx={{ml:2, mt:1, mb:2}}>
-                    {threadData[msgId].direction==="send"?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{t("answer")}</Button>:<></>}
+                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].direction)} sx={{ml:2, mt:1, mb:2}}>
+                    {threadData[key].direction==="send"?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{t("answer")}</Button>:<></>}
                     <Button onClick={HandleNewActionClick} variant='outlined'>{t("newaction")}</Button>
                 </Grid>
                 <Dialog open={newActionDialogOpen} onClose={handleNewActionDialogClose}>
@@ -187,8 +233,9 @@ export const ConversationComponent = (props) => {
    return(
         <React.Fragment>
         {threadData.map((msg,i)=>{
+            console.log("ESTAMOS EN MAP", msg, i);
             return(
-            <Message id ={i} key={i} />
+                <Message msg={msg} keyN={i} />
             )
         })}
        </React.Fragment>

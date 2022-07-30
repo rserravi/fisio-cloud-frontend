@@ -54,7 +54,7 @@ export const HistTab = (props) =>{
     
     // Select has an array of selected rows
     const [select, setSelection] = React.useState([]);
-    const histoInit = props.customer?(GetHistoryByCustomerId(customer.id)):GetHistories()
+    const histoInit = props.customer?customer.history:{}
     const [history, setHistory]= React.useState(histoInit)
 
     // ACTIONS FROM BUTTONS
@@ -176,17 +176,17 @@ export const HistTab = (props) =>{
 
     const rows = history.map((row) => 
     ({
-        id: row.id, 
+        id: row._id, 
         customerId: row.customerId,
         customerName: row.customerName,
         date: new Date(row.date),
         time: new Date(row.date).toLocaleTimeString(locale),
         duration: row.duration,
-        service: getServiceNameById(row.service),
+        service: row.serviceName,
         price: row.price,
         paid: row.paid,
         debt: row.price- row.paid,
-        cabin: GetCabinNameById(row.cabin),
+        cabin: row.cabinName,
         status: row.status,
         closed: row.closed,
         notes: row.notes,
