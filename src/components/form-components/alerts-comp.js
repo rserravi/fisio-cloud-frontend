@@ -1,40 +1,84 @@
-import { Button, FormControlLabel, Grid, TextField } from '@mui/material';
+import { Alert, Button, FormControlLabel, Grid, Snackbar, TextField } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import { useTranslation } from 'react-i18next';
 import * as React from 'react';
-import { GetAlertsData } from '../../utils/dataFetch-utils';
+import { useSelector } from 'react-redux';
+import { GetAlertsData, UpdateAlertsData } from '../../api/setupAlerts.api';
 
-const alertsData = GetAlertsData();
 const alertInit = {
-    showAppoAlerts : alertsData.showAppoAlerts,
-    showCommAlerts : alertsData.showCommAlerts,
-    showPast: alertsData.showPast,
-    showComming: alertsData.showComming,
-    pastDaysPeriod: alertsData.pastDaysPeriod,
-    commingDaysPeriod: alertsData.commingDaysPeriod
+    showAppoAlerts : true,
+    showCommAlerts : true,
+    showPast: true,
+    showComming: true,
+    pastDaysPeriod: 0,
+    commingDaysPeriod: 0
 }
 
 export default function AlertsForm() {
     const { t } = useTranslation();
+    const userState = useSelector((state)=> state.user);
     const [alerts, SetAlerts]= React.useState(alertInit)
+    const [firstLoad, setFirstLoad]=React.useState(true);
+    const [snackBarOpen, setSnackBarOpen] = React.useState(false);
+    const [userId ]= React.useState(userState.id);
+
+    React.useEffect(()=>{
+        
+        if (firstLoad){
+            GetAlertsData(userId).then((data)=>{
+                SetAlerts(data.result[0])
+                setFirstLoad(false);
+        })
+        }
+    },[firstLoad,userId])
+
 
     const handleChangeChecked = (event) =>{
         SetAlerts({...alerts, [event.target.name]:event.target.checked})
     }
     const handleChangeTextfield = (event) =>{
-        SetAlerts({...alerts, [event.target.name]:event.target.value})
+        SetAlerts({...alerts, [event.target.name]:Number(event.target.value)})
+        console.log(event.target.value)
     }
     const HandleSubmit = (event)=>{
-        console.log(alerts)
+        const alerts2 = alerts;
+        delete alerts2["_id"];
+        console.log("ALERTS EN HANDLESUBMIT",alerts)
+        UpdateAlertsData(alerts2).then((data)=>{
+            if(data.status==="success"){
+                console.log("DATA AFTER HANDLE SUBMIT", data)
+                setSnackBarOpen(true);
+            }
+            else{
+                console.log("DATA EN ERROR", data)
+            }
+        })
+
 
     }
-
     const resetData = (event) =>{
         SetAlerts(alertInit);
     }
 
+    const handleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+          return;
+        }
+    
+        setSnackBarOpen(false);
+      };
+
     return (
         <React.Fragment>
+            <Snackbar
+                open={snackBarOpen}
+                autoHideDuration={6000}
+                onClose={handleClose}
+            >
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    {t("AlertsSetupUpdated")}
+                </Alert>
+            </Snackbar>
 
            <h3>{t("alerts")}</h3>
            <p>{t("definehowmuchinfoyouwantyoseeinalerts")} </p>

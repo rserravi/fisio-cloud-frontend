@@ -438,5 +438,6 @@
     "areyousureyouwanttodelete":"Estàs segur que vols esborrar?",
     "description":"Descripció",
     "definecabin":"Defineix un nou consultori (espai físic)",
-    "deletecabin":"Esborrar consultori"
+    "deletecabin":"Esborrar consultori",
+    "AlertsSetupUpdated":"Configuració d'alertes actualitzada"
 }
