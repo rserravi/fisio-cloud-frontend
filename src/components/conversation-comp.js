@@ -28,7 +28,7 @@ const commActions = GetCommunicationActions();
 
 const initData = [
     {
-        id: "", 
+        id: 1, 
         customerId: "",
         customerName: "",
         customerSent: false,
@@ -44,7 +44,7 @@ const initData = [
         thread: 0
     },
     {
-        id: "", 
+        id: 2, 
         customerId: "",
         customerName: "",
         customerSent: false,
@@ -169,7 +169,7 @@ export const ConversationComponent = (props) => {
                       <p style={{color:"red"}}>{!threadData[key].answered?<b>{t("notanswered")}. </b>:<></>}</p>
                     </Grid>
                     
-                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].direction)}sx={{ml:2, mt:2}}>
+                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)}sx={{ml:2, mt:2}}>
                    <TextField
                       id="notes"
                       name='notes'
@@ -180,8 +180,8 @@ export const ConversationComponent = (props) => {
                       rows={4}
                       />
                 </Grid>
-                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].direction)} sx={{ml:2, mt:1, mb:2}}>
-                    {threadData[key].direction==="send"?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{t("answer")}</Button>:<></>}
+                <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)} sx={{ml:2, mt:1, mb:2}}>
+                    {threadData[key].customerSent?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{t("answer")}</Button>:<></>}
                     <Button onClick={HandleNewActionClick} variant='outlined'>{t("newaction")}</Button>
                 </Grid>
                 <Dialog open={newActionDialogOpen} onClose={handleNewActionDialogClose}>

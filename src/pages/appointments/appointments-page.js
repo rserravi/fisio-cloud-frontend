@@ -22,6 +22,7 @@ function AppoinmentsContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
+  const userId = userSelector.id;
   const { t } = useTranslation();
 
   return (
@@ -54,7 +55,7 @@ function AppoinmentsContent() {
               </Grid>
               <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-               <BigCalendarComp locale={localization} onlyAppo={true}/>
+               <BigCalendarComp locale={localization} onlyAppo={true} userId={userId}/>
                 </Paper>
               </Grid>
             </Grid>

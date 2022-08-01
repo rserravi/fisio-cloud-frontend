@@ -3,6 +3,8 @@ import Grid from '@mui/material/Grid';
 import { Alert, Button, Card, MenuItem, TextField, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
+import { useDispatch } from 'react-redux';
+import { nc_releaseformFile, nc_releaseformGenerated } from '../../slices/newCustomer-slice';
 
 const getDocumentList = ()=>[
 
@@ -10,29 +12,37 @@ const getDocumentList = ()=>[
     "osteopatia-consent-es-ES.html",
     "osteopatia-consent-ca-CA.html"
 ]
+
   
 export default function ReleaseFormComp(props) {
-    
+
   var initValidation={
     blueprint:"",
     file:"",
     signed:false,
     attachment:[]
   }
+
+  const [generatedFile, setGeneratedFile] = React.useState("");
   const [releaseFrm, setReleaseFrm] = React.useState(initValidation);
+
+  const dispatch = useDispatch();
   
   React.useEffect (()=>{
 
     },[])
  
   const { t } = useTranslation();
-  
 
   const handleConsentFormChange = (event)=>{
  
     //OBTENER EL RELEASE FORM DEL API, Y RELLENAR CON DATOS
     //EL NOMBRE DEL ARCHIVO FINAL DEBE PROVENIR DE LA API
+    setGeneratedFile("/releases/1_rf.pdf")
+    //FALLLO
     setReleaseFrm({...releaseFrm, "blueprint":event.target.value, "file":"/releases/1_rf.pdf"})
+    dispatch(nc_releaseformFile("/releases/1_rf.pdf"));
+    dispatch(nc_releaseformGenerated(true));
   }
 
   const handleSeeConsentClick = (event)=>{

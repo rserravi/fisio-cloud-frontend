@@ -16,6 +16,7 @@ import { DniForm } from './form-components/dni-form';
 import ReleaseFormComp from './form-components/release-form-comp';
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
+import { addCustomer } from '../api/customer.api';
 
 var initValidation={
   firstname: true,
@@ -48,20 +49,25 @@ export default function CustomerForm(props) {
     emailhome: NcState.emailhome,
     emailwork:NcState.emailwork,
     streetaddress: NcState.streetaddress,
-    city: NcState.city,
-    state: NcState.state,
-    postalCode: NcState.postalCode,
-    country:NcState.country,
-    homephone: NcState.homephone,
-    mobilephone:NcState.mobilephone,
+    cityaddress: NcState.city,
+    stateaddress: NcState.state,
+    postalcodeaddress: NcState.postalCode,
+    countryaddress:NcState.country,
+    phonehome: NcState.homephone,
+    phonework:NcState.mobilephone,
     whatsapp: NcState.whatsapp,
-    social1: NcState.social1,
-    social2: NcState.social2,
-    social3: NcState.social3,
-    socialUser1:NcState.socialUser1,
-    socialUser2:NcState.socialUser2,
-    socialUser3:NcState.socialUser3,
-    addedAt: addedAt
+    socialmedia1: NcState.social1,
+    socialmedia2: NcState.social2,
+    socialmedia3: NcState.social3,
+    socialuser1:NcState.socialUser1,
+    socialuser2:NcState.socialUser2,
+    socialuser3:NcState.socialUser3,
+    promotedToCustomer:NcState.promotedToCustomer,
+    releaseForm:{
+      "file":NcState.releaseformFile,
+      "generated":NcState.releaseformGenerated,
+      "signed":NcState.releaseformsigned
+    }
    }
 
     const validation2 = CustomerValidation(frm);
@@ -71,7 +77,21 @@ export default function CustomerForm(props) {
 
     /// API PARA ENVIAR EL FORMULARIO AL BACKEND
 
-    // NAVIGATE TO SEECUSTOMER(_id);
+    if (validation.firstname && validation.lastname && validation.email && validation.phone && validation.dni){
+      addCustomer(frm).then((data)=>{
+        if (data.message==="New Customer Created"){
+          console.log("DONE")
+           // NAVIGATE TO SEECUSTOMER(_id);
+        }
+        else {
+          console.log("ERROR CHUNGO", data.message);
+        }
+      })
+    }
+   
+
+
+   
   }
 
   React.useEffect (()=>{

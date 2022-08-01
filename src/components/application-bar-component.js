@@ -63,7 +63,9 @@ function ApplicationBar(boardState) {
   }
 
   React.useEffect(()=>{
+    console.log(userId);
     if(!userId || userId===""){
+      console.log("NO USER ID POR REFRESCO")
       dispatch (getUserProfile());
       if (userSelector.error==="Token not found!"){
         goTo("/signin");

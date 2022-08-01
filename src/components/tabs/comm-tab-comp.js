@@ -27,15 +27,14 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1TwoTone';
 import { getDateFromISOTime } from '../../utils/date-utils';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import { Box } from '@mui/system';
-import { GetRowById } from '../../utils/dataFetch-utils';
 import { ConversationComponent } from '../conversation-comp';
-import { Dummy} from '../dummy.js'
 
 
 export const CommTab = (props) =>{
     const locale = props.locale;
     
     const customer = props.customer?props.customer:{};
+    console.log("COMM TAB CUSTOMER", customer)
     const communications=props.customer?customer.communications:{}
     const tableHeight = props.customer?280:600;
     const mode=props.customer?"custoPage":"commPage";
@@ -94,7 +93,7 @@ export const CommTab = (props) =>{
     }
 
     const handleRowSelection = (ids) =>{
-        console.log("HASTA AQUI BIEN",ids)
+        console.log("PASAMOS EN ID DE LA COMM PULSADA",ids)
         setSelection(ids);
       }
 
@@ -243,10 +242,10 @@ export const CommTab = (props) =>{
     }
 
     const rowClassName = (params)=>{
-        if(params.row.readed && params.row.answered && params.row.direction==="send")return "done";
-        if(!params.row.readed && !params.row.aswered && params.row.direction==="send" ) return "notreaded";
-        if(params.row.readed && !params.row.answered && params.row.direction==="send") return "notanswered"
-        if(params.row.direction==="receive") return "answer"
+        if(params.row.readed && params.row.answered && params.row.customerSent)return "done";
+        if(!params.row.readed && !params.row.aswered && params.row.customerSent) return "notreaded";
+        if(params.row.readed && !params.row.answered && params.row.customerSent) return "notanswered"
+        if(!params.row.customerSent) return "answer"
     }
 
     return (
@@ -288,7 +287,6 @@ export const CommTab = (props) =>{
                     rows={rows}
                     columns={Columns()}
                     density="compact"
-                    checkboxSelection
                     rowsPerPageOptions={[5,10,25,50,100]}
                     rowsPerPage ={10}
                     components= {{Toolbar: GridToolbar,}}

@@ -32,8 +32,8 @@ const initialState = {
     socialUser3:"@",
     countryPhoneCode:"+34",
     releaseformFile:"",
-    releaseformGenerated:"",
-    releaseformSigned:"",
+    releaseformGenerated:false,
+    releaseformSigned:false,
     locale:"es-ES",
     role:"user"
 }

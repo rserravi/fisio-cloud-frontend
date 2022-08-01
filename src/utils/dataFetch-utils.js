@@ -1092,20 +1092,15 @@ export const GetReceiverName = (customerName, userName, customerSent) =>{
 }
 
 
-export const notAnsweredMessages = (customerId)=>{
+export const notAnsweredMessages = (customerData)=>{
   var count = 0;
-  if(customerId){
-    for (let userKey in customerData){
-      if (customerData[userKey].id === customerId){
-        if (customerData[userKey].contacthistory.length !==0){
-          for (let commKey in customerData[userKey].contacthistory){
-            if (!customerData[userKey].contacthistory[commKey].answered){
-              count = count +1;
-            }
-          }
-        }
+  if(customerData){
+    for (const key in customerData.communications){
+      if (customerData.communications[key].customerSent && !customerData.communications[key].answered){
+        count +=1;
       }
-    }   
+    }
+  
     return count
   }
 }

@@ -20,7 +20,7 @@ import FlagIcon from '@mui/icons-material/FlagTwoTone';
 
 //CUSTOM IMPORTS
 import { getDateFromISOTime } from '../../utils/date-utils';
-import { GetCabinNameById,  GetHistories, GetHistoryByCustomerId, GetRowById, getServiceNameById } from '../../utils/dataFetch-utils';
+import { GetRowById } from '../../utils/dataFetch-utils';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';

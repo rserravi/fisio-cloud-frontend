@@ -69,7 +69,7 @@ export const NameForm = (props) =>{
     const handleBirthdate= (value) => {
         setNameFrmData({...nameFrmDta, "birthdate": value})
         console.log(value)
-        dispatch(nc_birthdate_Commit(new Date (value).toLocaleDateString()))
+        dispatch(nc_birthdate_Commit(new Date (value).toISOString()))
       };
 
     return (

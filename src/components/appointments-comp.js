@@ -15,7 +15,6 @@ import MenuItem from '@mui/material/MenuItem';
 import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
-import { GetAppointments, GetCabinNameById, getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId, getServiceNameById } from '../utils/dataFetch-utils';
 import { getDateFromISOTime, getTimeFromISOTime, getWeekInYear, timeDifference } from '../utils/date-utils';
 
 
@@ -32,6 +31,7 @@ import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { getAllAppointments } from '../api/appointments.api';
 
 var compact = false;
 
@@ -51,7 +51,42 @@ const printAppointment = (customerId) => {
 
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
 
-const data = GetAppointments();
+const initData = [
+  {
+      rowid: 0, 
+      customerId: "",
+      customerName: "",
+      date: new Date(),
+      duration: 0,
+      service: "",
+      cabin: "",
+      price: 0,
+      paid: 0,
+      status: "",
+      closed: "",
+      notes: "",
+      attachment: "",
+      serviceName: "",
+      cabinName:""
+  },
+  {
+      rowid: 1, 
+      customerId: "",
+      customerName: "",
+      date: new Date(),
+      duration: 0,
+      service: "",
+      cabin: "",
+      price: 0,
+      paid: 0,
+      status: "",
+      closed: "",
+      notes: "",
+      attachment: "",
+      serviceName: "",
+      cabinName:""
+  }
+]
 
 
 /////////////////////////////////
@@ -67,7 +102,10 @@ export const AppointmentsComponent = (props)=> {
   const dispatch = useDispatch();
   compact = props.compact;
   const locale= props.locale;
-
+  const userId = props.userId;
+  const [data, setData]= React.useState(initData)
+  const [firstLoad, setFirstLoad] = React.useState(true);
+  
 
   const [anchorElPastButtonEL, setAnchorPastButtonEL] = React.useState(null);
   const openPastMenu = Boolean(anchorElPastButtonEL);
@@ -93,6 +131,18 @@ export const AppointmentsComponent = (props)=> {
         rippleRef.current.stop({});
       }
     }, [hasFocus]);
+
+    React.useEffect(()=>{
+      if (firstLoad){
+        getAllAppointments(userId).then(data =>{
+          console.log("DATOS EN USEEFFECT", data)
+          setData(data);
+          setFirstLoad(false);
+        })
+      }
+    },[])
+
+  
 
   const thisWeek = getWeekInYear(Date.now());
   const dateWeek = getWeekInYear(date);
@@ -246,15 +296,18 @@ export const AppointmentsComponent = (props)=> {
  
   const rows = data.map((row) => 
   ({
-    id: row.id,  
-    appoid: row.appoId,
+    id: row.rowid,  
+    appoid: row._Id,
     customerId: row.customerId,
-    userName: row.customerName,
+    customerName: row.customerName,
+    userName: row.userName,
     date: row.date,
     startingTime: getTimeFromISOTime(row.date, locale) + " h.",
     duration: row.duration +" m.",
-    service: getServiceNameById(row.service),
-    cabin: GetCabinNameById(row.cabin),
+    service: row.serviceName,
+    serviceId: row.service,
+    cabinId: row.cabin,
+    cabin: row.cabinName,
     price: row.price + "€",
     status: row.status,
     closed: row.closed,
@@ -286,7 +339,7 @@ export const AppointmentsComponent = (props)=> {
             <GridActionsCellItem
             icon={<Tooltip title={t("call")}><PhoneForwardedIcon /></Tooltip>}
             label={t("call")}
-            disabled = {!getCustomerPhoneFromId(params.row.customerId)}
+            disabled = {params.row.customerPhone===""}
             onClick={(event) => {
               callUser(params.row.customerId);
               event.stopPropagation();
@@ -295,7 +348,7 @@ export const AppointmentsComponent = (props)=> {
             <GridActionsCellItem
             icon={<Tooltip title={t("sendemail")}><SendIcon /></Tooltip>}
             label={t("sendemail")}
-            disabled = {!getCustomerMailFromId(params.row.customerId)}
+            disabled = {!params.row.customerMail===""}
             onClick={(event) => {
               emailUser(params.row.customerId);
               event.stopPropagation();
@@ -304,14 +357,14 @@ export const AppointmentsComponent = (props)=> {
             <GridActionsCellItem
             icon={<Tooltip title={t("sendwhatsapp")}><WhatsAppIcon /></Tooltip>}
             label={t("GridActionsCellItem")}
-            disabled = {!getCustomerWhatsappFromId(params.row.customerId)}
+            disabled = {!params.row.customerWhatsapp===""}
             onClick={(event) => {
               whatsappUser(params.row.customerId);
               event.stopPropagation();
             }}
           />,
         ]},
-        { field: 'userName', headerName: t("Customer"), width:200},
+        { field: 'customerName', headerName: t("Customer"), width:200},
         { field: 'date', headerName: t("date"), width: 220, renderCell:RenderDateCell},
         { field: 'startingTime', headerName: t("Time"), width:100},
         { field: 'duration', headerName: t("Duration"), width: 80},
@@ -527,7 +580,7 @@ export const AppointmentsComponent = (props)=> {
         components={!compact?{
           Toolbar: GridToolbar,
         }:null}
-      
+        getRowId={(row)=> row.id}
         onSelectionModelChange={handleRowSelection}
 
         localeText={LocalTextForDataGrid()}

@@ -325,7 +325,7 @@ export default function SeeCustomerComponent(props) {
                             <Button fullWidth variant="contained" color="warning" sx={{mb:1}} onClick={SeeHistoryTab}>{t("history")} {customer.history.length}</Button>
                         </Grid>
                         <Grid item xs={12} md={12} sm={12}>
-                            <Button fullWidth variant="contained" color="error" sx={{mb:1}} onClick={SeeCommunicationsTab}>{t("notansweredmessages")} {notAnsweredMessages(customer.id)}</Button>
+                            <Button fullWidth variant="contained" color="error" sx={{mb:1}} onClick={SeeCommunicationsTab}>{t("notansweredmessages")} {notAnsweredMessages(customer)}</Button>
                         </Grid>
                     </Grid>
             </Grid>
