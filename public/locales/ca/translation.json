@@ -439,5 +439,8 @@
     "description":"Descripció",
     "definecabin":"Defineix un nou consultori (espai físic)",
     "deletecabin":"Esborrar consultori",
-    "AlertsSetupUpdated":"Configuració d'alertes actualitzada"
+    "AlertsSetupUpdated":"Configuració d'alertes actualitzada",
+    "sendcard":"Enviar felicitació",
+    "of":"de",
+    "aniversary":"Aniversari"
 }

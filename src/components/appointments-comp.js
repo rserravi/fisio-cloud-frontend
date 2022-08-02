@@ -135,7 +135,6 @@ export const AppointmentsComponent = (props)=> {
     React.useEffect(()=>{
       if (firstLoad){
         getAllAppointments(userId).then(data =>{
-          console.log("DATOS EN USEEFFECT", data)
           setData(data);
           setFirstLoad(false);
         })

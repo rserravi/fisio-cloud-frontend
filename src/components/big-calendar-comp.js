@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { locale } from 'moment';
-import { GetAllItemsCalendarFormat, GetCabins, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
+import { GetCabins, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 
 import 'react-big-calendar/lib/sass/styles.scss'
@@ -11,11 +11,13 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { addMonthtoDate, getDateFromISOTime, getTimeFromISOTime } from '../utils/date-utils';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { TimePicker } from '@mui/x-date-pickers';
 import styled from '@emotion/styled';
+import { GetCalendar } from '../api/calendar.api';
 
 require('moment/locale/es.js')
 require('moment/locale/ca.js')
@@ -53,17 +55,28 @@ var initCommValidation={
   thread: 0
 }
 
+const initData = [
+
+]
+
 export default function BigCalendarComp(props) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userSelector = useSelector((state)=>state.user);
   const localization = props.locale;
   locale(localization);
   const localizer = momentLocalizer(moment)
   const { t } = useTranslation();
   const compact =props.compact;
   const onlyAppo = props.onlyAppo;
+  const [data, setData]=React.useState(initData)
+  const [mode, setMode]=React.useState("seeall");
+  const [firstLoad, setFirstLoad]=React.useState(true);
+  const userId = userSelector.id
 
-  const getCalDataWithTitleInData = (data)=> {
+
+
+  const mutateData = (data)=> {
     const datos2 = data;
     for (let key in datos2){
       if (datos2[key].kind==="comm"){
@@ -72,21 +85,19 @@ export default function BigCalendarComp(props) {
       if (datos2[key].kind==="appo"){
         datos2[key].title = t("appointment") +": "+ datos2[key].customerName + " " + t("for") + " " +datos2[key].service;
       }
+      if (datos2[key].kind==="birth"){
+        datos2[key].title = t("birthdate") +": "+ datos2[key].customerName + " " + t("for") + " " +datos2[key].service;
+      }
+      datos2[key].start = new Date(datos2[key].start);
+      datos2[key].end = new Date(datos2[key].end);
     }
     return datos2
   }
 
-  const [data, setData]= React.useState(getCalDataWithTitleInData(GetAllItemsCalendarFormat()));
-  const [filterMode, setFilterMode] = React.useState(()=>{
-    const datos = GetAllItemsCalendarFormat(onlyAppo?"allcal":"seeall");
-        if (datos){
-          setData(getCalDataWithTitleInData(datos));
-        }
-    return onlyAppo?"allcal":"seeall";
-  })
- 
+   
   const [seeAppointmentDlg, setSeeAppointmentDlgOpen] = React.useState(false);
   const [seeCommDlg, setSeeCommDlgOpen] = React.useState(false);
+  const [seeBirthDlg, setSeeBirthDlgOpen] = React.useState(false);
   const [customerID, setCustomerID] = React.useState(props.customerId)
   const [customerName, setCustomerName] = React.useState("")
   const [newEventDlg, setNewEventDlg] = React.useState(false);
@@ -95,6 +106,7 @@ export default function BigCalendarComp(props) {
   const [eventStart, setEventStart] = React.useState("00:00");
   const [appo, setAppo] = React.useState(initAppoValidation);
   const [comm, setComm] = React.useState(initCommValidation);
+  const [birth, setBirth] = React.useState(initData);
   const services = getServices();
   const cabins = GetCabins();
 
@@ -114,9 +126,15 @@ export default function BigCalendarComp(props) {
     );
 
   React.useEffect(()=>{
-    //setData(GetAllItemsCalendarFormat(filterMode));
+    if (firstLoad){
+      GetCalendar(mode,userSelector.id).then((data)=>{
+          setData(mutateData(data.result));
+          console.log("DATA EN USEEFFECT", data.result)
+          setFirstLoad(false);
+  })
+  }
 
-  },[data, filterMode])
+  },[firstLoad, mode, userSelector.id, mutateData])
 
   const SetCustomer = (data) =>{
       console.log (data);
@@ -127,6 +145,7 @@ export default function BigCalendarComp(props) {
   const handleDialogClose = () => {
     setSeeAppointmentDlgOpen(false);
     setSeeCommDlgOpen(false);
+    setSeeBirthDlgOpen(false);
   };
   
   const handleSelectEvent = useCallback(
@@ -138,12 +157,16 @@ export default function BigCalendarComp(props) {
         setAppo({...appo, "id": event.resourceId})
         setSeeAppointmentDlgOpen(true);
       }
-      else{
+      if(event.kind==="comm"){
         setComm({...comm, "id": event.resourceId});
         setSeeCommDlgOpen(true);
       }
+      if(event.kind==="birth"){
+        setComm({...birth, "id": event.resourceId});
+        setSeeBirthDlgOpen(true);
+      }
     },
-    [appo, comm]
+    [appo, comm, birth]
     
   )
  
@@ -253,11 +276,8 @@ export default function BigCalendarComp(props) {
     
 
     const setModeForFilter = (mode) =>{
-        setFilterMode(mode)
-        const datos = GetAllItemsCalendarFormat(mode);
-        if (datos){
-          setData(getCalDataWithTitleInData(datos));
-        }
+      setMode(mode)
+      setFirstLoad(true);
     }  
 
     return (
@@ -266,8 +286,8 @@ export default function BigCalendarComp(props) {
       
               <Grid item xs={12} sm={12} md={12} sx={{my:2}}>
                   <IndianRedButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastdate")})} size="small" sx={{mr:1}}>{t("pastdate")}  </IndianRedButton>
-                  <OrangeButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notanswered")})}  size="small" sx={{mr:1}}>{t("nextdate")} </OrangeButton>
-                  <DodgerBlueButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcal")})} size="small" sx={{mr:1}}>{t("seealldates")} </DodgerBlueButton>
+                  <OrangeButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("nextdate")})}  size="small" sx={{mr:1}}>{t("nextdate")} </OrangeButton>
+                  <DodgerBlueButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("alldate")})} size="small" sx={{mr:1}}>{t("seealldates")} </DodgerBlueButton>
                   {!onlyAppo?<FireBrickButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("pastcomm")})} size="small" sx={{mr:1}}>{t("pastcomm")} </FireBrickButton>:<></>}
                   {!onlyAppo?<TanButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("nextcomm")})} size="small" sx={{mr:1}}>{t("nextcomm")} </TanButton>:<></>}
                   {!onlyAppo?<MediumTurquoiseButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("allcomm")})} size="small" sx={{mr:1}}>{t("allcomm")} </MediumTurquoiseButton>:<></>}
@@ -345,6 +365,7 @@ export default function BigCalendarComp(props) {
       onSelectEvent={handleSelectEvent}
       resourceIdAccessor="resourceId"
       startAccessor="start"
+      showMultiDayTimes
       resources={resourceMap}
       endAccessor="end"
       style={{ height: 500 }}
@@ -377,10 +398,12 @@ export default function BigCalendarComp(props) {
           };
         }
       }
+      
 
       />
     </div>
     }
+
     <Dialog
       open={seeAppointmentDlg}
       onClose={handleDialogClose}
@@ -401,6 +424,28 @@ export default function BigCalendarComp(props) {
         {selectedEvent && selectedEvent.ispast ? <Button onClick={handleWriteReport}>{t("writereport")}</Button> :  <Button onClick={handleDialogClose}>{t("sendRequest")}</Button>}
         <Button onClick={handleDialogClose}>{t("duplicateappointment")}</Button>
         <Button onClick={handleDialogClose}>{t("deleteappointment")}</Button>
+        <Button onClick={handleDialogClose} autoFocus>
+          {t("exit")}
+        </Button>
+      </DialogActions>
+    </Dialog>
+    
+    <Dialog
+      open={seeBirthDlg}
+      onClose={handleDialogClose}
+      aria-labelledby="birthday-dialog-title"
+      aria-describedby="birthday-dialog-description"
+    >
+      <DialogTitle id="birthday-dialog-title">
+        {selectedEvent? t("aniversary")+  " " +selectedEvent.customerName : <></>}
+      </DialogTitle>
+      <DialogContent>
+        <DialogContentText id="birthday-dialog-description">
+        {selectedEvent? ""+ moment(selectedEvent.start).locale(localization).format("dddd") + ", "+ moment(selectedEvent.start).date() + " " + t("of") +" " + moment(selectedEvent.start).locale(localization).format("MMMM"):<></>}
+        </DialogContentText>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleDialogClose}>{t("sendcard")}</Button>
         <Button onClick={handleDialogClose} autoFocus>
           {t("exit")}
         </Button>
