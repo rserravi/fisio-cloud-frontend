@@ -1,8 +1,8 @@
 //REACT IMPORTS
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
+
 
 //MUI IMPORTS
 import { Button, Grid, IconButton } from '@mui/material';
@@ -16,6 +16,7 @@ import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
 import { getDateFromISOTime, getTimeFromISOTime, getWeekInYear, timeDifference } from '../utils/date-utils';
+import i18next from 'i18next';
 
 
 //ICONS
@@ -31,7 +32,6 @@ import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
-import { getAllAppointments } from '../api/appointments.api';
 
 var compact = false;
 
@@ -103,7 +103,7 @@ export const AppointmentsComponent = (props)=> {
   compact = props.compact;
   const locale= props.locale;
   const userId = props.userId;
-  const [data, setData]= React.useState(initData)
+  const data = props.appoData;
   const [firstLoad, setFirstLoad] = React.useState(true);
   
 
@@ -111,7 +111,6 @@ export const AppointmentsComponent = (props)=> {
   const openPastMenu = Boolean(anchorElPastButtonEL);
   const [anchorElNextButtonEL, setAnchorNextButtonEL] = React.useState(null);
   const openNextMenu = Boolean(anchorElNextButtonEL);
-  const { t } = useTranslation();
 
   //RENDER CELLS
 
@@ -120,7 +119,6 @@ export const AppointmentsComponent = (props)=> {
     const {date} = props.row;
     const buttonElement = React.useRef(null);
     const rippleRef = React.useRef(null);
-    const { t } = useTranslation();
 
     React.useLayoutEffect(() => {
       if (hasFocus) {
@@ -131,16 +129,6 @@ export const AppointmentsComponent = (props)=> {
         rippleRef.current.stop({});
       }
     }, [hasFocus]);
-
-    React.useEffect(()=>{
-      if (firstLoad){
-        getAllAppointments(userId).then(data =>{
-          setData(data);
-          setFirstLoad(false);
-        })
-      }
-    },[])
-
   
 
   const thisWeek = getWeekInYear(Date.now());
@@ -149,7 +137,7 @@ export const AppointmentsComponent = (props)=> {
   if (timeDifference(date) <= 0){
     return (
       <>
-      <Tooltip title={t("pastDateClickforoptions")}>
+      <Tooltip title={i18next.t("pastDateClickforoptions")}>
         <IconButton 
           id="pastButton" 
           color="error" 
@@ -184,7 +172,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
           }}
           >
-            {t("makereport")}
+            {i18next.t("makereport")}
           </MenuItem>
          
           <MenuItem 
@@ -193,7 +181,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
           }} 
           >
-            {t("modifyAppointment")}
+            {i18next.t("modifyAppointment")}
           </MenuItem>
           
           <MenuItem
@@ -202,7 +190,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
         }} 
           >
-            {t("cancelAppointment")}
+            {i18next.t("cancelAppointment")}
           </MenuItem>
           
           <MenuItem 
@@ -211,7 +199,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
           }} 
           >
-            {t("exit")}
+            {i18next.t("exit")}
           </MenuItem>
         </Menu>
     
@@ -259,7 +247,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
           }} 
           >
-            {t("modifyAppointment")}
+            {i18next.t("modifyAppointment")}
           </MenuItem>
           
           <MenuItem
@@ -268,7 +256,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
         }} 
           >
-            {t("cancelAppointment")}
+            {i18next.t("cancelAppointment")}
           </MenuItem>
           
           <MenuItem 
@@ -277,7 +265,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
           }} 
           >
-            {t("exit")}
+            {i18next.t("exit")}
           </MenuItem>
         </Menu>
           {getDateFromISOTime(date, locale)}
@@ -316,7 +304,6 @@ export const AppointmentsComponent = (props)=> {
 
 
   const Columns = () => {
-    const { t } = useTranslation();
   
     return(
       [
@@ -327,8 +314,8 @@ export const AppointmentsComponent = (props)=> {
           sortable: false,
           getActions: (params) => [
             <GridActionsCellItem
-              icon={<Tooltip title={t("seecustomer")}><PersonIcon /></Tooltip>}
-              label={t("seecustomer")}
+              icon={<Tooltip title={i18next.t("seecustomer")}><PersonIcon /></Tooltip>}
+              label={i18next.t("seecustomer")}
               
               onClick={(event) => {
                 seeCustomer(params.row.customerId);
@@ -336,8 +323,8 @@ export const AppointmentsComponent = (props)=> {
               }}
             />,
             <GridActionsCellItem
-            icon={<Tooltip title={t("call")}><PhoneForwardedIcon /></Tooltip>}
-            label={t("call")}
+            icon={<Tooltip title={i18next.t("call")}><PhoneForwardedIcon /></Tooltip>}
+            label={i18next.t("call")}
             disabled = {params.row.customerPhone===""}
             onClick={(event) => {
               callUser(params.row.customerId);
@@ -345,8 +332,8 @@ export const AppointmentsComponent = (props)=> {
             }}
             />,
             <GridActionsCellItem
-            icon={<Tooltip title={t("sendemail")}><SendIcon /></Tooltip>}
-            label={t("sendemail")}
+            icon={<Tooltip title={i18next.t("sendemail")}><SendIcon /></Tooltip>}
+            label={i18next.t("sendemail")}
             disabled = {!params.row.customerMail===""}
             onClick={(event) => {
               emailUser(params.row.customerId);
@@ -354,8 +341,8 @@ export const AppointmentsComponent = (props)=> {
             }}
           />,
             <GridActionsCellItem
-            icon={<Tooltip title={t("sendwhatsapp")}><WhatsAppIcon /></Tooltip>}
-            label={t("GridActionsCellItem")}
+            icon={<Tooltip title={i18next.t("sendwhatsapp")}><WhatsAppIcon /></Tooltip>}
+            label={i18next.t("GridActionsCellItem")}
             disabled = {!params.row.customerWhatsapp===""}
             onClick={(event) => {
               whatsappUser(params.row.customerId);
@@ -363,24 +350,24 @@ export const AppointmentsComponent = (props)=> {
             }}
           />,
         ]},
-        { field: 'customerName', headerName: t("Customer"), width:200},
-        { field: 'date', headerName: t("date"), width: 220, renderCell:RenderDateCell},
-        { field: 'startingTime', headerName: t("Time"), width:100},
-        { field: 'duration', headerName: t("Duration"), width: 80},
-        { field: 'service', headerName: t("Service"), width: 80},
-        { field: 'price', headerName: t("Price"), width: 80 },
-        { field: 'cabin', headerName: t("cabin"), width: 75 },
+        { field: 'customerName', headerName: i18next.t("Customer"), width:200},
+        { field: 'date', headerName: i18next.t("date"), width: 220, renderCell:RenderDateCell},
+        { field: 'startingTime', headerName: i18next.t("Time"), width:100},
+        { field: 'duration', headerName: i18next.t("Duration"), width: 80},
+        { field: 'service', headerName: i18next.t("Service"), width: 80},
+        { field: 'price', headerName: i18next.t("Price"), width: 80 },
+        { field: 'cabin', headerName: i18next.t("cabin"), width: 75 },
         {
           field: 'actions',
           type: 'actions',
-          headerName: t("actions"),
+          headerName: i18next.t("actions"),
           width: 100,
           sortable: false,
           getActions: (params) => [
             
           <GridActionsCellItem
-            icon={<Tooltip title={t("seeappointment")}><VisibilityIcon /></Tooltip>}
-            label={t("seeappointment")}
+            icon={<Tooltip title={i18next.t("seeappointment")}><VisibilityIcon /></Tooltip>}
+            label={i18next.t("seeappointment")}
             
             onClick={(event) => {
               seeAppointment(params.row.customerId, params.row.appoid);
@@ -390,7 +377,7 @@ export const AppointmentsComponent = (props)=> {
           
           <GridActionsCellItem
             icon={<ContentCopyIcon />}
-            label={t("duplicateappointment")}
+            label={i18next.t("duplicateappointment")}
             showInMenu
             onClick={(event) => {
             duplicateAppointment(params.id);
@@ -399,7 +386,7 @@ export const AppointmentsComponent = (props)=> {
           />,
           <GridActionsCellItem
               icon={<DeleteIcon />}
-              label={t("deleteappointment")}
+              label={i18next.t("deleteappointment")}
               showInMenu
               onClick={(event) => {
                 deleteAppointment(params.id);
@@ -408,7 +395,7 @@ export const AppointmentsComponent = (props)=> {
             />,
             <GridActionsCellItem
               icon={<LocalPrintshopIcon />}
-              label={t("printappointment")}
+              label={i18next.t("printappointment")}
               showInMenu
               onClick={(event) => {
               printAppointment(params.id);
@@ -545,16 +532,16 @@ export const AppointmentsComponent = (props)=> {
       <React.Fragment>
         <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" sx={{mb:4}}>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={AddAppoButton} startIcon={<ScheduleIcon />}>{t("addappointment")} </Button>
+              <Button variant='contained' size="small" onClick={AddAppoButton} startIcon={<ScheduleIcon />}>{i18next.t("addappointment")} </Button>
             </Grid>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>{t("print")} {select.length===0 ? t("everyone") : t("selection")}</Button>
+              <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>{i18next.t("print")} {select.length===0 ? i18next.t("everyone") : i18next.t("selection")}</Button>
             </Grid>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>{t("mailto")} {select.length===0 ? t("everyone") : t("selection")} </Button>
+              <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>{i18next.t("mailto")} {select.length===0 ? i18next.t("everyone") : i18next.t("selection")} </Button>
             </Grid>
             <Grid item xs={6} sm={3} md={3}sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>{t("whatsappto")} {select.length===0 ? t("everyone") : t("selection")} </Button>
+              <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>{i18next.t("whatsappto")} {select.length===0 ? i18next.t("everyone") : i18next.t("selection")} </Button>
             </Grid>         
         </Grid>
       </React.Fragment>
@@ -567,7 +554,7 @@ export const AppointmentsComponent = (props)=> {
     <React.Fragment>
     
       <CustomerToolBar />
-      <Title>{t("nextappointments")}</Title>
+      <Title>{i18next.t("nextappointments")}</Title>
     
       <DataGrid
         rows={rows}

@@ -18,19 +18,26 @@ export const addCustomer = (frmData) =>{
 export const getAllCustomers= ()=>{
 
     return new Promise( async(resolve, reject)=>{
+        console.log("GET ALL CUSTOMERTS")
         try {
-
             const accessJWT = sessionStorage.getItem("accessJWT");
             if (!accessJWT){
+                console.log("TOKEN NOT FOUND");
                 reject("Token not found!");
             }
+            console.log("Token Found", accessJWT);
             
-            const res = await axios.get(customerUrl, {
+            await axios.get(customerUrl, {
                 headers: {
                     Authorization :accessJWT,
                 }
-            });
-            resolve(res.data);
+            }).then((data)=>{
+                console.log("DATA EN GET CUSTOMERS",data)
+                resolve(data.data);
+            }).catch((error)=>{
+                console.log ("ERROR EN AXIOS", error)
+            })
+            
             
         } catch (error) {
             console.log(error);

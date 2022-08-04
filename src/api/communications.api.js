@@ -59,3 +59,26 @@ export const GetThreadByCommId = (commId)=>{
         }
     })
 }
+
+export const GetAllComm = ()=>{
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const accessJWT = sessionStorage.getItem("accessJWT");
+            if (!accessJWT){
+                reject("Token not found!");
+            }
+            
+            const res = await axios.get(commUrl, {
+                headers: {
+                    Authorization :accessJWT,
+                }           
+            });
+            console.log("DATA EN ALLCOMM", res.data)
+            resolve(res.data);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}

@@ -1,6 +1,5 @@
 //REACT IMPORTS
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
@@ -29,8 +28,7 @@ import PrintIcon from '@mui/icons-material/Print';
 import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SendIcon from '@mui/icons-material/Send';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
-import { getAllCustomers } from '../api/customer.api';
-
+import i18next from 'i18next';
 
 var info = "";
 var compact = false;
@@ -57,137 +55,7 @@ const osint = (customerId) => {
 
 //RENDER CELLS
 
-const RenderAppointmentCell = (props) => {
-  const {hasFocus, value } = props;
 
-  const _id = props.row.id;
-  const buttonElement = React.useRef(null);
-  const rippleRef = React.useRef(null);
-  const { t } = useTranslation();
-
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  React.useLayoutEffect(() => {
-    if (hasFocus) {
-      const input = buttonElement.current?.querySelector('input');
-      input?.focus();
-    } else if (rippleRef.current) {
-      // Only available in @mui/material v5.4.1 or later
-      rippleRef.current.stop({});
-    }
-  }, [hasFocus]);
-
-  const addNewAppointment= (customerId) =>{
-    const actualScreen = "/addappointment/"+ customerId
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
-  }
-
-  const seeAppo = (customerId)=>{
-    const actualScreen = "/customer/"+ customerId + "/appo";
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
-  
-  }
-
-  const seeHist = (customerId)=>{
-    const actualScreen = "/customer/"+ customerId + "/hist";
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
-  }
-
-  
-  return (
-     <strong>
-      <Tooltip title={t("appointments")}>
-      <IconButton 
-        aria-label="delete" 
-        variant='contained' 
-        onClick={(event) => {
-          seeAppo(_id);
-          event.stopPropagation();
-        }}
-     
-        sx={{ 
-          backgroundColor:'green', 
-          color:'white', 
-          fontSize:'small',
-          minHeight: 0,
-          minWidth: 0,
-          paddingX: 1.5,
-          '&:hover': {
-            backgroundColor: 'green',
-            color: 'white',
-          },
-          
-        }}>
-      {value.next}
-      </IconButton>
-      </Tooltip>
-      {!compact ? <Tooltip title={t("history")}>
-      <IconButton 
-        aria-label="delete" 
-        variant='contained' 
-        style={{ marginLeft: 2 }}
-        onClick={(event) => {
-          seeHist(_id)
-          event.stopPropagation();
-        }}
-        sx={{ 
-          backgroundColor:'orange', 
-          color:'white', 
-          fontSize:'small',
-          minHeight: 0,
-          minWidth: 0,
-          paddingX: 1.5,
-          '&:hover': {
-            backgroundColor: 'orange',
-            color: 'white',
-          },
-          
-        }}>
-      {value.past}
-      </IconButton>
-      </Tooltip> 
-      : <></>
-      }
-         
-      {!compact ?<Tooltip title={t("adddate")}>
-      <IconButton
-        component="button"
-        ref={buttonElement}
-        touchRippleRef={rippleRef}
-        variant="contained"
-        color='primary'
-        size="small"
-        style={{ marginLeft: 5 }}
-        // Remove button from tab sequence when cell does not have focus
-        tabIndex={hasFocus ? 0 : -1}
-        onKeyDown={(event) => {
-          if (event.key === ' ') {
-            // Prevent key navigation when focus is on button
-            event.stopPropagation();
-          }
-        }}
-     
-        onClick={(event) => {
-           addNewAppointment(_id);
-           event.stopPropagation();
-        }}
-      
-      >
-       <AddCircleIcon />
-      </IconButton>
-      </Tooltip>
-      : <></>
-      }
-      </strong>
-  );
-};
 
 
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
@@ -211,11 +79,13 @@ const appointmentsWidth = () =>{
 export const CustomersComponent = (props)=> {
   //PROPS.INFO ("all","newCustomers", "withAppointments" )
   //PROPS.COMPACT (true, false)
-  const [firstLoad, setFirstLoad] = React.useState(true)
-  const [deleteId, setDeleteID]= React.useState("");
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+ 
+  const customerList = props.customerData
+
+
   info= props.info;
   compact = props.compact;
   var boxHeight = 600;
@@ -223,53 +93,137 @@ export const CustomersComponent = (props)=> {
     boxHeight = 330;
   }
 
-  const initData =[
-    {
-        "_id":1,
-        "promotedToCustomer":"",
-        "firstname": "",
-        "lastname": "",
-        "dni":"",
-        "birthdate": "",
-        "image": "",
-        "gender": "",
-        "inbound": "",
-        "emailhome":"",
-        "emailwork":"",
-        "streetaddress": "",
-        "cityaddress": "",
-        "stateaddress": "",
-        "postalcodeaddress": "",
-        "countryaddress":"",
-        "phonehome":"",
-        "phonework":"",   
-        "whatsapp": "",
-        "socialmedia1":"Facebook",
-        "socialmedia2":"Twitter",
-        "socialmedia3":"Reddit",
-        "socialuser1": "",
-        "socialuser2": "",
-        "socialuser3": "",
-        "releaseForm":{
-                "file":"",
-                "generated":false,
-                "signed":false
-        },
-        "history":[],
-        "appointments":[],
-        "communications":[]
-    }]
-    
-  const [customerList, setCustomerList] = React.useState(initData);
-
-  React.useEffect(() => {
-    if(firstLoad){
-        getAllCustomers().then(data =>{
-            setCustomerList(data.result);
-            setFirstLoad(false);
-        })
+  const RenderAppointmentCell = (props) => {
+ 
+    const buttonElement = React.useRef(null);
+    const rippleRef = React.useRef(null);
+  
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+  
+    const {hasFocus, value } = props;
+    const _id = props.row.id;
+  
+    React.useLayoutEffect(() => {
+      if (hasFocus) {
+        const input = buttonElement.current?.querySelector('input');
+        input?.focus();
+      } else if (rippleRef.current) {
+        // Only available in @mui/material v5.4.1 or later
+        rippleRef.current.stop({});
+      }
+    }, [hasFocus]);
+  
+    const addNewAppointment= (customerId) =>{
+      const actualScreen = "/addappointment/"+ customerId
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
     }
-  },[firstLoad]) 
+  
+    const seeAppo = (customerId)=>{
+      const actualScreen = "/customer/"+ customerId + "/appo";
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    
+    }
+  
+    const seeHist = (customerId)=>{
+      const actualScreen = "/customer/"+ customerId + "/hist";
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    }
+  
+    
+    return (
+       <strong>
+        <Tooltip title={i18next.t("appointments")}>
+        <IconButton 
+          aria-label="delete" 
+          variant='contained' 
+          onClick={(event) => {
+            seeAppo(_id);
+            event.stopPropagation();
+          }}
+       
+          sx={{ 
+            backgroundColor:'green', 
+            color:'white', 
+            fontSize:'small',
+            minHeight: 0,
+            minWidth: 0,
+            paddingX: 1.5,
+            '&:hover': {
+              backgroundColor: 'green',
+              color: 'white',
+            },
+            
+          }}>
+        {value.next}
+        </IconButton>
+        </Tooltip>
+        {!compact ? <Tooltip title={i18next.t("history")}>
+        <IconButton 
+          aria-label="delete" 
+          variant='contained' 
+          style={{ marginLeft: 2 }}
+          onClick={(event) => {
+            seeHist(_id)
+            event.stopPropagation();
+          }}
+          sx={{ 
+            backgroundColor:'orange', 
+            color:'white', 
+            fontSize:'small',
+            minHeight: 0,
+            minWidth: 0,
+            paddingX: 1.5,
+            '&:hover': {
+              backgroundColor: 'orange',
+              color: 'white',
+            },
+            
+          }}>
+        {value.past}
+        </IconButton>
+        </Tooltip> 
+        : <></>
+        }
+           
+        {!compact ?<Tooltip title={i18next.t("adddate")}>
+        <IconButton
+          component="button"
+          ref={buttonElement}
+          touchRippleRef={rippleRef}
+          variant="contained"
+          color='primary'
+          size="small"
+          style={{ marginLeft: 5 }}
+          // Remove button from tab sequence when cell does not have focus
+          tabIndex={hasFocus ? 0 : -1}
+          onKeyDown={(event) => {
+            if (event.key === ' ') {
+              // Prevent key navigation when focus is on button
+              event.stopPropagation();
+            }
+          }}
+       
+          onClick={(event) => {
+             addNewAppointment(_id);
+             event.stopPropagation();
+          }}
+        
+        >
+         <AddCircleIcon />
+        </IconButton>
+        </Tooltip>
+        : <></>
+        }
+        </strong>
+    );
+  };
 
   const getPhone= (row)=>{
     var result=""
@@ -290,7 +244,6 @@ export const CustomersComponent = (props)=> {
     const phone = getPhone(props.row);
     const buttonElement = React.useRef(null);
     const rippleRef = React.useRef(null);
-    const { t } = useTranslation();
   
     React.useLayoutEffect(() => {
       if (hasFocus) {
@@ -305,9 +258,8 @@ export const CustomersComponent = (props)=> {
     return (
        <>
        
-        <Tooltip disabled={!phone} title={t("call")}>
+        <Tooltip title={i18next.t("call")}>
           <IconButton
-            disabled={!phone}
             component="button"
             ref={buttonElement}
             touchRippleRef={rippleRef}
@@ -333,9 +285,8 @@ export const CustomersComponent = (props)=> {
             <PhoneForwardedIcon />
           </IconButton>
         </Tooltip>
-        <Tooltip disabled={!whatsapp} title={t("sendwhatsapp")}>
+        <Tooltip title={i18next.t("sendwhatsapp")}>
           <IconButton
-           disabled={!whatsapp}
             component="button"
             ref={buttonElement}
             touchRippleRef={rippleRef}
@@ -386,7 +337,6 @@ export const CustomersComponent = (props)=> {
     const {id} = props.row;
     const buttonElement = React.useRef(null);
     const rippleRef = React.useRef(null);
-    const { t } = useTranslation();
    
     const email = getMail(props.row);
   
@@ -403,10 +353,9 @@ export const CustomersComponent = (props)=> {
     return (
        <>
        
-        <Tooltip disabled={!email} title={t("sendemail")}>
+        <Tooltip title={i18next.t("sendemail")}>
           <IconButton
             component="button"
-            disabled={!email}
             ref={buttonElement}
             touchRippleRef={rippleRef}
             variant="contained"
@@ -462,9 +411,6 @@ export const CustomersComponent = (props)=> {
   }
  
 
-  const { t } = useTranslation();
-
-
   const rows = customerList.map((row) => 
     (
       {
@@ -486,13 +432,12 @@ export const CustomersComponent = (props)=> {
   );
 
   const Columns = () => {
-    const { t } = useTranslation();
   
     return(
       [
-        { field: 'id', headerName: t("Id"), width: 20, hide:"true" },
-        { field: 'inbound', headerName: t("inbound"), width: 120 },
-        { field: 'image', headerName:t("image"), width:60, renderCell: (params)=>
+        { field: 'id', headerName: i18next.t("Id"), width: 20, hide:"true" },
+        { field: 'inbound', headerName: i18next.t("inbound"), width: 120 },
+        { field: 'image', headerName:i18next.t("image"), width:60, renderCell: (params)=>
             {
               return(
                 <>
@@ -501,32 +446,32 @@ export const CustomersComponent = (props)=> {
               )
             }
         },
-        { field: 'firstName', headerName: t("name"), width: 100, align: "right",headerAlign:"right" },
-        { field: 'lastName', headerName: t("lastname"), width: 150},
-        { field: 'email', headerName: t("email"), width: 190,renderCell: RenderEmailCell},
+        { field: 'firstName', headerName: i18next.t("name"), width: 100, align: "right",headerAlign:"right" },
+        { field: 'lastName', headerName: i18next.t("lastname"), width: 150},
+        { field: 'email', headerName: i18next.t("email"), width: 190,renderCell: RenderEmailCell},
         
         {
           field: 'phoneNumber',
-          headerName: t("phoneNumber"),
+          headerName: i18next.t("phoneNumber"),
           width: 190,
           renderCell: RenderPhoneCell,
         },
         {
           field: 'appointments',
-          headerName: t("calendar"),
+          headerName: i18next.t("calendar"),
           width: appointmentsWidth(),
           renderCell: RenderAppointmentCell,
         },
         {
           field: 'actions',
           type: 'actions',
-          headerName: t("actions"),
+          headerName: i18next.t("actions"),
           width: 80,
           sortable: false,
           getActions: (params) => [
             <GridActionsCellItem
-            icon={<Tooltip title={t("seecustomer")}><VisibilityIcon /></Tooltip>}
-            label={t("seecustomer")}
+            icon={<Tooltip title={i18next.t("seecustomer")}><VisibilityIcon /></Tooltip>}
+            label={i18next.t("seecustomer")}
             
             onClick={(event) => {
               seeCustomer(params.id);
@@ -536,7 +481,7 @@ export const CustomersComponent = (props)=> {
           
             <GridActionsCellItem
             icon={<PersonSearchIcon />}
-            label={t("osint")}
+            label={i18next.t("osint")}
             showInMenu
             onClick={(event) => {
               osint(params.id);
@@ -545,7 +490,7 @@ export const CustomersComponent = (props)=> {
           />,
           <GridActionsCellItem
             icon={<ContentCopyIcon />}
-            label={t("duplicatecustomer")}
+            label={i18next.t("duplicatecustomer")}
             showInMenu
             onClick={(event) => {
               duplicateCustomer(params.id);
@@ -554,7 +499,7 @@ export const CustomersComponent = (props)=> {
           />,
           <GridActionsCellItem
               icon={<DeleteIcon />}
-              label={t("deletecustomer")}
+              label={i18next.t("deletecustomer")}
               showInMenu
               onClick={(event) => {
                 deleteCustomer(params.id);
@@ -563,7 +508,7 @@ export const CustomersComponent = (props)=> {
             />,
             <GridActionsCellItem
             icon={<LocalPrintshopIcon />}
-            label={t("printcustomer")}
+            label={i18next.t("printcustomer")}
             showInMenu
             onClick={(event) => {
               printCustomer(params.id);
@@ -648,16 +593,16 @@ export const CustomersComponent = (props)=> {
       <React.Fragment>
          <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" sx={{mb:4}}>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={AddCustomerButton} startIcon={<PersonAddAlt1Icon />}>{t("addnewcustomer")} </Button>
+              <Button variant='contained' size="small" onClick={AddCustomerButton} startIcon={<PersonAddAlt1Icon />}>{i18next.t("addnewcustomer")} </Button>
             </Grid>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>{t("print")} {select.length===0 ? t("everyone") : t("selection")}</Button>
+              <Button variant='contained' size="small" onClick={printSelected} startIcon={<PrintIcon />}>{i18next.t("print")} {select.length===0 ? i18next.t("everyone") : i18next.t("selection")}</Button>
             </Grid>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>{t("mailto")} {select.length===0 ?  t("everyone") : t("selection")} </Button>
+              <Button variant='contained' size="small" onClick={emailSelected} startIcon={<EmailIcon />}>{i18next.t("mailto")} {select.length===0 ? i18next.t("everyone") : i18next.t("selection")} </Button>
             </Grid>
             <Grid item xs={6} sm={3} md={3} sx={{mt:2}}>
-              <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>{t("whatsappto")} {select.length===0 ?  t("everyone"): t("selection")} </Button>
+              <Button variant='contained' size="small" onClick={whastappSelected} startIcon={<WhatsAppIcon />}>{i18next.t("whatsappto")} {select.length===0 ? i18next.t("everyone"): i18next.t("selection")} </Button>
             </Grid>
         </Grid>
 
@@ -671,7 +616,7 @@ export const CustomersComponent = (props)=> {
     <React.Fragment>
     
       <CustomerToolBar />
-      <Title>{t(setTitle())}</Title>
+      <Title>{i18next.t(setTitle())}</Title>
       <Box
           sx={{
             height: boxHeight,

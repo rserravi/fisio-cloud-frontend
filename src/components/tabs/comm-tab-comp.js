@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
+import i18next from 'i18next';
+
 // MUI
 
 import Typography from '@mui/material/Typography';
@@ -34,17 +36,15 @@ export const CommTab = (props) =>{
     const locale = props.locale;
     
     const customer = props.customer?props.customer:{};
-    console.log("COMM TAB CUSTOMER", customer)
-    const communications=props.customer?customer.communications:{}
+    console.log("COMM TAB PROPS", props)
+    const communications=props.commData?props.commData:{};
     const tableHeight = props.customer?280:600;
     const mode=props.customer?"custoPage":"commPage";
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [filterModel, setFilterModel] = React.useState();
     const [modeForFilter, setModeForFilter] = React.useState("seeall");
-     
-    const { t } = useTranslation();
-    
+         
     // Select has an array of selected rows
     const [select, setSelection] = React.useState([]);
 
@@ -139,7 +139,7 @@ export const CommTab = (props) =>{
                         />,
                         <GridActionsCellItem
                             icon={<ContentCopyIcon />}
-                            label={t("duplicatecontact")}
+                            label={i18next.t("duplicatecontact")}
                             showInMenu
                             onClick={(event) => {
                                 //DuplicateComunications(params.id);
@@ -148,7 +148,7 @@ export const CommTab = (props) =>{
                         />,
                         <GridActionsCellItem
                             icon={<DeleteIcon />}
-                            label={t("deletecontact")}
+                            label={i18next.t("deletecontact")}
                             showInMenu
                             onClick={(event) => {
                             //DeleteComunications(params.id);
@@ -157,7 +157,7 @@ export const CommTab = (props) =>{
                         />,
                         <GridActionsCellItem
                             icon={<LocalPrintshopIcon />}
-                            label={t("printcontact")}
+                            label={i18next.t("printcontact")}
                             showInMenu
                             onClick={(event) => {
                                 //PrintComunications(params.id);
@@ -227,13 +227,13 @@ export const CommTab = (props) =>{
             <React.Fragment>
                 <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" marginBottom={2}>
                     <Grid item xs={12} sm={2.8} md={2.8}>
-                    <Button fullWidth onClick={addCommClick} size="small" startIcon={<PersonAddAlt1Icon />}>{t("addcommunication")} </Button>
+                    <Button fullWidth onClick={addCommClick} size="small" startIcon={<PersonAddAlt1Icon />}>{i18next.t("addcommunication")} </Button>
                     </Grid>
                     <Grid item xs={12} sm={9} md={9}>
-                        <IndianRedButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notreaded")})} size="small" sx={{mr:1}}>{t("notreaded")}  </IndianRedButton>
-                        <YellowButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notanswered")})}  size="small" sx={{mr:1}}>{t("notanswered")} </YellowButton>
-                        <GainsboroButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("useranswer")})}  size="small" sx={{mr:1}}>{t("useranswer")} </GainsboroButton>
-                        <Button onClick={((event)=>{event.stopPropagation(); setModeForFilter("seeall")})} size="small" sx={{mr:1}}>{t("seeall")} </Button>
+                        <IndianRedButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notreaded")})} size="small" sx={{mr:1}}>{i18next.t("notreaded")}  </IndianRedButton>
+                        <YellowButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("notanswered")})}  size="small" sx={{mr:1}}>{i18next.t("notanswered")} </YellowButton>
+                        <GainsboroButton onClick={((event)=>{event.stopPropagation(); setModeForFilter("useranswer")})}  size="small" sx={{mr:1}}>{i18next.t("useranswer")} </GainsboroButton>
+                        <Button onClick={((event)=>{event.stopPropagation(); setModeForFilter("seeall")})} size="small" sx={{mr:1}}>{i18next.t("seeall")} </Button>
                     </Grid>
                 </Grid>
             </React.Fragment>
@@ -281,7 +281,7 @@ export const CommTab = (props) =>{
                 }
              
               }}>
-                <Typography variant="h5" component="h1" align='left' sx={{ flexGrow: 1, mb:1 }}>{t("communications")}</Typography>
+                <Typography variant="h5" component="h1" align='left' sx={{ flexGrow: 1, mb:1 }}>{i18next.t("communications")}</Typography>
                 <CustomerToolBar />
                 <DataGrid
                     rows={rows}

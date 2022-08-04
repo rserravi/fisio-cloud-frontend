@@ -11,21 +11,43 @@ import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import {CustomersComponent} from '../../components/customers-comp';
-import { useTranslation } from 'react-i18next';
+import { getAllCustomers } from '../../api/customer.api';
+import i18next from 'i18next';
+import { Loading} from '../../components/Loading-comp'
 
 
 const mdTheme = createTheme();
 
 function CustomersContent() {
-
   const boardState = useSelector((state)=> state.navigator);
-  const { t } = useTranslation();
+  
+  const [customerData, setCustomerData] = React.useState([])
+  const [firstLoad, setFirstLoad]= React.useState(true);
+
+  React.useEffect(()=>{
+    console.log("EN USE EFFECT CUSTOMER CONENTE")
+    if (firstLoad){
+    getAllCustomers().then((data)=>{
+      console.log("DATA RESULT",data.result);
+      setCustomerData(data.result);
+      setFirstLoad(false);
+  }
+  ).catch((error)=>{
+    console.log(error)
+  })}
+  },[firstLoad])
+
+  if(firstLoad){
+    return (
+      <Loading />
+      );
+  }
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("customers")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("customers")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -47,7 +69,7 @@ function CustomersContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CustomersComponent compact={false} info="all"/>
+                  <CustomersComponent compact={false} info="all" customerData={customerData}/>
                 </Paper>
               </Grid>
             </Grid>

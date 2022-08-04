@@ -17,3 +17,4 @@ export const getUserProfile = () => async(dispatch) =>{
         dispatch(getUserFail(error))
     }
 }
+

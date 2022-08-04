@@ -10,8 +10,11 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import BigCalendarComp from '../../components/big-calendar-comp';
+import i18next from 'i18next';
+import { getAllCustomers } from '../../api/customer.api';
+import { Loading } from '../../components/Loading-comp';
+
 
 const mdTheme = createTheme();
 
@@ -20,13 +23,13 @@ function CalendarContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const { t } = useTranslation();
 
+  
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("calendar")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("calendar")} />
         <SideMenu boardState={boardState} />
 
         <Box

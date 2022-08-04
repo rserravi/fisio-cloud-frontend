@@ -14,7 +14,6 @@ import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useState } from 'react';
 import { Copyright } from '../../components/copyright-component';
-import { useTranslation } from 'react-i18next';
 import { Alert } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useNavigate} from "react-router-dom";
@@ -22,18 +21,17 @@ import { loginFail, loginPending, loginSuccess } from '../../slices/login-slice'
 import { userLogin } from '../../api/user.api';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
 import { user_loadFromApi, user_set_locale } from '../../slices/user-slice';
+import i18next from 'i18next';
 
 const theme = createTheme();
 
 export default function SignInSide() {
 
-  const { t } = useTranslation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [isPassword, setIsPassword] = useState(true);
   const [isEmail, setIsEmail] = useState(true);
   const [errorMsg, setErrorMsg]= useState("");
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
   
   const handleSubmit = async(event) => {
       event.preventDefault();
@@ -53,7 +51,7 @@ export default function SignInSide() {
 
       
       try {
-        const isAuth = await userLogin({"email":isEmail, "password":isPassword});
+        const isAuth = await userLogin({"email":data.get("email"), "password":data.get("password")});
         console.log("Email", isEmail, "Password", isPassword, "IS AUTH",isAuth);
 
         if(isAuth.status === "error" || isAuth.status==="unauthorized"){
@@ -111,7 +109,7 @@ export default function SignInSide() {
               <LockOutlinedIcon />
             </Avatar>
             <Typography component="h1" variant="h5">
-              {t("signin")}
+              {i18next.t("signin")}
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
               <TextField
@@ -119,7 +117,7 @@ export default function SignInSide() {
                 required
                 fullWidth
                 id="email"
-                label={t("emailAddress")}
+                label={i18next.t("emailAddress")}
                 name="email"
                 autoComplete="email"
                 autoFocus
@@ -129,18 +127,18 @@ export default function SignInSide() {
                 required
                 fullWidth
                 name="password"
-                label={t("password")}
+                label={i18next.t("password")}
                 type="password"
                 id="password"
                 autoComplete="current-password"
               />
-              {!isEmail ? <Alert severity="error">{t("emailmissing")}</Alert>: " "}
-              {!isPassword ? <Alert severity="error">{t("passwordmissing")}</Alert>: " "}
-              {errorMsg!==""? <Alert severity="error">{t(errorMsg)}</Alert>: " "}
+              {!isEmail ? <Alert severity="error">{i18next.t("emailmissing")}</Alert>: " "}
+              {!isPassword ? <Alert severity="error">{i18next.t("passwordmissing")}</Alert>: " "}
+              {errorMsg!==""? <Alert severity="error">{i18next.t(errorMsg)}</Alert>: " "}
 
               <FormControlLabel
                 control={<Checkbox value="remember" color="primary" />}
-                label={t("rememberMe")}
+                label={i18next.t("rememberMe")}
               />
               <Button
                 type="submit"
@@ -148,17 +146,17 @@ export default function SignInSide() {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-               {t("signin")}
+               {i18next.t("signin")}
               </Button>
               <Grid container>
                 <Grid item xs>
                   <Link href="/password-reset" variant="body2">
-                    {t("forgotPassword")}
+                    {i18next.t("forgotPassword")}
                   </Link>
                 </Grid>
                 <Grid item>
                   <Link href="/signup" variant="body2">
-                    {t("donthaveanaccount")} {t("signup")}
+                    {i18next.t("donthaveanaccount")} {i18next.t("signup")}
                   </Link>
                 </Grid>
               </Grid>

@@ -10,8 +10,12 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 import { CommTab } from '../../components/tabs/comm-tab-comp';
+import { getAllCustomers } from '../../api/customer.api';
+import { CircularProgress } from '@mui/material';
+import { GetAllComm } from '../../api/communications.api';
+import { Loading } from '../../components/Loading-comp';
 
 
 const mdTheme = createTheme();
@@ -21,13 +25,37 @@ function CommunicactionsContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const { t } = useTranslation();
+  const [commData, setCommData] = React.useState([])
+  const [firstLoad, setFirstLoad]= React.useState(true);
+
+  React.useEffect(()=>{
+    console.log("EN USE EFFECT COMM")
+    if (firstLoad){
+    GetAllComm().then((data)=>{
+      console.log("DATA RESULT",data.result);
+      setCommData(data.result);
+      setFirstLoad(false);
+      
+  }
+  ).catch((error)=>{
+    console.log(error)
+  })}
+  },[firstLoad])
+  
+
+  if(firstLoad){
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <Loading />
+      </Box>
+    );
+  }
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("communications")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("communications")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -49,7 +77,7 @@ function CommunicactionsContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <CommTab compact={false} locale={localization}/>
+                  <CommTab compact={false} locale={localization} commData={commData}/>
                 </Paper>
               </Grid>
             </Grid>

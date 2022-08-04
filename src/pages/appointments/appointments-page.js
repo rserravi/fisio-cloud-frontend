@@ -10,9 +10,12 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { AppointmentsComponent } from '../../components/appointments-comp';
 import BigCalendarComp from '../../components/big-calendar-comp';
+import i18next from 'i18next';
+import { getAllAppointments } from '../../api/appointments.api';
+import { Loading } from '../../components/Loading-comp';
+
 
 
 const mdTheme = createTheme();
@@ -23,13 +26,36 @@ function AppoinmentsContent() {
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
   const userId = userSelector.id;
-  const { t } = useTranslation();
+  const [appoData, setAppoData] = React.useState([])
+  const [firstLoad, setFirstLoad]= React.useState(true);
+
+
+  React.useEffect(()=>{
+    console.log("EN USE EFFECT DASH")
+    if (firstLoad){
+      getAllAppointments(userId).then(data =>{
+        console.log("DATA RESULT",data);
+        setAppoData(data);
+        setFirstLoad(false);
+      }
+  ).catch((error)=>{
+    console.log(error)
+  })}
+  },[firstLoad])
+  
+  if(firstLoad){
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <Loading /> 
+      </Box>
+    );
+  }
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("appointments")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("appointments")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -50,7 +76,7 @@ function AppoinmentsContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AppointmentsComponent compact={false} info="all" locale={localization}/>
+                  <AppointmentsComponent compact={false} info="all" locale={localization} appoData={appoData}/>
                 </Paper>
               </Grid>
               <Grid item xs={12}>

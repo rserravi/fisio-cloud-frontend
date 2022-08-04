@@ -16,7 +16,8 @@ const navigationSlice = createSlice({
     name: "navigation",
     initialState,
     reducers:{
-        navigationLoading:(state)=>{
+        navigationLoading:(state, action)=>{
+            state.screen = action.payload;
             state.isLoading = true;
         },
         navigationSuccess:(state, action)=>{

@@ -13,7 +13,6 @@ import Badge from '@mui/material/Badge';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useTranslation } from 'react-i18next';
 import Avatar from '@mui/material/Avatar';
 import { useDispatch, useSelector } from "react-redux";
 import {navigationDrawer, navigationLoading, navigationMenu, navigationSuccess } from '../slices/navigation-slice';
@@ -24,11 +23,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import { Button, DialogActions, DialogContent } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import { userLogout } from '../api/user.api';
+import i18next from 'i18next';
 
-import { GetBadgeAlerts } from '../utils/dataFetch-utils';
-import { getUserProfile } from '../slices/user-action';
-import { fetchNewAccessJWT, userLogout } from '../api/user.api';
-import { loginSuccess} from '../slices/login-slice';
+import { AdaptBadgeAlerts, GetBellAlerts } from '../api/calendar.api';
+import { user_reset_slice } from '../slices/user-slice';
+import { loginOut } from '../slices/login-slice';
 
 const drawerWidth = 240;
 
@@ -50,74 +50,64 @@ const AppBar = styled(MuiAppBar, {
   }),
 }));
 
+const initBadgeData = [
+  {
+    id: 0,
+    title: "",
+    link:"",
+    date: new Date()
+  }
+]
+
 function ApplicationBar(boardState) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const userSelector = useSelector(state => state.user);
-  const userId = userSelector.id;
+
+ const [openDialog, setOpenDialog]= React.useState(false);
+
+ const [anchorElUser, setAnchorElUser] = React.useState("");
+ const [anchorElBadges, setAnchorElBadges] = React.useState("");
+ const [width, setWidth] = React.useState(Number(window.innerWidth));
+ const [firstLoad, setFirstLoad]= React.useState(true);
+ const userSelector = useSelector(state => state.user);
+
+ const {drawerOpen} = boardState.boardState;
+ const title = boardState.title;
+ const userId = userSelector.id;
+ const [badgeAlerts, setBadgeAlerts] =React.useState(initBadgeData);
+ let open = drawerOpen;
+ let showMenu =  boardState.boardState.showMenu;
+ const srcImage = userSelector.image;
+ const labelImage = userSelector.firstname + " " + userSelector.lastname;
+ const isMobile = width <= 768;
+
+ React.useEffect(() => {
+  if(firstLoad){
+    GetBellAlerts(userSelector.id).then((data)=>{
+      const adaptedData = AdaptBadgeAlerts(data.result)
+      console.log("GETTING ALERTS", data, adaptedData)
+
+      setBadgeAlerts(adaptedData)
+      setFirstLoad(false);
+    })
+  }
+  window.addEventListener('resize', handleWindowSizeChange);
+  return () => {
+      window.removeEventListener('resize', handleWindowSizeChange);
+    }
+  }, [firstLoad, userSelector.id ]);
+
   
-  const goTo = (actualScreen) =>{
+ const goTo = (actualScreen) =>{
     dispatch(navigationLoading());
     navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
 
-  React.useEffect(()=>{
-    console.log(userId);
-    if(!userId || userId===""){
-      console.log("NO USER ID POR REFRESCO")
-      dispatch (getUserProfile());
-      if (userSelector.error==="Token not found!"){
-        goTo("/signin");
-      }
-    } 
-
-    const udpdateAccessJWT = () =>{
-      return new Promise( async(resolve, reject)=>{
-        try {
-          const result = await fetchNewAccessJWT();
-          result && dispatch(loginSuccess());
-          resolve(result);
-        } catch (error) {
-          reject(error);
-        }
-      })
-      
-    };
-
-    udpdateAccessJWT();
-    sessionStorage.getItem("accessJWT") && dispatch(loginSuccess());
-    
-  },[dispatch, goTo, userId, userSelector.error]);
- 
-  
-  const srcImage = userSelector.image;
-  const labelImage = userSelector.firstname + " " + userSelector.lastname;
-
-  const [width, setWidth] = React.useState(Number(window.innerWidth));
-
-  function handleWindowSizeChange() {
+ function handleWindowSizeChange() {
     setWidth(window.innerWidth);
     }
-  React.useEffect(() => {
-        window.addEventListener('resize', handleWindowSizeChange);
-        return () => {
-            window.removeEventListener('resize', handleWindowSizeChange);
-        }
-    }, []);
-
-  const isMobile = width <= 768;
   
-  const {drawerOpen} = boardState.boardState;
-  const title = boardState.title;
-
-  let open = drawerOpen;
-  let showMenu =  boardState.boardState.showMenu;
-  const { t } = useTranslation();
-
-  const [anchorElUser, setAnchorElUser] = React.useState("");
-  const [anchorElBadges, setAnchorElBadges] = React.useState("");
-
   const toggleDrawer = () => {
     if(!isMobile){
     open = (!open);
@@ -129,8 +119,6 @@ function ApplicationBar(boardState) {
       dispatch(navigationMenu(showMenu));
     }
   };
-
-  const [openDialog, setOpenDialog]= React.useState(false);
 
   const handleOpenUserMenu = (event) => {
   setAnchorElUser(event.currentTarget);
@@ -148,7 +136,6 @@ function ApplicationBar(boardState) {
     setAnchorElBadges("");
   };
 
-  const getBadgeAlerts = GetBadgeAlerts();
 
   const handleUserSetup = () =>{
     goTo("/usersetup/"+userId.toString());
@@ -172,6 +159,9 @@ function ApplicationBar(boardState) {
     userLogout();
     sessionStorage.removeItem("accessJWT");
     localStorage.removeItem("fisioCloudSite");
+    dispatch(user_reset_slice());
+    dispatch(loginOut())
+    
     goTo("/");
   }
 
@@ -185,11 +175,11 @@ function ApplicationBar(boardState) {
         
         <AppBar position="absolute" open={open}>
             <Dialog open={openDialog}>
-            <DialogTitle align='center'>{t("youareloggingout")}</DialogTitle>
-            <DialogContent align='center'>{t("areyousure")}</DialogContent>
+            <DialogTitle align='center'>{i18next.t("youareloggingout")}</DialogTitle>
+            <DialogContent align='center'>{i18next.t("areyousure")}</DialogContent>
             <DialogActions>
-              <Button onClick={handleCloseDialog}>{t("desagree")}</Button>
-              <Button onClick={doLogOut}>{t("agree")}</Button>
+              <Button onClick={handleCloseDialog}>{i18next.t("desagree")}</Button>
+              <Button onClick={doLogOut}>{i18next.t("agree")}</Button>
             </DialogActions>
          
         </Dialog>
@@ -220,15 +210,15 @@ function ApplicationBar(boardState) {
              {title}
             </Typography>
             
-             <Tooltip title={t("settings")}>
+             <Tooltip title={i18next.t("settings")}>
               <IconButton color="inherit"  onClick={handleSetupClick}>
                   <SettingsIcon />
               </IconButton>
             </Tooltip> 
 
-            <Tooltip title={t("seeAlerts")}>
+            <Tooltip title={i18next.t("seeAlerts")}>
               <IconButton color="inherit" onClick={handleOpenBadgesMenu}>
-                <Badge badgeContent={getBadgeAlerts.length} color="secondary">
+                <Badge badgeContent={badgeAlerts.length} color="secondary">
                   <NotificationsIcon />
                 </Badge>
               </IconButton>
@@ -250,14 +240,14 @@ function ApplicationBar(boardState) {
               onClose={handleCloseBadgesMenu}
             >
               
-              {getBadgeAlerts.map((setting) => (
+              {badgeAlerts.map((setting) => (
                 <MenuItem key={setting.id} onClick={((event)=>{event.stopPropagation();linkPrepare(event, setting.link)})}>
                   <Typography textAlign="center">{setting.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>
             
-            <Tooltip title={t("openusersettings")}>
+            <Tooltip title={i18next.t("openusersettings")}>
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar alt={labelImage} src={srcImage} />
               </IconButton>
@@ -278,8 +268,8 @@ function ApplicationBar(boardState) {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              <MenuItem onClick={handleUserSetup}>{t("profile")}</MenuItem>
-              <MenuItem onClick={handleLogOut}>{t("logout")}</MenuItem>
+              <MenuItem onClick={handleUserSetup}>{i18next.t("profile")}</MenuItem>
+              <MenuItem onClick={handleLogOut}>{i18next.t("logout")}</MenuItem>
             </Menu>
           </Toolbar>
         </AppBar>

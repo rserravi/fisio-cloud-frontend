@@ -10,7 +10,8 @@ export const getAllAppointments= (userId)=>{
                 params:{
                     "userId":userId
                 }
-            });
+            })
+            console.log("DATA EN GETALLAPPO", res.data.result)
             resolve(res.data.result);
             
         } catch (error) {

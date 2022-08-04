@@ -10,12 +10,13 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import { useTranslation } from 'react-i18next';
 import { ReportsComponent } from '../../components/report-comp';
 import { useParams } from 'react-router-dom';
 import { useNavigate} from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
+import i18next from 'i18next';
+
 
 
 
@@ -35,13 +36,12 @@ function ReportsContent() {
     navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
-  const { t } = useTranslation();
 
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("reports")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("reports")} />
         <SideMenu boardState={boardState} />
 
         <Box

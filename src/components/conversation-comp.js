@@ -3,12 +3,13 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { GetThreadByCommId } from '../api/communications.api';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { GetCommunicationActions, GetReceiverName, GetSenderName  } from '../utils/dataFetch-utils';
+import i18next from 'i18next';
+
 
 const textAlign = (customerSent)=>{
     if (customerSent) {
@@ -64,7 +65,6 @@ const initData = [
 export const ConversationComponent = (props) => {
 
    console.log ("PROPS EN CONVERSATION COMPONENT", props)
-   const { t } = useTranslation();
    const [threadData, setThreadData]= React.useState(initData)
    const locale = props.locale;
    const commId = props.select;
@@ -137,14 +137,14 @@ export const ConversationComponent = (props) => {
                 alignItems="center">
                 
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)} sx={{mt:2, ml:2}}>
-                   <b>{t("from")}:</b> <Button>{GetSenderName(threadData[key].customerName, threadData[key].userName, threadData[key].customerSent)}</Button> <b>{t("subject")}: </b> {threadData[key].subject}.<b> {t("to")}: </b> <Button>{GetReceiverName(threadData[key].customerName, threadData[key].userName, threadData[key].customerSent)}</Button>, <b> {t("sendat")}:</b> {new Date(threadData[key].date).toLocaleDateString(locale)}, {new Date(threadData[key].date).toLocaleTimeString(locale)}
+                   <b>{i18next.t("from")}:</b> <Button>{GetSenderName(threadData[key].customerName, threadData[key].userName, threadData[key].customerSent)}</Button> <b>{i18next.t("subject")}: </b> {threadData[key].subject}.<b> {i18next.t("to")}: </b> <Button>{GetReceiverName(threadData[key].customerName, threadData[key].userName, threadData[key].customerSent)}</Button>, <b> {i18next.t("sendat")}:</b> {new Date(threadData[key].date).toLocaleDateString(locale)}, {new Date(threadData[key].date).toLocaleTimeString(locale)}
                 </Grid>
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)} sx={{ml:2}}>
                   
                     <TextField
                       id="type"
                       name='type'
-                      label={t("type")}
+                      label={i18next.t("type")}
                       value={threadData[key].type}
                       variant="standard"
                       sx={{mr:1}}
@@ -152,7 +152,7 @@ export const ConversationComponent = (props) => {
                        <TextField
                       id="duration"
                       name='duration'
-                      label={t("duration")}
+                      label={i18next.t("duration")}
                       value={threadData[key].duration}
                       variant="standard"
                       sx={{mr:1}}
@@ -160,20 +160,20 @@ export const ConversationComponent = (props) => {
                       {threadData[key].follow!==""?<TextField
                       id="action"
                       name='action'
-                      label={t("nextaction")}
+                      label={i18next.t("nextaction")}
                       value={threadData[key].follow + " " + new Date(threadData[key].alertfollow).toLocaleDateString(locale)}
                       variant="standard"
                       sx={{mr:1}}
                       />:<></>}
                      
-                      <p style={{color:"red"}}>{!threadData[key].answered?<b>{t("notanswered")}. </b>:<></>}</p>
+                      <p style={{color:"red"}}>{!threadData[key].answered?<b>{i18next.t("notanswered")}. </b>:<></>}</p>
                     </Grid>
                     
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)}sx={{ml:2, mt:2}}>
                    <TextField
                       id="notes"
                       name='notes'
-                      label={t("notes")}
+                      label={i18next.t("notes")}
                       value={threadData[key].notes}
                       sx={{width:"60%"}}
                       multiline
@@ -181,19 +181,19 @@ export const ConversationComponent = (props) => {
                       />
                 </Grid>
                 <Grid item  xs={12} sm={12} md={12} textAlign={textAlign(threadData[key].customerSent)} sx={{ml:2, mt:1, mb:2}}>
-                    {threadData[key].customerSent?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{t("answer")}</Button>:<></>}
-                    <Button onClick={HandleNewActionClick} variant='outlined'>{t("newaction")}</Button>
+                    {threadData[key].customerSent?<Button variant='outlined' onClick={handleAnswerClick} sx={{mr:1}}>{i18next.t("answer")}</Button>:<></>}
+                    <Button onClick={HandleNewActionClick} variant='outlined'>{i18next.t("newaction")}</Button>
                 </Grid>
                 <Dialog open={newActionDialogOpen} onClose={handleNewActionDialogClose}>
-                    <DialogTitle>{t("newaction")}</DialogTitle>
+                    <DialogTitle>{i18next.t("newaction")}</DialogTitle>
                     <DialogContent>
                     <DialogContentText>
-                        {t("programanactiontoaddedtothecalendar")}
+                        {i18next.t("programanactiontoaddedtothecalendar")}
                     </DialogContentText>
                     <TextField
                         id="nextction"
                         name='nextaction'
-                        label={t("nextaction")}
+                        label={i18next.t("nextaction")}
                         value={msgCopy.follow || ''}
                         variant="standard"
                         onChange={handleNextActionChange}
@@ -202,13 +202,13 @@ export const ConversationComponent = (props) => {
                         sx={{mr:2, textAlign:'left'}}
                         >
                           {commActions.map((option) => (
-                            <MenuItem key={option.id} value={option.type}>{t(option.type)}</MenuItem>
+                            <MenuItem key={option.id} value={option.type}>{i18next.t(option.type)}</MenuItem>
                           ))}
-                          <MenuItem key={15} value={"NONE"}>{t("nothing")}</MenuItem>               
+                          <MenuItem key={15} value={"NONE"}>{i18next.t("nothing")}</MenuItem>               
                         </TextField>
                         <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <DatePicker
-                            label={t("date")}
+                            label={i18next.t("date")}
                             value={msgCopy.alertfollow}
                             variant="standard"
                             sx = {{mr:2}}
@@ -219,8 +219,8 @@ export const ConversationComponent = (props) => {
                          </LocalizationProvider> 
                     </DialogContent>
                     <DialogActions>
-                    <Button onClick={handleDialogSubmit}>{t("accept")}</Button>
-                    <Button onClick={handleNewActionDialogClose}>{t("close")}</Button>
+                    <Button onClick={handleDialogSubmit}>{i18next.t("accept")}</Button>
+                    <Button onClick={handleNewActionDialogClose}>{i18next.t("close")}</Button>
                     </DialogActions>
                 </Dialog>
            

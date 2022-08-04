@@ -5,10 +5,10 @@ import Toolbar from '@mui/material/Toolbar';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import { useTranslation } from 'react-i18next';
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { Collapse } from '@mui/material';
+import i18next from 'i18next';
 import { 
   navigationClientPanel,
   navigationAppointmentPanel, 
@@ -40,6 +40,7 @@ import CellTowerIcon from '@mui/icons-material/CellTower';
 import ContactPhoneIcon from '@mui/icons-material/ContactPhone';
 import ViewAgendaIcon from '@mui/icons-material/ViewAgenda';
 
+
 const drawerWidth = 240;
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
@@ -69,6 +70,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 function SideMenu(boardState) {
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -98,7 +100,6 @@ function SideMenu(boardState) {
     dispatch(navigationDrawer(false))
   }
 
-  const { t } = useTranslation();
 
   const goTo = (actualScreen) =>{
     dispatch(navigationLoading());
@@ -197,7 +198,7 @@ function SideMenu(boardState) {
                 <ListItemIcon>
                 <DashboardIcon />
                 </ListItemIcon>
-                <ListItemText primary= {t("dashboard")} />
+                <ListItemText primary= {i18next.t("dashboard")} />
             </ListItemButton>
             
             {/* Customers */}
@@ -205,7 +206,7 @@ function SideMenu(boardState) {
                 <ListItemIcon>
                 <PeopleIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("customers")} />
+                <ListItemText primary={i18next.t("customers")} />
                 {expandClients ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
 
@@ -214,14 +215,14 @@ function SideMenu(boardState) {
                   <ListItemIcon>
                     <PersonAddAlt1Icon />
                   </ListItemIcon>
-                  <ListItemText primary={t("addnewcustomer")} />
+                  <ListItemText primary={i18next.t("addnewcustomer")} />
                 </ListItemButton>
 
                 <ListItemButton sx={{ pl:4}} onClick={toogleShoweAllCustomers}>
                   <ListItemIcon>
                     <PeopleOutlineIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("allcustomers")} />
+                  <ListItemText primary={i18next.t("allcustomers")} />
                 </ListItemButton>
             </Collapse>
 
@@ -230,7 +231,7 @@ function SideMenu(boardState) {
                 <ListItemIcon>
                 <ViewAgendaIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("appointments")} />
+                <ListItemText primary={i18next.t("appointments")} />
                 {expandAppo ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
 
@@ -239,14 +240,14 @@ function SideMenu(boardState) {
                   <ListItemIcon>
                     <ScheduleIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("addappointment")} />
+                  <ListItemText primary={i18next.t("addappointment")} />
                 </ListItemButton>
                 
                 <ListItemButton sx={{ pl:4}} onClick={toogleShowAppointment}>
                   <ListItemIcon>
                     <CalendarViewWeekIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("seeappointments")} />
+                  <ListItemText primary={i18next.t("seeappointments")} />
                 </ListItemButton>
             </Collapse>
 
@@ -255,7 +256,7 @@ function SideMenu(boardState) {
                 <ListItemIcon >
                 <EuroIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("deposits")} />
+                <ListItemText primary={i18next.t("deposits")} />
             </ListItemButton>
 
             {/* Comunications */}
@@ -263,7 +264,7 @@ function SideMenu(boardState) {
                 <ListItemIcon>
                   <CellTowerIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("communications")} />
+                <ListItemText primary={i18next.t("communications")} />
                 {expandCom ? <ExpandLess /> : <ExpandMore />}
             </ListItemButton>
 
@@ -272,14 +273,14 @@ function SideMenu(boardState) {
                   <ListItemIcon>
                     <ContactPhoneIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("addcommunication")} />
+                  <ListItemText primary={i18next.t("addcommunication")} />
                 </ListItemButton>
                 
                 <ListItemButton sx={{ pl:4}} onClick={toogleSeeCommunication}>
                   <ListItemIcon>
                     <CalendarViewWeekIcon />
                   </ListItemIcon>
-                  <ListItemText primary={t("seecommunications")} />
+                  <ListItemText primary={i18next.t("seecommunications")} />
                 </ListItemButton>
             </Collapse>
 
@@ -288,27 +289,27 @@ function SideMenu(boardState) {
                 <ListItemIcon>
                 <CalendarMonthIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("calendar")}/>
+                <ListItemText primary={i18next.t("calendar")}/>
             </ListItemButton>
 
             <ListItemButton onClick={toogleShowIntegrations}>
                 <ListItemIcon>
                 <LayersIcon />
                 </ListItemIcon>
-                <ListItemText primary={t("integrations")} />
+                <ListItemText primary={i18next.t("integrations")} />
             </ListItemButton>
          
             <Divider sx={{ my: 1 }} />
             
             <ListSubheader component="div" inset>
-            {t("savedReports")}
+            {i18next.t("savedReports")}
             </ListSubheader>
 
             <ListItemButton onClick={toogleSeeAllReports}>
               <ListItemIcon>
                   <AssignmentIcon />
               </ListItemIcon>
-              <ListItemText primary={t("reportall")} />
+              <ListItemText primary={i18next.t("reportall")} />
             </ListItemButton>
             
           </List>

@@ -39,6 +39,7 @@ const initialState = {
     role:"user",
     lastConnect:"",
     password:"",
+    refreshJWT:{}
 }
 
 const createCustomerSlice = createSlice({
@@ -154,11 +155,14 @@ const createCustomerSlice = createSlice({
                 }
               });
             }else{
-                i18n.changeLanguage(state.locale);
+                if (i18n.language!==state.locale){
+                    i18n.changeLanguage(state.locale);
+                }
             }
         },
        
         user_loadFromBackend:(state, action)=>{
+            console.log("DATA EN LOAD FROM BACKEND", action.payload)
             state.id = action.payload.id
             state.isSubmited=action.payload.isSubmited
             state.isValidated=action.payload.isValidated
@@ -227,6 +231,7 @@ const createCustomerSlice = createSlice({
             state.isNew=false
             state.lastConnect = action.payload.lastConect
             state.password = action.payload.password
+            state.refreshJWT = action.payload.refreshJWT
         },
 
         user_set_user: (state, action) =>{

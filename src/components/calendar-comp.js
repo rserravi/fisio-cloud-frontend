@@ -1,5 +1,4 @@
 import React, { useCallback } from 'react'
-import { useTranslation } from 'react-i18next';
 import { Calendar, Views, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { locale } from 'moment';
@@ -40,7 +39,6 @@ export default function CalendarComp(props) {
   const localization = props.locale;
   locale(localization);
   const localizer = momentLocalizer(moment)
-  const { t } = useTranslation();
   
   const [open, setOpen] = React.useState(false);
   const [customerID, setCustomerID] = React.useState(props.customerId)
@@ -52,8 +50,6 @@ export default function CalendarComp(props) {
   const [appo, setAppo] = React.useState(initValidation);
   const services = getServices();
   const cabins = GetCabins();
-
-  
 
   moment.locale(
     'es', {

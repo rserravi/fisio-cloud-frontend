@@ -20,48 +20,49 @@ import AddCommunication from './pages/communications/add-communications-page';
 import BigCalendar from './pages/calendar/calendar-page';
 import EditHistory from './pages/history/history-page';
 import Reports from './pages/reports/reports-page';
+import { PrivateRoute } from './components/PrivateRoute-comp';
 
 
 function App() {
 
+
   return (
     <div className="App">
 
-      <Router><Routes>
-         <Route exact path='/' element={<LandingPage />}/>
-       </Routes>
+      <Router>
         <Routes>
+          <Route path='/' element={<LandingPage />}/>
           <Route path="/signin" element={<SignInSide />} />
           <Route path="/password-reset" element={<PasswordReset />} />
           <Route path="/signup" element={<SignUp />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/customers" element={<Customers />} />
-          <Route path="/addcustomer" element={<AddCustomer />} />
-          <Route path='/customer/:tid' element={<SeeCustomer />} />
-          <Route path='/customer/:tid/:tab' element={<SeeCustomer />} />
-          <Route path='/404' element={<FourOuFour/>} /> 
-          <Route path='/appointments' element={<Appointments />} />
-          <Route path='/addappointment' element={<AddAppointment />} />
-          <Route path='/addappointment/:customerId' element={<AddAppointment />} />
-          <Route path='/addappointment/:customerId/:appoId' element={<AddAppointment />} />
-          <Route path='/deposits' element={<DepositsPage/>} /> 
-          <Route path='/communications' element={<Communications />} />
-          <Route path='/addcommunication/' element={<AddCommunication />} />
-          <Route path='/addcommunication/:customerid' element={<AddCommunication />} />
-          <Route path='/addcommunication/:customerid/:thread' element={<AddCommunication />} />
-          <Route path='/addcommunication/:customerid/:thread/:action' element={<AddCommunication />} />
-          <Route path='/addcommunication/:customerid/:thread/:action/:phonemail' element={<AddCommunication />} />
-          <Route path='/edithistory/:customerId/:appoId' element={<EditHistory />} />
-          <Route path="/reports/:period" element={<Reports />} />
-          <Route path='/usersetup/' element={<UserSetup/>} /> 
-          <Route path='/usersetup/:tid' element={<UserSetup/>} /> 
-          <Route path='/setup' element={<Setup/>} />
-          <Route path='/calendar' element={<BigCalendar />} />
+          <Route path='/404' element={<FourOuFour/>} />
+        </Routes>
+          <PrivateRoute path="/dashboard" element={<Dashboard />} />
+          <PrivateRoute path="/customers" element={<Customers />} />
+          <PrivateRoute path="/addcustomer" element={<AddCustomer />} />
+          <PrivateRoute path='/customer/:tid' element={<SeeCustomer />} />
+          <PrivateRoute path='/customer/:tid/:tab' element={<SeeCustomer />} />
+          <PrivateRoute path='/appointments' element={<Appointments />} />
+          <PrivateRoute path='/addappointment' element={<AddAppointment />} />
+          <PrivateRoute path='/addappointment/:customerId' element={<AddAppointment />} />
+          <PrivateRoute path='/addappointment/:customerId/:appoId' element={<AddAppointment />} />
+          <PrivateRoute path='/deposits' element={<DepositsPage/>} /> 
+          <PrivateRoute path='/communications' element={<Communications />} />
+          <PrivateRoute path='/addcommunication/' element={<AddCommunication />} />
+          <PrivateRoute path='/addcommunication/:customerid' element={<AddCommunication />} />
+          <PrivateRoute path='/addcommunication/:customerid/:thread' element={<AddCommunication />} />
+          <PrivateRoute path='/addcommunication/:customerid/:thread/:action' element={<AddCommunication />} />
+          <PrivateRoute path='/addcommunication/:customerid/:thread/:action/:phonemail' element={<AddCommunication />} />
+          <PrivateRoute path='/edithistory/:customerId/:appoId' element={<EditHistory />} />
+          <PrivateRoute path="/reports/:period" element={<Reports />} />
+          <PrivateRoute path='/usersetup/' element={<UserSetup/>} /> 
+          <PrivateRoute path='/usersetup/:tid' element={<UserSetup/>} /> 
+          <PrivateRoute path='/setup' element={<Setup/>} />
+          <PrivateRoute path='/calendar' element={<BigCalendar />} />
           {/* 
          
           <Route path='/integrations' element={<Integrations/>} /> 
           */}
-        </Routes>
       </Router>
 
     </div>
