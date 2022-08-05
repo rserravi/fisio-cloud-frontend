@@ -18,8 +18,6 @@ import { navigationLoading, navigationSuccess } from '../../slices/navigation-sl
 import i18next from 'i18next';
 
 
-
-
 const mdTheme = createTheme();
 
 function ReportsContent() {

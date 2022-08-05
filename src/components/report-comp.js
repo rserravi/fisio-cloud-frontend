@@ -1,6 +1,5 @@
 //REACT IMPORTS
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate} from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import _ from 'underscore';
@@ -22,6 +21,11 @@ import TodayTwoToneIcon from '@mui/icons-material/TodayTwoTone';
 import PrintTwoToneIcon from '@mui/icons-material/PrintTwoTone';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { addYeartoDate, getActualQuarterEndDate, getActualQuarterStartDate } from '../utils/date-utils';
+import { GetReports } from '../api/report.api';
+import i18next from 'i18next';
+import { Box } from '@mui/system';
+import { Loading } from './Loading-comp';
+
 
 
 /////////////////////////////////
@@ -33,11 +37,6 @@ import { addYeartoDate, getActualQuarterEndDate, getActualQuarterStartDate } fro
 export const ReportsComponent = (props)=> {
 
   const locale = props.locale;
-  const { t } = useTranslation();
-  const servicesForCabin= GetCabinsForChart();
-  const servicesrealized = GetServicesForChart();
-  const servicesByUser = GetServicesRealizedByUsersForChart();
-  const leadsbyDate = GetLeadsByDate();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const _period = props.period;
@@ -67,21 +66,51 @@ export const ReportsComponent = (props)=> {
     }
   })
 
+  const [firstLoad, setFirstLoad]= React.useState(true);
+  const [depositsforchart, setDepositsForChart]= React.useState({});
+  const [cabinsforchart, setCabinsForChart]= React.useState({});
+  const [servicesforchart, setServicesForChart] = React.useState({});
+  const [userServicesforChart, setUserServicesForChart]= React.useState({});
+  const [leadsAndCustomers, setLeadsAndCustomers] = React.useState({});
+
+
   React.useEffect(()=>{
-    
-  },[])
+    console.log("EN USE EFFECT REPORT-COMP")
+    if (firstLoad){
+    GetReports(locale).then((data)=>{
+      console.log("DATA RESULT",data.result);
+      setDepositsForChart(data.depo);
+      setCabinsForChart(data.cabins);
+      setServicesForChart(data.services);
+      setUserServicesForChart(data.userServ);
+      setLeadsAndCustomers(data.leadsAndCust);
+      setFirstLoad(false);
+      
+    }
+  ).catch((error)=>{
+    console.log(error)
+  })}
+  },[firstLoad, locale])
+  
+  if(firstLoad){
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <Loading /> 
+      </Box>
+    );
+  }
 
   const depositsMonthFilter = () => {
-    const depositsMonth = GetDepositsArrayForChart(locale);
+    const depositsMonth = depositsforchart;
     const result = _.filter(depositsMonth, function(item){
       return new Date (item.date) >= new Date (periodStart) && new Date (item.date) <= new Date (periodEnd)
     })
     return result;
   }
-  const servicesForCabinFilter =() => GetCabinsForChart();
-  const servicesrealizedFilter = ()  => GetServicesForChart();
-  const servicesByUserFilter = () => GetServicesRealizedByUsersForChart();
-  const leadsbyDateFilter = () => GetLeadsByDate();
+  const servicesForCabinFilter =() => cabinsforchart;
+  const servicesrealizedFilter = ()  => servicesforchart;
+  const servicesByUserFilter = () => userServicesforChart;
+  const leadsbyDateFilter = () => leadsAndCustomers;
 
   const SeeAllData = (event)=>{
     setPeriodStart(new Date(2000,1,1))
@@ -126,7 +155,7 @@ export const ReportsComponent = (props)=> {
                 size='small'
                 startIcon={<CalendarMonthTwoToneIcon />}
                 onClick={SeeAllData}
-                >{t("always")} 
+                >{i18next.t("always")} 
               </Button>
             </Grid>
             <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
@@ -137,7 +166,7 @@ export const ReportsComponent = (props)=> {
                 size="small" 
                 startIcon={<DateRangeTwoToneIcon />}
                 onClick={SeeYearData}
-                >{t("year")} 
+                >{i18next.t("year")} 
               </Button>
             </Grid>
             <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
@@ -148,7 +177,7 @@ export const ReportsComponent = (props)=> {
                 size="small" 
                 onClick={SeeQuarterData}
                 startIcon={<TodayTwoToneIcon />}
-                >{t("quarter")} 
+                >{i18next.t("quarter")} 
               </Button>
             </Grid>
             <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
@@ -159,7 +188,7 @@ export const ReportsComponent = (props)=> {
                 size="small" 
                 
                 startIcon={<PrintTwoToneIcon />}
-                >{t("printreports")}
+                >{i18next.t("printreports")}
               </Button>
             </Grid>      
         </Grid>
@@ -168,7 +197,7 @@ export const ReportsComponent = (props)=> {
   }
 
   const translatedLegend = (value, entry) =>{
-    return t(value);
+    return i18next.t(value);
   }
 
   function CustomerToolTip({ payload, label, active }) {
@@ -194,7 +223,7 @@ export const ReportsComponent = (props)=> {
       <Grid container direction="row" justifyContent="flex-start" alignItems="baseline" sx={{mb:4}}>
         <Grid item xs={12} sm={12} md={12} sx={{mt:2}}>
         
-          <Typography variant="h6" align='left' component="h2">{t("deposits")}, {t("earnings")} {t("and")} {t("debts")}</Typography>
+          <Typography variant="h6" align='left' component="h2">{i18next.t("deposits")}, {i18next.t("earnings")} {i18next.t("and")} {i18next.t("debts")}</Typography>
           <ResponsiveContainer width={'100%'} height={400}>
           <LineChart
               width={570}
@@ -223,7 +252,7 @@ export const ReportsComponent = (props)=> {
             </ResponsiveContainer>
           </Grid>
           <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
-            <Typography variant="h6" align='left' component="h2">{t("services")} {t("for")} {t("cabin")}</Typography>
+            <Typography variant="h6" align='left' component="h2">{i18next.t("services")} {i18next.t("for")} {i18next.t("cabin")}</Typography>
             <ResponsiveContainer width={'100%'} height={400}>
             <BarChart
                 width={570}
@@ -245,7 +274,7 @@ export const ReportsComponent = (props)=> {
             </ResponsiveContainer>
         </Grid>
         <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
-            <Typography variant="h6" align='left' component="h2">{t("realized")}</Typography>
+            <Typography variant="h6" align='left' component="h2">{i18next.t("realized")}</Typography>
             <ResponsiveContainer width={'100%'} height={400}>
             <BarChart
                 width={570}
@@ -267,7 +296,7 @@ export const ReportsComponent = (props)=> {
             </ResponsiveContainer>
         </Grid>
         <Grid item xs={12} sm={4} md={4} sx={{mt:2}}>
-            <Typography variant="h6" align='left' component="h2">{t("servicesbyuser")}</Typography>
+            <Typography variant="h6" align='left' component="h2">{i18next.t("servicesbyuser")}</Typography>
             <ResponsiveContainer width={'100%'} height={400}>
             <BarChart
                 width={570}
@@ -290,7 +319,7 @@ export const ReportsComponent = (props)=> {
         </Grid>
         <Grid item xs={12} sm={12} md={12} sx={{mt:2}}>
         
-          <Typography variant="h6" align='left' component="h2">{t("leadsgained")}</Typography>
+          <Typography variant="h6" align='left' component="h2">{i18next.t("leadsgained")}</Typography>
           <ResponsiveContainer width={'100%'} height={400}>
           <LineChart
               width={570}
