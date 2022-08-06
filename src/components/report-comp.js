@@ -11,9 +11,6 @@ import { LineChart,Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Resp
 //MUI IMPORTS
 import { Button, Grid, Typography } from '@mui/material';
 
-//CUSTOM IMPORTS
-import { GetCabinsForChart, GetDepositsArrayForChart, GetLeadsByDate, GetServicesForChart, GetServicesRealizedByUsersForChart } from '../utils/dataFetch-utils';
-
 //ICONS
 import CalendarMonthTwoToneIcon from '@mui/icons-material/CalendarMonthTwoTone';
 import DateRangeTwoToneIcon from '@mui/icons-material/DateRangeTwoTone';
@@ -25,7 +22,6 @@ import { GetReports } from '../api/report.api';
 import i18next from 'i18next';
 import { Box } from '@mui/system';
 import { Loading } from './Loading-comp';
-
 
 
 /////////////////////////////////
@@ -78,14 +74,13 @@ export const ReportsComponent = (props)=> {
     console.log("EN USE EFFECT REPORT-COMP")
     if (firstLoad){
     GetReports(locale).then((data)=>{
-      console.log("DATA RESULT",data.result);
       setDepositsForChart(data.depo);
       setCabinsForChart(data.cabins);
       setServicesForChart(data.services);
       setUserServicesForChart(data.userServ);
       setLeadsAndCustomers(data.leadsAndCust);
       setFirstLoad(false);
-      
+      console.log(data);
     }
   ).catch((error)=>{
     console.log(error)
@@ -202,12 +197,28 @@ export const ReportsComponent = (props)=> {
 
   function CustomerToolTip({ payload, label, active }) {
     if (active) {
-     // console.log("PAYLOAD TOOLTIP", payload )
+      console.log(payload)
       return (
-        <div className="custom-tooltip">
-          <p className="label">{label}</p>
-          <p className="label">{payload[0].payload?payload[0].dataKey + " " + payload[0].payload.leadName:""}</p>
-          <p className="label">{`${payload[1].dataKey} ${payload[1].payload.custoName}`}</p>
+        <div className="custom-tooltip" style={{backgrouncolor:"white"}}>
+          <p className="label"  margin="0">{label}</p>
+          {payload[0].payload.custoName?<p className="label" margin="0" style={{color: "#118811"}}>{payload[0].payload?i18next.t(payload[0].dataKey) + " " + payload[0].payload.leadName:""}</p>:<></>}
+          {payload[1].payload.custoName?<p className="label" margin="0" style={{color: "#881111"}}>{`${i18next.t(payload[1].dataKey)} ${payload[1].payload.custoName}`}</p>:<></>}
+        </div>
+      );
+    }
+  
+    return null;
+  }
+
+  function DepositsToolTip({ payload, label, active }) {
+    if (active) {
+
+      return (
+        <div className="custom-tooltip" style={{backgrouncolor:"white"}}>
+          <p className="label" margin="0"><b>{label}</b></p>
+          <p className="label" margin="0" style={{color: "#118811"}}>{payload[0].payload?i18next.t(payload[0].dataKey) + " " + payload[0].payload.earnings:""}</p>
+          <p className="label" margin="0" style={{color: "#881111"}}>{`${i18next.t(payload[1].dataKey)} ${payload[1].payload.debts}`}</p>
+        
         </div>
       );
     }
@@ -239,7 +250,7 @@ export const ReportsComponent = (props)=> {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis label={{ value: "€" }} />
-              <Tooltip />
+              <Tooltip content={<DepositsToolTip />} wrapperStyle={{ backgroundColor: "white", borderStyle: "solid", borderWidth: "thin", borderColor:"grey", paddingLeft: "10px", paddingRight: "10px"}}/>
               <Legend formatter={translatedLegend}/>
               <Line
                 type="monotone"
@@ -335,7 +346,7 @@ export const ReportsComponent = (props)=> {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip content={<CustomerToolTip />}/>
+              <Tooltip content={<CustomerToolTip />}  wrapperStyle={{ backgroundColor: "white", borderStyle: "solid", borderWidth: "thin", borderColor:"grey", paddingLeft: "10px", paddingRight: "10px"}}/>
               <Legend formatter={translatedLegend}/>
               <Line
                 type="monotone"

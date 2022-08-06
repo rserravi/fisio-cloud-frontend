@@ -1,109 +1,55 @@
 import * as React from 'react';
 import Title from '../Title';
-import { useTranslation } from 'react-i18next';
-import { addMonthtoDate, twoDigitsDateOptions } from '../../utils/date-utils';
-import { GetDepositsFromDate, GetDepositsArrayFromDate, getCustomer, getCustomerNameFromId } from '../../utils/dataFetch-utils';
+import { twoDigitsDateOptions } from '../../utils/date-utils';
 import { Box } from '@mui/system';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Button, Container, Grid, TextField, Tooltip } from '@mui/material';
+import { Container, Tooltip } from '@mui/material';
 import { LocalTextForDataGrid } from '../../utils/mui-custom-utils';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { locale } from 'moment';
-import configData from "../../assets/data/config-data.json"
 import EditIcon from '@mui/icons-material/Edit';
-
-
-
-
-const initData = [{
-    id: "0",
-    date: "",
-    duration:"0",
-    service: "masage",
-    price:"50",
-    paid :"0",
-    status:"",
-    closed: "",
-    notes: "",
-    attachment:"",
-    customerId:"",
-    periodStart: new Date(), 
-    periodEnd: new Date()
-}]
-
+import i18next from 'i18next';
+import _ from 'underscore';
 
 
 export default function Income(props) {
-  const { t } = useTranslation();
   const localization = props.locale;
+  const data = props.data;
+  const income = _.filter(data,function(inc){if(inc.income >0){return inc}});
   locale(localization);
-  var today = new Date().toISOString(localization);
-  const [income, setIncome] = React.useState( initData);
-
-  React.useEffect(()=>{
-    const newInc = GetDepositsArrayFromDate(addMonthtoDate(today,-1),today, "paid")
-    setIncome(newInc);
-
-  },[])
-
-  const handlePeriodStart = (value) =>{
-    setIncome(GetDepositsArrayFromDate(new Date(value),new Date(income[0].periodEnd), "paid"))
-  }
-
-  const handlePeriodEnd = (value) =>{
-    setIncome(GetDepositsArrayFromDate(new Date(income[0].periodStart),new Date(value), "paid"))
-    
-  }
 
   const editHistory = (params) =>{
-
+    //edit history row.id
   }
 
   const rows = income.map((row) => 
     (
       {
         id: row.id, 
-        customerId:getCustomerNameFromId(row.customerId),
+        customer:row.customerName,
         date: new Date(row.date).toLocaleDateString(localization, twoDigitsDateOptions),
         duration: row.duration + " m.",
         service: row.service, 
-        price: row.price + " €",
-        paid: row.paid + " €",
-        status:t(row.status),
+        debts: row.debts + " €",
+        income: row.income + " €",
+        status:i18next.t(row.status),
         closed: new Date(row.closed).toLocaleDateString(localization, twoDigitsDateOptions)
         
       }
     )
   );
 
-  const monthClick = (event)=>{
-    setIncome(GetDepositsArrayFromDate(addMonthtoDate(today,-1),today, "paid"))
-  }
-
-  const quarterClick = (event)=>{
-    setIncome(GetDepositsArrayFromDate(addMonthtoDate(today,-4),today, "paid"))
-  }
-
-  const yearClick = (event)=>{
-    setIncome(GetDepositsArrayFromDate(addMonthtoDate(today,-12),today, "paid"))
-  }
-  const alwaysClick = (event)=>{
-    setIncome(GetDepositsArrayFromDate(new Date(2000,1,1),today, "paid"))
-  }
-
+  
   const Columns = () => {
-    const { t } = useTranslation();
   
     return(
       [
-        { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'paid', headerName:t("income"), width:70 },
-        { field: 'customerId', headerName:t("Customer"), width:200 },
-        { field: 'date', headerName: t("date"), width: 120},
-        { field: 'service', headerName:t("service"), width:80 },
-        { field: 'duration', headerName:t("duration"), width:80 }, 
-        { field: 'closed', headerName:t("closed"), width:120},
+        { field: 'id', headerName: i18next.t("Id"), width: 20 },
+        { field: 'income', headerName:i18next.t("income"), width:70 },
+        { field: 'customer', headerName:i18next.t("Customer"), width:200 },
+        { field: 'date', headerName: i18next.t("date"), width: 120},
+        { field: 'service', headerName:i18next.t("service"), width:80 },
+        { field: 'duration', headerName:i18next.t("duration"), width:80 }, 
+        { field: 'closed', headerName:i18next.t("closed"), width:120},
         {
           field: 'actions',
           type: 'actions',
@@ -112,8 +58,8 @@ export default function Income(props) {
           sortable: false,
           getActions: (params) => [
             <GridActionsCellItem
-            icon={<Tooltip title={t("editappointment")}><EditIcon /></Tooltip>}
-            label={t("edit")}
+            icon={<Tooltip title={i18next.t("editappointment")}><EditIcon /></Tooltip>}
+            label={i18next.t("edit")}
             
             onClick={(event) => {
               editHistory(params);
@@ -128,52 +74,19 @@ export default function Income(props) {
 
   return (
     <React.Fragment>
-      <Title>{t("incomes")}</Title>
-      <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-      <Grid container >
-        <Grid item xs={12} sm={4} md={4}>
-          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}> 
-            <DatePicker
-                label={t("periodStart")}
-                value={income[0] && income[0].periodStart? income[0].periodStart: new Date("15/01/20").toDateString()}
-                variant="standard"
-                inputFormat="DD/MM/yyyy"
-                sx = {{mr:2}}
-                onChange={handlePeriodStart}
-                renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
-            />
-            </LocalizationProvider>
-        </Grid>
-        <Grid item xs={12} sm={4} md={4}>
-          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
-            <DatePicker
-                label={t("periodEnd")}
-                inputFormat="DD/MM/yyyy"
-                value={income[0] && income[0].periodEnd? income[0].periodEnd: new Date().toDateString()}
-                variant="standard"
-                sx = {{mr:2}}
-                onChange={handlePeriodEnd}
-                renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
-            />
-          </LocalizationProvider>
-        </Grid>
-        <Grid container alignItems="stretch" justifyContent="flex-start" direction="row" sx={{mt:2}}>  
-          <Grid item xs={6} sm={3} md={3}>
-              <Button onClick={alwaysClick} variant='outlined'sx={{mr:1}}>{t("always")}</Button>
-          </Grid>
-          <Grid item xs={6} sm={3} md={3}>
-              <Button onClick={monthClick} variant='outlined'sx={{mr:1}}>{t("month")}</Button>
-          </Grid>
-          <Grid item xs={6} sm={3} md={3}>
-              <Button onClick={quarterClick} variant='outlined'sx={{mr:1}}>{t("quarter")}</Button>
-          </Grid>
-          <Grid item xs={6} sm={3} md={3}>
-            <Button onClick={yearClick} variant='outlined'sx={{mr:1}}>{t("year")}</Button>
-          </Grid>
-        </Grid>
-      </Grid>
-    </Box>
-    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2  }}>
+      <Title>{i18next.t("incomes")}</Title>
+  
+    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2,
+    
+    '& .income': {
+      backgroundColor: 'darkgreen',
+      color: 'white',
+      fontWeight: '600',
+    },
+    '& .name-bold': {
+      fontWeight: '600',
+    },
+    }}>
     <Container sx={{height:320}}>
     <DataGrid
         rows={rows}
@@ -184,6 +97,18 @@ export default function Income(props) {
         rowsPerPage ={10}    
         //onSelectionModelChange={handleRowSelection}
         localeText={LocalTextForDataGrid()}
+        getCellClassName={(params) => {
+          if (params.field === 'income') {
+                return 'income';
+          }else{
+            if (params.field === 'customer'){
+              return 'name-bold'
+            }
+            else{
+            return '';
+            }
+          }
+        }}
       /> 
      </Container>
     </Box>

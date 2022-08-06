@@ -1,60 +1,25 @@
 import * as React from 'react';
 import Title from '../Title';
-import { useTranslation } from 'react-i18next';
-import { addMonthtoDate,  twoDigitsDateOptions } from '../../utils/date-utils';
-import { GetDepositsArrayFromDate, getCustomerNameFromId } from '../../utils/dataFetch-utils';
+import { twoDigitsDateOptions } from '../../utils/date-utils';
 import { Box } from '@mui/system';
-import { DatePicker, LocalizationProvider } from '@mui/x-date-pickers';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { Button, Container, Grid, TextField, Tooltip } from '@mui/material';
+import { Container, Tooltip } from '@mui/material';
 import { LocalTextForDataGrid } from '../../utils/mui-custom-utils';
 import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid';
 import { locale } from 'moment';
+import i18next from 'i18next';
+import _ from 'underscore';
+
 
 //ICONS
 import EditIcon from '@mui/icons-material/Edit';
 import PointOfSaleIcon from '@mui/icons-material/PointOfSale';
 import CampaignIcon from '@mui/icons-material/Campaign';
 
-
-
-const initData = [{
-    id: "0",
-    date: "",
-    duration:"0",
-    service: "masage",
-    price:"50",
-    paid :"0",
-    status:"",
-    closed: "",
-    notes: "",
-    attachment:"",
-    customerId:"",
-    periodStart: new Date(), 
-    periodEnd: new Date()
-}]
-
 export default function Loses(props) {
-  const { t } = useTranslation();
   const localization = props.locale;
   locale(localization);
-  var today = new Date().toISOString(localization);
-  const [loses, setloses] = React.useState( initData);
-
-  React.useEffect(()=>{
-    const newInc = GetDepositsArrayFromDate(addMonthtoDate(today,-120),today, "pending")
-    setloses(newInc);
-
-  },[today])
-
-  const handlePeriodStart = (value) =>{
-    setloses(GetDepositsArrayFromDate(new Date(value),new Date(loses[0].periodEnd), "paid"))
-  }
-
-  const handlePeriodEnd = (value) =>{
-    setloses(GetDepositsArrayFromDate(new Date(loses[0].periodStart),new Date(value), "paid"))
-    
-  }
+  const data = props.data;
+  const loses = _.filter(data,function(inc){if(inc.debts >0){return inc}});
 
   const editHistory = (params) =>{
 
@@ -66,31 +31,17 @@ export default function Loses(props) {
     
   }
 
-  const alwaysClick = (event) =>{
-    setloses(GetDepositsArrayFromDate(new Date(2000,1,1),today, "pending"))
-  }
-
-  const lastYearClick = (events)=>{
-    setloses(GetDepositsArrayFromDate(addMonthtoDate(today,-12),today, "pending"))
-  }
-
-  function getLoses(params) {
-    return (
-      Number(params.row.price) - Number(params.row.paid) + " €"
-    )
-  }
-
   const rows = loses.map((row) => 
     (
       {
         id: row.id, 
-        customerId:getCustomerNameFromId(row.customerId),
+        customerName: row.customerName,
         date: new Date(row.date).toLocaleDateString(localization, twoDigitsDateOptions),
         duration: row.duration + " m.",
         service: row.service, 
         price: row.price,
-        paid: row.paid,
-    
+        income: row.income,
+        loses: row.debts,
         closed: new Date(row.closed).toLocaleDateString(localization, twoDigitsDateOptions)
         
       }
@@ -98,16 +49,16 @@ export default function Loses(props) {
   );
 
   const Columns = () => {
-    const { t } = useTranslation();
   
     return(
       [
-        { field: 'id', headerName: t("Id"), width: 20 },
-        { field: 'loses', headerName:t("debt"), width:70, valueGetter: getLoses, },
-        { field: 'customerId', headerName:t("Customer"), width:200 },
-        { field: 'date', headerName: t("date"), width: 120},
-        { field: 'service', headerName:t("service"), width:80 },
-        { field: 'duration', headerName:t("duration"), width:80 }, 
+        { field: 'id', headerName: i18next.t("Id"), width: 20 },
+        { field: 'price',headerName: i18next.t("price"), width: 20 },
+        { field: 'loses', headerName:i18next.t("debt"), width:70 },
+        { field: 'customerName', headerName:i18next.t("Customer"), width:200 },
+        { field: 'date', headerName: i18next.t("date"), width: 120},
+        { field: 'service', headerName:i18next.t("service"), width:80 },
+        { field: 'duration', headerName:i18next.t("duration"), width:80 }, 
         {
           field: 'actions',
           type: 'actions',
@@ -116,8 +67,8 @@ export default function Loses(props) {
           sortable: false,
           getActions: (params) => [
             <GridActionsCellItem
-            icon={<Tooltip title={t("editappointment")}><EditIcon /></Tooltip>}
-            label={t("edit")}
+            icon={<Tooltip title={i18next.t("editappointment")}><EditIcon /></Tooltip>}
+            label={i18next.t("edit")}
             
             onClick={(event) => {
               editHistory(params);
@@ -126,8 +77,8 @@ export default function Loses(props) {
           />,
           
           <GridActionsCellItem
-              icon={<Tooltip title={t("close")}><PointOfSaleIcon /></Tooltip>}
-              label={t("close")}
+              icon={<Tooltip title={i18next.t("close")}><PointOfSaleIcon /></Tooltip>}
+              label={i18next.t("close")}
               
               onClick={(event) => {
                 closeDebt(params);
@@ -135,8 +86,8 @@ export default function Loses(props) {
             }}
             />,
             <GridActionsCellItem
-              icon={<Tooltip title={t("sendRequest")}><CampaignIcon /></Tooltip>}
-              label={t("sendRequest")}
+              icon={<Tooltip title={i18next.t("sendRequest")}><CampaignIcon /></Tooltip>}
+              label={i18next.t("sendRequest")}
               
               onClick={(event) => {
                 sendRequest(params);
@@ -151,44 +102,20 @@ export default function Loses(props) {
 
   return (
     <React.Fragment>
-      <Title>{t("loses")}</Title>
-      <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2   }}>
-      <Grid container >
-        <Grid item xs={12} sm={4} md={4}>
-          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
-            <DatePicker
-                label={t("periodStart")}
-                value={loses[0] && loses[0].periodStart? loses[0].periodStart: new Date("15/01/20").toDateString()}
-                variant="standard"
-                inputFormat="DD/MM/yyyy"
-                sx = {{mr:2}}
-                onChange={handlePeriodStart}
-                renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
-            />
-            </LocalizationProvider>
-          </Grid>
-          <Grid item xs={12} sm={4} md={4}>
-          <LocalizationProvider locale={localization} dateAdapter={AdapterMoment}>
-            <DatePicker
-                label={t("periodEnd")}
-                inputFormat="DD/MM/yyyy"
-                value={loses[0] && loses[0].periodEnd? loses[0].periodEnd: new Date().toDateString()}
-                variant="standard"
-                sx = {{mr:2}}
-                onChange={handlePeriodEnd}
-                renderInput={(params) => <TextField variant="standard" sx = {{mr:2}} {...params} />}
-            />
-          </LocalizationProvider>
-          </Grid>
-          <Grid item xs={6} sm={2} md={2} sx={{mt:2}}>
-            <Button onClick={alwaysClick} variant='outlined'sx={{mr:1}}>{t("always")}</Button>
-          </Grid>
-          <Grid item xs={6} sm={2} md={2} sx={{mt:2}}>
-            <Button onClick={lastYearClick} variant='outlined'sx={{mr:1}}>{t("last")} {t("year")}</Button>
-          </Grid>
-      </Grid>
-    </Box>
-    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2  }}>
+      <Title>{i18next.t("loses")}</Title>
+    
+    
+    <Box sx={{ display: 'flex', flexDirection: 'row', width:'100%', mt:2, 
+
+    '& .debts': {
+      backgroundColor: 'rosybrown',
+      color: 'white',
+      fontWeight: '600',
+    },
+    '& .name-bold': {
+      fontWeight: '600',
+    },
+  }}>
     <Container sx={{height:320}}>
     <DataGrid
         rows={rows}
@@ -199,6 +126,18 @@ export default function Loses(props) {
         rowsPerPage ={10}    
         //onSelectionModelChange={handleRowSelection}
         localeText={LocalTextForDataGrid()}
+        getCellClassName={(params) => {
+          if (params.field === 'loses') {
+                return 'debts';
+          }else{
+            if (params.field === 'customerName'){
+              return 'name-bold'
+            }
+            else{
+            return '';
+            }
+          }
+        }}
       /> 
      </Container>
     </Box>

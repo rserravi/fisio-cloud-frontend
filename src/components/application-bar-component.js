@@ -85,7 +85,7 @@ function ApplicationBar(boardState) {
   if(firstLoad){
     GetBellAlerts(userSelector.id).then((data)=>{
       const adaptedData = AdaptBadgeAlerts(data.result)
-      console.log("GETTING ALERTS", data, adaptedData)
+      //console.log("GETTING ALERTS", data, adaptedData)
 
       setBadgeAlerts(adaptedData)
       setFirstLoad(false);

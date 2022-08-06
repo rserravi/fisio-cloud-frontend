@@ -6,7 +6,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
-import Deposits from '../../components/Deposits';
+import Deposits from '../../components/deposits-comp';
 import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
@@ -99,7 +99,7 @@ function DashboardContent() {
                   }}
                 >
                 
-                  <Deposits month={true} dashboard={true} locale={localization} customerData={customerData}/>
+                  <Deposits compact={true} locale={localization} customerData={customerData}/>
                  
                 </Paper>
               </Grid>
