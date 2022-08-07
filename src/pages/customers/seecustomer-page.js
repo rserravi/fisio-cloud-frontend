@@ -10,11 +10,13 @@ import { Copyright } from '../../components/copyright-component';
 import ApplicationBar from '../../components/application-bar-component';
 import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
-import { t } from 'i18next';
 import { useNavigate, useParams } from 'react-router-dom';
 import LinearProgress from '@mui/material/LinearProgress';
 import SeeCustomerComponent from '../../components/see-customer.comp';
 import {GetCustomer} from '../../api/customer.api'
+import i18next from 'i18next';
+import { Loading } from '../../components/Loading-comp';
+
 
 
 const mdTheme = createTheme();
@@ -81,15 +83,10 @@ function SeeCustomerContent() {
   }
   },[customer,navigate, firstLoad,_id])
 
-  if (!customer){
+  if (!customer || firstLoad){
     console.log("NO HAY CLIENTE");
     return (
-      <ThemeProvider theme={mdTheme}>
-         <CssBaseline />
-         <Box sx={{ width: '100%', height:'100%'}}>
-            <LinearProgress />
-         </Box>
-      </ThemeProvider>
+      <Loading />
     )
   }
 
@@ -97,7 +94,7 @@ function SeeCustomerContent() {
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("Customer") +": " + customer.firstname + " " + customer.lastname} />
+        <ApplicationBar boardState={boardState} title={i18next.t("Customer") +": " + customer.firstname + " " + customer.lastname} />
         <SideMenu boardState={boardState} />
 
         <Box

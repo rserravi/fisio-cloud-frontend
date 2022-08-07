@@ -425,6 +425,23 @@
     "seequarter":"Informe cuatrimestre actual",
     "seeyear":"Informe todo año",
     "Incorrect Password":"Password incorrecto",
-    "duplicatedemail":"Este email ya existe en la base de datos. Pruebe otro o vaya a Sign In"
-
+    "duplicatedemail":"Este email ya existe en la base de datos. Pruebe otro o vaya a Sign In",
+    "doyouwanttokeepeditingorclose":"¿Quieres segui editando o cerrar?",
+    "userupdatedcorrectly":"Usuario actualizado correctamente",
+    "desagree":"No",
+    "agree":"De'acuerdo",
+    "defineService":"Define un servicio y precio orientativo",
+    "serviceName":"Descripción del servicio",
+    "priceXHour": "Precio aproximado por hora",
+    "delete":"Borrar",
+    "deleteservice":"Borrar servicio",
+    "areyousureyouwanttodelete":"Estás seguro que quieres borrar?",
+    "description":"Descripción",
+    "definecabin":"Define un nuevo consultorio (espacio físico)",
+    "deletecabin":"Borrar consultorio",
+    "AlertsSetupUpdated":"Configuración de alertas actualitzada",
+    "sendcard":"Enviar felicitación",
+    "of":"de",
+    "aniversary":"Cumpleaños",
+    "loadingData":"Cargando Datos"
 }

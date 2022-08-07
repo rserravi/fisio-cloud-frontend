@@ -5,10 +5,9 @@ const depositsUrl = rootUrl + "/deposits";
 
 export const getDeposits=(from, end, userId)=>{
     const fromDate = new Date(from);
-    const fromDateText = fromDate.getUTCFullYear() + "-" + Number(Number(fromDate.getUTCMonth()) +1) + "-" + fromDate.getUTCDay()
+    const fromDateText = fromDate.getUTCFullYear() + "-" + Number(Number(fromDate.getUTCMonth()) +1) + "-" + fromDate.getDate()
     const endDate = new Date(end);
-    const endDateText = endDate.getUTCFullYear() + "-" +  Number(Number(endDate.getUTCMonth()) +1) + "-" + endDate.getUTCDay()
-    
+    const endDateText = endDate.getUTCFullYear() + "-" +  Number(Number(endDate.getUTCMonth()) +1) + "-" + endDate.getDate()
     return new Promise( async(resolve, reject)=>{
         try {
             const res = await axios.get(depositsUrl, {

@@ -442,5 +442,6 @@
     "AlertsSetupUpdated":"Configuració d'alertes actualitzada",
     "sendcard":"Enviar felicitació",
     "of":"de",
-    "aniversary":"Aniversari"
+    "aniversary":"Aniversari",
+    "loadingData":"Carregant Dades"
 }

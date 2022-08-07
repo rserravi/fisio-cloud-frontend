@@ -34,14 +34,14 @@ function AppoinmentsContent() {
     console.log("EN USE EFFECT DASH")
     if (firstLoad){
       getAllAppointments(userId).then(data =>{
-        console.log("DATA RESULT",data);
+        console.log("APPO PAGE DATA RESULT",data);
         setAppoData(data);
         setFirstLoad(false);
       }
   ).catch((error)=>{
     console.log(error)
   })}
-  },[firstLoad])
+  },[firstLoad, userId])
   
   if(firstLoad){
     return (

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { Alert, Button, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { ImageComponent } from './form-components/image-comp';
 import { NameForm } from './form-components/name-comp';
@@ -17,6 +16,8 @@ import ReleaseFormComp from './form-components/release-form-comp';
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { addCustomer } from '../api/customer.api';
+import i18next from 'i18next';
+
 
 var initValidation={
   firstname: true,
@@ -31,7 +32,6 @@ export default function CustomerForm(props) {
   const navigationState= useSelector((state)=> state.navigator);
   const [validation, setValidation] = React.useState(initValidation);
   const locale = props.locale
-  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const HandleSubmit = (event)=>{
@@ -116,21 +116,21 @@ export default function CustomerForm(props) {
             <Grid container spacing={2} justifyContent="flex-start" alignItems="flex-start">
              
              <Grid item xs={12}>         
-               <Typography variant="h4" component="h2">{t("addnewcustomer")}</Typography> 
+               <Typography variant="h4" component="h2">{i18next.t("addnewcustomer")}</Typography> 
               </Grid>
             </Grid>
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="flex-start">
               
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
                 <NameForm gender={"none"} locale={locale} />
-                {!validation.firstname ? <Alert severity="error">{t("introduceaname")}</Alert>: <></>}
-                {!validation.lastname ? <Alert severity="error">{t("introducealastname")}</Alert>: <></>} 
+                {!validation.firstname ? <Alert severity="error">{i18next.t("introduceaname")}</Alert>: <></>}
+                {!validation.lastname ? <Alert severity="error">{i18next.t("introducealastname")}</Alert>: <></>} 
               </Grid>
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
                 <DniForm locale={locale} />
-                {!validation.dni ? <Alert severity="error">{t("youmustintroduceavalidId")}</Alert>: <></>}
+                {!validation.dni ? <Alert severity="error">{i18next.t("youmustintroduceavalidId")}</Alert>: <></>}
                 <EmailForm  />
-                {!validation.email ? <Alert severity="error">{t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
+                {!validation.email ? <Alert severity="error">{i18next.t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
                
               </Grid>
               <Grid item xs={2} md={2} sm={2} marginTop={3}>
@@ -140,7 +140,7 @@ export default function CustomerForm(props) {
             </Grid>
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <PhoneForm />
-                {!validation.phone ? <Alert severity="error">{t("introduceavelidmobile")}</Alert>: <></>}
+                {!validation.phone ? <Alert severity="error">{i18next.t("introduceavelidmobile")}</Alert>: <></>}
               </Grid>
 
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
@@ -164,7 +164,7 @@ export default function CustomerForm(props) {
                 onClick={HandleSubmit}
                 sx={{ m:3}}
               >
-               {t("createcustomer")}
+               {i18next.t("createcustomer")}
               </Button>
               <Button
                
@@ -174,10 +174,10 @@ export default function CustomerForm(props) {
                 onClick={resetData}
                 sx={{ m:3 }}
               >
-               {t("cancel")}
+               {i18next.t("cancel")}
               </Button>
               </Box>
-              {!validation.lastname || !validation.firstname || !validation.email || !validation.phone ? <Alert severity="error">{ t("errorin")} {!validation.firstname ? t("name") + ",":""} {!validation.lastname ? t("lastname") + ",":""} {!validation.phone ? t("phone") + ",":""} {!validation.email ? t("emails") + ".":""}</Alert>:""}
+              {!validation.lastame || !validation.firstname || !validation.email || !validation.phone ? <Alert severity="error">{i18next.t("errorin")} {!validation.firstname ? i18next.t("name") + ",":""} {!validation.lastname ? i18next.t("lastname") + ",":""} {!validation.phone ? i18next.t("phone") + ",":""} {!validation.email ? i18next.t("emails") + ".":""}</Alert>:""}
               
         </Box>
         

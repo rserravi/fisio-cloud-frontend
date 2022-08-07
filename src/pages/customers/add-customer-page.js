@@ -10,10 +10,8 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-
+import i18next from 'i18next';
 import CustomerForm from '../../components/addcustomers-form-comp';
-import { useTranslation } from 'react-i18next';
-
 
 
 const mdTheme = createTheme();
@@ -23,14 +21,13 @@ function AddCustomerContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const { t } = useTranslation();
 
   
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("customers")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("customers")} />
         <SideMenu boardState={boardState} />
 
         <Box

@@ -56,6 +56,7 @@ const initData = [
       rowid: 0, 
       customerId: "",
       customerName: "",
+      appoid:"",
       date: new Date(),
       duration: 0,
       service: "",
@@ -73,6 +74,7 @@ const initData = [
       rowid: 1, 
       customerId: "",
       customerName: "",
+      appoid:"",
       date: new Date(),
       duration: 0,
       service: "",
@@ -284,7 +286,7 @@ export const AppointmentsComponent = (props)=> {
   const rows = data.map((row) => 
   ({
     id: row.rowid,  
-    appoid: row._Id,
+    appoid: row._id,
     customerId: row.customerId,
     customerName: row.customerName,
     userName: row.userName,
@@ -425,7 +427,7 @@ export const AppointmentsComponent = (props)=> {
 
   const seeAppointment= (customerId, appoId) => {
     dispatch(navigationLoading())
-    const actualScreen = "/addappointment/"+ Number(customerId) +"/"+ Number(appoId);
+    const actualScreen = "/addappointment/"+ customerId +"/"+ appoId;
     navigate(actualScreen, {replace: true});
     dispatch(navigationSuccess(actualScreen))
   }

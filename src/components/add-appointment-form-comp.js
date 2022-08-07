@@ -1,10 +1,8 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
 import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, TextField, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllData, GetAppointmentById, GetCabins, getCustomer, GetCustomerIdFromName, getPriceForService, getServices } from '../utils/dataFetch-utils';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
@@ -13,7 +11,11 @@ import { TimePicker } from '@mui/x-date-pickers';
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import styled from '@emotion/styled';
+import i18next from 'i18next';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { Loading } from './Loading-comp';
+import { getPriceForService } from '../utils/dataFetch-utils';
+import { addAppointment, updateAppointment } from '../api/appointments.api';
 
 var initAddService={
   service:"",
@@ -26,12 +28,18 @@ export default function AddAppointmentForm(props) {
   const navigate = useNavigate();
   const navigationState= useSelector((state)=> state.navigator);
   const locale = props.locale;
-  const [customerID, setCustomerID] = React.useState(props.customerId)
-  
+  const [customerData, setCustomerData] = React.useState(props.customerData)
+  const [appo, setAppo] = React.useState(props.appoData)
+  const [cabinsData, setCabinsData] = React.useState(props.cabinsData);
+  const [servicesData, setServicesData]= React.useState(props.servicesData);
   const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "edit"
-  const cabinsData = GetCabins();
-    
-  var initValidation={
+  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [closeAppoDialogOpen, setCloseAppoDialogOpen] = React.useState(false);
+  const [newService, setNewService] = React.useState(initAddService);
+  const [firstLoad, setFirstLoad]= React.useState(true);
+
+  
+  var initData={
     id:"1",
     date: new Date(Date.now()),
     duration: "60", 
@@ -44,65 +52,79 @@ export default function AddAppointmentForm(props) {
     notes: "",
     attachment:[]
   }
-  const [appo, setAppo] = React.useState(initValidation);
-
-  React.useEffect(() => {   
-    
-    //SELECCION DE MODOS
-     
-    if (props.customerId && !props.appoId){
-          //MODO AÑADIR CITA A ID
-          setMode("addToId")
-        }
-
-    if (props.customerId && props.appoId){
-          //MODO EDITAR
-          setMode("edit")
-          const newData = GetAppointmentById({appoId: props.appoId, userId: props.customerId })
-          setAppo(newData[0])
-        }
-    },[props.appoId, props.customerId, setMode, setAppo ]);
-
-  const [customerName, setCustomerName] = React.useState("")
-  const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [closeAppoDialogOpen, setCloseAppoDialogOpen] = React.useState(false);
-  const [newService, setNewService] = React.useState(initAddService);
-  const services = getServices();
   
   React.useEffect (()=>{
+    //SELECCION DE MODOS
+    if(firstLoad){
+      if (customerData._id && !appo._id){
+        //MODO AÑADIR CITA A ID
+        console.log("MODO ADDTOID")
+        setMode("addToId")
+      }
 
-    },[])
- 
-  const { t } = useTranslation();
-  
-  const data = () => {
-    if (customerID){
-      return getCustomer(customerID);
+      if (customerData._id && appo._id){
+        //MODO EDITAR
+        console.log("MODO EDIT")
+        setMode("edit")
+      }
+
+      if (!customerData._id && !appo._id){
+        //MODO EDITAR
+        console.log("MODO EDIT")
+        setMode("add")
+        setAppo(initData)
+        setFirstLoad(false)
+
+      }
+
+      console.log("DARA EN USEEFFECT COMP", appo,"SERVICES", servicesData, "CABINS", cabinsData)
+      setFirstLoad(false)
     }
-    else
-      return (GetAllData)
-  }   
-
-
+    },[customerData, appo, servicesData, cabinsData, firstLoad])
+   
   const HandleSubmit = (event)=>{
   
     event.preventDefault();
     console.log(appo)
     //CALL API TO PUT IN DATABASE
-    const actualScreen = "/appointments"
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    if (mode==="add"){
+      addAppointment(appo).then((data)=>{
+        if(data.status ==="error"){
+          console.log("ERROR EN APP_APPO", data.result)
+        }
+        else {
+          const actualScreen = "/appointments"
+          dispatch(navigationLoading());
+          navigate(actualScreen,{replace: true});
+          dispatch(navigationSuccess(actualScreen))
+        }
+      })
+
+    }else{
+        updateAppointment(appo).then((data)=>{
+          if(data.status ==="error"){
+            console.log("ERROR EN APP_APPO", data.result)
+          }
+          else {
+            const actualScreen = "/appointments"
+            dispatch(navigationLoading());
+            navigate(actualScreen,{replace: true});
+            dispatch(navigationSuccess(actualScreen))
+          }
+        })
+    }
+
+    
 
    }
    const closeAppointment = (event)=>{
-    event.preventDefault();
+    event.preventDefauli18next.t();
     setCloseAppoDialogOpen(true);
 
   }
 
   const closeAppo = (event) =>{
-    event.preventDefault();
+    event.preventDefauli18next.t();
     console.log(appo)
     setAppo({...appo, "closed": new Date().now})
     //CALL API TO PUT IN DATABASE
@@ -118,8 +140,8 @@ export default function AddAppointmentForm(props) {
 
    const SetCustomer = (data) =>{
 
-    setCustomerName(data);
-    setCustomerID(GetCustomerIdFromName(data));
+    // setCustomerName(data);
+    // setCustomerID(GetCustomerIdFromName(data));
    }
  
 
@@ -152,7 +174,7 @@ export default function AddAppointmentForm(props) {
   }
 
   const handleServicesChange= (event)=>{
-    setAppo({...appo, "service": event.target.value,"price": getPriceForService(event.target.value) })
+    setAppo({...appo, "service": event.target.value,"price": getPriceForService(event.target.value, servicesData) })
   }
 
   const handleNotesChange= (event)=>{
@@ -215,11 +237,11 @@ export default function AddAppointmentForm(props) {
           return(<><CustomerSearchBar customerFunc={SetCustomer}/></>);
       case "addToId":
         return (
-            <h2>{t("addingdateto")} {data().firstname} {data().lastname} </h2>
+            <h2>{i18next.t("addingdateto")} {customerData.firstname} {customerData.lastname} </h2>
           )  
       case "edit":
           return (
-            <h2>{t("editingdateof")} {data().firstname} {data().lastname}, el {new Date(appo.date).toLocaleDateString()} a las {new Date(appo.date).toLocaleTimeString()}</h2>
+            <h2>{i18next.t("editingdateof")}{appo.customerName} , el {new Date(appo.date).toLocaleDateString()} a las {new Date(appo.date).toLocaleTimeString()}</h2>
           )
         
       default:
@@ -240,7 +262,7 @@ export default function AddAppointmentForm(props) {
           onClick={closeAppointment}
           sx={{ m:3 }}
         >
-        {t("closeappointment")}
+        {i18next.t("closeappointment")}
     </Button>
       )
 
@@ -250,19 +272,28 @@ export default function AddAppointmentForm(props) {
     const ShowAttachments = ()=>{
 
       const attached = appo.attachment;
+      if (attached){
     
       return (
-        <React.Fragment>
-         <p>{attached.map((item)=>{ return (
-          <Button size='small' href={item.file} target="_blank" >{item.name}</Button>
-         )
-            })}
-          
-          </p>
-        </React.Fragment>
-      )
-    }
+          <React.Fragment>
+          <p>{attached.map((item)=>{ 
+            return (
+              <Button size='small' href={item.file} target="_blank" >{item.name}</Button>
+              )
+                })}
+            </p>
+          </React.Fragment>
+          )
+        }
+      }
 
+    if(firstLoad){
+      return (
+        <Box sx={{ display: 'flex' }}>
+          <Loading/> 
+        </Box>
+      );
+    }
 
    return (
     <React.Fragment>
@@ -274,12 +305,12 @@ export default function AddAppointmentForm(props) {
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
                 <MainTitle />
-                <h1>{customerName}</h1>
+                <h1>{appo.customerName}</h1>
               </Grid>
             </Grid>
               
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("appointment")}
+                {i18next.t("appointment")}
               </Typography>
 
               
@@ -289,12 +320,12 @@ export default function AddAppointmentForm(props) {
              <Paper sx={{p:1, mb:2}}>
               <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                   <Grid item xs={12} sm={1} md={1} sx={{mt:2, mr:1}}>
-                    <Button fullWidth onClick={seeAppointment} variant="outlined" sx={{mr:2}}>{t("calendar")}</Button>
+                    <Button fullWidth onClick={seeAppointment} variant="outlined" sx={{mr:2}}>{i18next.t("calendar")}</Button>
                   </Grid>
                   <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
                         <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <DatePicker
-                            label={t("date")}
+                            label={i18next.t("date")}
                             value={appo.date}
                             variant="standard"
                             sx = {{mr:2}}
@@ -307,7 +338,7 @@ export default function AddAppointmentForm(props) {
                   <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                          <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <TimePicker
-                          label={t("Time")}
+                          label={i18next.t("Time")}
                           value={appo.date}
                           variant="standard"
                           
@@ -319,7 +350,7 @@ export default function AddAppointmentForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                         <TextField
-                            label={t("duration")}
+                            label={i18next.t("duration")}
                             value={appo.duration}
                             variant="standard"
                             fullWidth
@@ -329,7 +360,7 @@ export default function AddAppointmentForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={3} md={3} sx={{mt:2}}>
                         <TextField
-                            label={t("cabin")}
+                            label={i18next.t("cabin")}
                             value={appo.cabin}
                             variant="standard"
                             fullWidth
@@ -338,8 +369,8 @@ export default function AddAppointmentForm(props) {
                             onChange={handleCabinChange}
                         >
                            {cabinsData.map((option) => (
-                                    <MenuItem key={option.id} value={option.id}>
-                                    {option.localization}
+                                    <MenuItem key={option._id} value={option._id}>
+                                    {option.cabinName}
                                     </MenuItem>
                                 ))}
 
@@ -353,19 +384,19 @@ export default function AddAppointmentForm(props) {
                  <Paper sx={{p:1}}>
                  <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>   
-                       <Button fullWidth onClick={addService} variant="outlined" sx={{mr:2}}>{t("addservice")}</Button>
+                       <Button fullWidth onClick={addService} variant="outlined" sx={{mr:2}}>{i18next.t("addservice")}</Button>
                     </Grid>
                       <Dialog open={dialogOpen} onClose={closeAddServiceDialog}>
-                        <DialogTitle>{t("addservice")}</DialogTitle>
+                        <DialogTitle>{i18next.t("addservice")}</DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                          {t("addaservicetothelistandusualprice")}
+                          {i18next.t("addaservicetothelistandusualprice")}
                           </DialogContentText>
                           <TextField
                             autoFocus
                             margin="dense"
                             id="service"
-                            label={t("service")}
+                            label={i18next.t("service")}
                             type="email"
                             fullWidth
                             variant="standard"
@@ -376,7 +407,7 @@ export default function AddAppointmentForm(props) {
                             autoFocus
                             margin="dense"
                             id="price"
-                            label={t("price")}
+                            label={i18next.t("price")}
                             type="number"
                             fullWidth
                             variant="standard"
@@ -385,23 +416,23 @@ export default function AddAppointmentForm(props) {
                           />
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={newServiceFormCommit}>{t("add")}</Button>
-                          <Button onClick={closeAddServiceDialog}>{t("cancel")}</Button>
+                          <Button onClick={newServiceFormCommit}>{i18next.t("add")}</Button>
+                          <Button onClick={closeAddServiceDialog}>{i18next.t("cancel")}</Button>
                         </DialogActions>
                       </Dialog>
                     <Grid item xs={12} sm={3} md={3} sx={{mr:1}}>
                         <TextField
-                            label={t("service")}
+                            label={i18next.t("service")}
                             value={appo.service}
                             variant="standard"
                             sx = {{mr:2, textAlign:'left'}}
                             fullWidth
                             select
-                            helperText= {t("pleaseselectaserviceoraddnew")}
+                            helperText= {i18next.t("pleaseselectaserviceoraddnew")}
                             onChange={handleServicesChange}
                         >
-                          {services.map((option) =>{ return (
-                            <MenuItem key={option.id} value={option.id}>
+                          {servicesData.map((option) =>{ return (
+                            <MenuItem key={option._id} value={option._id}>
                               {option.serviceName}
                             </MenuItem>
                             )
@@ -411,13 +442,13 @@ export default function AddAppointmentForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} sx={{mr:1}}>  
                         <TextField
-                          label={t("price")}
+                          label={i18next.t("price")}
                           value={appo.price}
                           variant="standard"
                           sx = {{mr:2}}
                           fullWidth
                           onChange={handlePriceChange}
-                          helperText= {t("selectaprice")}
+                          helperText= {i18next.t("selectaprice")}
                           InputProps={{
                             startAdornment: <InputAdornment position="start">€</InputAdornment>,
                           }}
@@ -425,16 +456,16 @@ export default function AddAppointmentForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={4} md={4} >
                         <TextField
-                          label={t("paid")}
+                          label={i18next.t("paid")}
                           value={appo.paid}
                           variant="standard"
                           sx = {{mr:2}}
                           fullWidth
                           onChange={handlePaidChange}
-                          helperText= {t("amountpaid")}
+                          helperText= {i18next.t("amountpaid")}
                           InputProps={{
                             startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                            endAdornment: <InputAdornment position="end"><Button size="small">{t("printrecipe")}</Button></InputAdornment>
+                            endAdornment: <InputAdornment position="end"><Button size="small">{i18next.t("printrecipe")}</Button></InputAdornment>
                           }}
                         />
                     </Grid>
@@ -445,7 +476,7 @@ export default function AddAppointmentForm(props) {
                 {/* NOTAS */}
 
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("notes")}
+                {i18next.t("notes")}
               </Typography>
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
@@ -462,7 +493,7 @@ export default function AddAppointmentForm(props) {
 
                   <TextField
                     id="outlined-multiline-flexible"
-                    label={t("notes")}
+                    label={i18next.t("notes")}
                     multiline
                     sx = {{m:2}}
                     rows={6}
@@ -487,21 +518,21 @@ export default function AddAppointmentForm(props) {
                 onClick={HandleSubmit}
                 sx={{ m:3}}
             >
-               {mode==="add"? t("createappointment"): t("editappointment")}
+               {mode==="add"? i18next.t("createappointment"): i18next.t("editappointment")}
             </Button>
             <AdditionalButton />
             <Dialog open={closeAppoDialogOpen} onClose={closeAppoDialog}>
-                          <DialogTitle>{t("closeappointment")}</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                            {t("doyouwanttofiletheappointmentorkeepediting")}
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={closeAppo}>{t("fileit")}</Button>
-                            <Button onClick={closeAppoDialog}>{t("keepediting")}</Button>
-                          </DialogActions>
-                        </Dialog>
+                <DialogTitle>{i18next.t("closeappointment")}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText>
+                  {i18next.t("doyouwanttofiletheappointmentorkeepediting")}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={closeAppo}>{i18next.t("fileit")}</Button>
+                  <Button onClick={closeAppoDialog}>{i18next.t("keepediting")}</Button>
+                </DialogActions>
+              </Dialog>
             <Button
                
                 fullWidth
@@ -510,7 +541,7 @@ export default function AddAppointmentForm(props) {
                 onClick={resetData}
                 sx={{ m:3 }}
             >
-               {t("cancel")}
+               {i18next.t("cancel")}
             </Button>
           </Box>
         

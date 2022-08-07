@@ -3,7 +3,8 @@ import * as React from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { navigationFail, navigationForceActualScreen, navigationSuccess } from '../slices/navigation-slice';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+
 // MUI
 
 import CardMedia from '@mui/material/CardMedia';
@@ -11,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { paperColor } from '../utils/mui-custom-utils';
-import { AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Toolbar } from '@mui/material';
+import { Alert, AppBar, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Divider, Snackbar, Toolbar } from '@mui/material';
 import Grid from '@mui/material/Grid';
 
 //MUI ICONS
@@ -37,7 +38,7 @@ import { EmailForm } from './form-components/emails-comp';
 import { SocialForm } from './form-components/social-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { AddressForm } from './form-components/address-comp';
-import { GetCustomer } from '../api/customer.api';
+import { GetCustomer, UpdateCustomer } from '../api/customer.api';
 
 export default function SeeCustomerComponent(props) {
     const locale = props.locale;
@@ -51,12 +52,12 @@ export default function SeeCustomerComponent(props) {
     const [editPhonesDialog, setPhonesDialogOpen]= React.useState(false);
     const [editSocialDialog, setSocialDialogOpen]= React.useState(false);
     const [editAddressDialog, setAddressDialogOpen]= React.useState(false);
+    const [openSnackbar, setOpenSnackBar] = React.useState(false);
     const customerSelector = useSelector((state)=>state.newCustomer);
 
-    const { t } = useTranslation();
     
     React.useEffect(()=>{
-        //console.log("CUSTOMER AT USE EFFECT SEE-CUSTOMER", customer)
+        console.log("CUSTOMER AT USE EFFECT SEE-CUSTOMER", customer)
         dispatch(nc_loadFromBackend(customer));
        
 
@@ -180,6 +181,51 @@ export default function SeeCustomerComponent(props) {
         setPhonesDialogOpen(false);   
     }
 
+    const commitChanges = async (event)=>{
+        
+        event.stopPropagation();
+        const custForSend = {
+            addedAt: customerSelector.addedAt,
+            firstname:customerSelector.firstname,
+            lastname:customerSelector.lastname,
+            gender:customerSelector.gender,
+            birthdate:customerSelector.birthdate,
+            dni: customerSelector.dni,
+            image: customerSelector.image,
+            inbound: customerSelector.inbound,
+            promotedToCustomer:customerSelector.promotedToCustomer,
+            emailhome:customerSelector.emailhome,
+            emailwork: customerSelector.emailwork,
+            streetaddress:customerSelector.streetaddress,
+            cityaddress:customerSelector.city,
+            stateaddress:customerSelector.state,
+            postalcodeaddress:customerSelector.postalCode,
+            countryaddress:customerSelector.country,
+            phonehome: customerSelector.homephone,
+            phonework:customerSelector.mobilephone,
+            whatsapp:customerSelector.whatsapp,
+            socialmedia1:customerSelector.social1,
+            socialmedia2: customerSelector.social2,
+            socialmedia3: customerSelector.social3,
+            socialuser1:customerSelector.socialUser1,
+            socialuser2:customerSelector.socialUser2,
+            socialuser3:customerSelector.socialUser3,
+            releaseForm:{
+                file: customerSelector.releaseformFile,
+                generated: customerSelector.releaseformGenerated,
+                signed:customerSelector.releaseformSigned
+            }
+
+        }
+        console.log("CUSTOMER EN COMMITCHANGES",custForSend)
+
+        await UpdateCustomer(_id, custForSend).then(data =>{
+            console.log("DATOS ACTUALIZADOS",data);
+            navigate(0);
+        })  
+        
+    }    
+
     const ButtonTabs = ()=>{
         return(
             <React.Fragment>
@@ -191,7 +237,7 @@ export default function SeeCustomerComponent(props) {
                     color={showTabs === "appo"?"secondary":"primary"} size="small" 
                     onClick={SeeAppointmentsTab} 
                     startIcon={<ScheduleIcon />}
-                    >{t("seeappointments")} 
+                    >{i18next.t("seeappointments")} 
                  </Button>
                 </Grid>
                 <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
@@ -202,7 +248,7 @@ export default function SeeCustomerComponent(props) {
                     size="small" 
                     onClick={SeeHistoryTab} 
                     startIcon={<AssignmentTwoToneIcon />}
-                    >{t("seehistory")} 
+                    >{i18next.t("seehistory")} 
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
@@ -213,7 +259,7 @@ export default function SeeCustomerComponent(props) {
                     size="small" 
                     onClick={SeeDepositsTab} 
                     startIcon={<PointOfSaleIcon />}
-                    >{t("seedeposits")} 
+                    >{i18next.t("seedeposits")} 
                   </Button>
                 </Grid>
                 <Grid item xs={12} sm={2.8} md={2.8} sx={{mt:1}}>
@@ -224,7 +270,7 @@ export default function SeeCustomerComponent(props) {
                     size="small" 
                     onClick={SeeCommunicationsTab} 
                     startIcon={<EmailIcon />}
-                    >{t("seecommunications")}
+                    >{i18next.t("seecommunications")}
                   </Button>
                 </Grid>      
             </Grid>
@@ -243,8 +289,8 @@ export default function SeeCustomerComponent(props) {
           
          return (
             <React.Fragment>
-                {count ?<Button color='error' onClick={SeeDepositsTab} sx={{ marginRight:2 }}> ¡{count}€ {t("missing")}!</Button>:<Button onClick={()=>{setShowTabs("depo")}} color='success'> 
-                {t("nodebts")}</Button>}
+                {count ?<Button color='error' onClick={SeeDepositsTab} sx={{ marginRight:2 }}> ¡{count}€ {i18next.t("missing")}!</Button>:<Button onClick={()=>{setShowTabs("depo")}} color='success'> 
+                {i18next.t("nodebts")}</Button>}
             </React.Fragment>
          )
      }
@@ -254,14 +300,14 @@ export default function SeeCustomerComponent(props) {
         if (customer.birthdate){
             return(
                 <React.Fragment>
-                    <b>{new Date(customer.birthdate).toLocaleDateString(locale)} </b> {t("age")}: <b> {getAge(new Date (customer.birthdate))}</b>
+                    <b>{new Date(customer.birthdate).toLocaleDateString(locale)} </b> {i18next.t("age")}: <b> {getAge(new Date (customer.birthdate))}</b>
                 </React.Fragment>
             )
         }
         else{
             return (
                 <React.Fragment>
-                    {t("notavailable")}
+                    {i18next.t("notavailable")}
                 </React.Fragment>
             )
         }
@@ -274,6 +320,15 @@ export default function SeeCustomerComponent(props) {
             </React.Fragment>
         )
     }
+
+    
+    const handleCloseSnackBar = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+
+        setOpenSnackBar(false);
+    };
   
   //MAIN DOM RETURN
   
@@ -287,7 +342,7 @@ export default function SeeCustomerComponent(props) {
                 </Typography>
                     {CheckPendingNotes()}
                     <Button variant="contained" key={"todos los clientes"} onClick={SeeAllCustomers}>
-                        {t("allcustomers")}
+                        {i18next.t("allcustomers")}
                     </Button>
                     <IconButton color="primary" aria-label="backwards" component="span" onClick={SeePreviousCustomer}>
                         <ChevronLeftIcon />
@@ -315,17 +370,17 @@ export default function SeeCustomerComponent(props) {
                     <Paper
                         sx={{bgcolor:colorPaperInbound.back, color:colorPaperInbound.front, marginY:1}}                  
                     >
-                        <Typography variant='p' component="p">{t(customer.inbound)}</Typography>
+                        <Typography variant='p' component="p">{i18next.t(customer.inbound)}</Typography>
                     </Paper> 
                     <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start"> 
                         <Grid item xs={12} md={12} sm={12}>
-                            <Button fullWidth variant="contained" color="success" sx={{mb:1, mt:3}} onClick={SeeAppointmentsTab}>{t("appointments")} {customer.appointments.length}</Button>
+                            <Button fullWidth variant="contained" color="success" sx={{mb:1, mt:3}} onClick={SeeAppointmentsTab}>{i18next.t("appointments")} {customer.appointments.length}</Button>
                         </Grid>
                         <Grid item xs={12} md={12} sm={12}>
-                            <Button fullWidth variant="contained" color="warning" sx={{mb:1}} onClick={SeeHistoryTab}>{t("history")} {customer.history.length}</Button>
+                            <Button fullWidth variant="contained" color="warning" sx={{mb:1}} onClick={SeeHistoryTab}>{i18next.t("history")} {customer.history.length}</Button>
                         </Grid>
                         <Grid item xs={12} md={12} sm={12}>
-                            <Button fullWidth variant="contained" color="error" sx={{mb:1}} onClick={SeeCommunicationsTab}>{t("notansweredmessages")} {notAnsweredMessages(customer)}</Button>
+                            <Button fullWidth variant="contained" color="error" sx={{mb:1}} onClick={SeeCommunicationsTab}>{i18next.t("notansweredmessages")} {notAnsweredMessages(customer)}</Button>
                         </Grid>
                     </Grid>
             </Grid>
@@ -338,13 +393,13 @@ export default function SeeCustomerComponent(props) {
                         <Paper sx={{p:1, mb:2, width:"100%"}}>
                         <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                             <Grid item  xs={12} md={12} sm={12}>
-                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("name")}: <b>{customer.firstname} {customer.lastname}</b>. {t("gender")}: <GenderIcon name={customer.gender} /> ({t(customer.gender)})</Typography>
-                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("birthdate")}: <BirthdateText /></Typography>
-                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("dni")}: <b>{customer.dni}</b></Typography>
-                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("addedat")} {new Date(customer.addedAt).toLocaleDateString(locale)} </Typography>
+                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("name")}: <b>{customer.firstname} {customer.lastname}</b>. {i18next.t("gender")}: <GenderIcon name={customer.gender} /> ({i18next.t(customer.gender)})</Typography>
+                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("birthdate")}: <BirthdateText /></Typography>
+                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("dni")}: <b>{customer.dni}</b></Typography>
+                                <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("addedat")} {new Date(customer.addedAt).toLocaleDateString(locale)} </Typography>
                             </Grid>
                             <Grid item>
-                                <Button onClick={editNameDialogClick} align='left'>{t("edit")} {t("name")}</Button>
+                                <Button onClick={editNameDialogClick} align='left'>{i18next.t("edit")} {i18next.t("name")}</Button>
                             </Grid>
                         </Grid>
                         </Paper>
@@ -363,7 +418,7 @@ export default function SeeCustomerComponent(props) {
                                 </Typography>
                             </Grid>
                             <Grid item>
-                                <Button onClick={editSocialDialogClick} align='left'>{t("edit")} {t("SOCIALNETWORKS")}</Button>
+                                <Button onClick={editSocialDialogClick} align='left'>{i18next.t("edit")} {i18next.t("SOCIALNETWORKS")}</Button>
                             </Grid>
                         </Grid>
                         </Paper>
@@ -372,17 +427,17 @@ export default function SeeCustomerComponent(props) {
                             <Grid item  xs={12} md={12} sm={12}>
                                 
                                 <Typography component="div" variant="p" align='left' >
-                                {t("releaseform")}: 
-                                {customer.releaseForm.generated?<a href={"/docs/releaseforms/"+customer.releaseForm.file}> {customer.releaseForm.file} </a>:<> {t("none")}</>}
+                                {i18next.t("releaseform")}: 
+                                {customer.releaseForm.generated?<a href={"/docs/releaseforms/"+customer.releaseForm.file}> {customer.releaseForm.file} </a>:<> {i18next.t("none")}</>}
                                 </Typography>
                                 <Typography component="div" variant="p" align='left' >
-                                {customer.releaseForm.signed?<div style={{color:"green"}}>{t("consentsigned")}</div>:<div style={{color:"red"}}> {t("consentnotsigned")}</div>}
+                                {customer.releaseForm.signed?<div style={{color:"green"}}>{i18next.t("consentsigned")}</div>:<div style={{color:"red"}}> {i18next.t("consentnotsigned")}</div>}
                                 </Typography>
                                
                             </Grid>
                             <Grid item>
-                                {!customer.releaseForm.generated?<Button onClick={editSocialDialogClick} align='left'>{t("generatefile")}</Button>:<></>}
-                                {!customer.releaseForm.signed?<Button onClick={editSocialDialogClick} align='left'>{t("sign")}</Button>:<></>}
+                                {!customer.releaseForm.generated?<Button onClick={editSocialDialogClick} align='left'>{i18next.t("generatefile")}</Button>:<></>}
+                                {!customer.releaseForm.signed?<Button onClick={editSocialDialogClick} align='left'>{i18next.t("sign")}</Button>:<></>}
                             </Grid>
                         </Grid>
                         </Paper>
@@ -393,23 +448,23 @@ export default function SeeCustomerComponent(props) {
                             <Paper sx={{p:1, width:"100%", mb:2}}>
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("home")}: {customer.emailhome?<Button onClick={sendEmail} size='small'>{customer.emailhome}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("email")} {t("work")}: {customer.emailwork?<Button onClick={sendEmail} size='small'>{customer.emailwork}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("email")} {i18next.t("home")}: {customer.emailhome?<Button onClick={sendEmail} size='small'>{customer.emailhome}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("email")} {i18next.t("work")}: {customer.emailwork?<Button onClick={sendEmail} size='small'>{customer.emailwork}</Button>:<></>}</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <Button onClick={editMailDialogClick} align='left'>{t("edit")}</Button>
+                                        <Button onClick={editMailDialogClick} align='left'>{i18next.t("edit")}</Button>
                                     </Grid>
                                 </Grid>
                             </Paper>
                             <Paper sx={{p:1, width:"100%", mb:2}}>
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("home")}: {customer.phonehome?<Button onClick={callPhone} size='small'>{customer.phonehome}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("phone")} {t("work")}: {customer.phonework?<Button onClick={callPhone} size='small'>{customer.phonework}</Button>:<></>}</Typography>
-                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{t("whatsapp")}: {customer.whatsapp?<Button size='small'>{customer.whatsapp}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("phone")} {i18next.t("home")}: {customer.phonehome?<Button onClick={callPhone} size='small'>{customer.phonehome}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("phone")} {i18next.t("work")}: {customer.phonework?<Button onClick={callPhone} size='small'>{customer.phonework}</Button>:<></>}</Typography>
+                                        <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>{i18next.t("whatsapp")}: {customer.whatsapp?<Button size='small'>{customer.whatsapp}</Button>:<></>}</Typography>
                                     </Grid>
                                     <Grid item>
-                                        <Button onClick={editPhoneDialogClick} align='left'>{t("edit")}</Button>
+                                        <Button onClick={editPhoneDialogClick} align='left'>{i18next.t("edit")}</Button>
                                     </Grid>
                                  </Grid>
                             </Paper>
@@ -417,12 +472,12 @@ export default function SeeCustomerComponent(props) {
                                 <Grid container direction="column" justifyContent="flex-start" alignItems="flex-start"> 
                                     <Grid item>
                                         <Typography variant="p" component="p" align='left' sx={{ flexGrow: 1 }}>
-                                            {t("address")}: {customer.streetaddress}. {customer.postalcodeaddress} {customer.cityaddress} {customer.stateaddress}, {customer.countryaddress}.
+                                            {i18next.t("address")}: {customer.streetaddress}. {customer.postalcodeaddress} {customer.cityaddress} {customer.stateaddress}, {customer.countryaddress}.
                                         </Typography>
                                         
                                     </Grid>
                                     <Grid item>
-                                        <Button onClick={editAddressDialogClick} align='left'>{t("edit")}</Button><Button onClick={seeInGoogleMaps}>{t("seeingooglemaps")}</Button>
+                                        <Button onClick={editAddressDialogClick} align='left'>{i18next.t("edit")}</Button><Button onClick={seeInGoogleMaps}>{i18next.t("seeingooglemaps")}</Button>
                                     </Grid>
                                  </Grid>
                             </Paper>
@@ -438,7 +493,7 @@ export default function SeeCustomerComponent(props) {
         {showTabs==="comm"?<CommTab locale={locale} customer={customer}/>:<></>}
         </Grid>
         <Dialog open={editNameDialog} onClose={closeDialogs}>
-            <DialogTitle>{t("editname")}</DialogTitle>
+            <DialogTitle>{i18next.t("editname")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <NameForm firstname={customerSelector.firstname} lastname={customerSelector.lastname} birthdate={customerSelector.birthdate} gender={customerSelector.gender} /><DniForm dni={customerSelector.dni} />
@@ -446,13 +501,13 @@ export default function SeeCustomerComponent(props) {
                     
                 </DialogContent>
                 <DialogActions>
-                    <Button>{t("accept")}</Button>
-                    <Button onClick={closeDialogs}>{t("cancel")}</Button>
+                    <Button onClick={commitChanges}>{i18next.t("accept")}</Button>
+                    <Button onClick={closeDialogs}>{i18next.t("cancel")}</Button>
                     
                 </DialogActions>
         </Dialog>
         <Dialog open={editMailsDialog} onClose={closeDialogs}>
-            <DialogTitle>{t("editmail")}</DialogTitle>
+            <DialogTitle>{i18next.t("editmail")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         <EmailForm emailhome={customerSelector.emailhome} emailwork={customerSelector.emailwork}/>
@@ -460,13 +515,13 @@ export default function SeeCustomerComponent(props) {
                     
                 </DialogContent>
                 <DialogActions>
-                    <Button>{t("accept")}</Button>
-                    <Button onClick={closeDialogs}>{t("cancel")}</Button>
+                    <Button onClick={commitChanges}>{i18next.t("accept")}</Button>
+                    <Button onClick={closeDialogs}>{i18next.t("cancel")}</Button>
                     
                 </DialogActions>
         </Dialog>
         <Dialog open={editSocialDialog} onClose={closeDialogs}>
-            <DialogTitle>{t("editsocialnetworks")}</DialogTitle>
+            <DialogTitle>{i18next.t("editsocialnetworks")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                        <SocialForm social1={customerSelector.social1} social2={customerSelector.social2} social3={customerSelector.social3} socialUser1={customerSelector.socialUser1} socialUser2={customerSelector.socialUser2} socialUser3={customerSelector.socialUser3} />
@@ -474,13 +529,13 @@ export default function SeeCustomerComponent(props) {
                     
                 </DialogContent>
                 <DialogActions>
-                    <Button>{t("accept")}</Button>
-                    <Button onClick={closeDialogs}>{t("cancel")}</Button>
+                    <Button onClick={commitChanges}>{i18next.t("accept")}</Button>
+                    <Button onClick={closeDialogs}>{i18next.t("cancel")}</Button>
                     
                 </DialogActions>
         </Dialog>
         <Dialog open={editPhonesDialog} onClose={closeDialogs}>
-            <DialogTitle>{t("editphones")}</DialogTitle>
+            <DialogTitle>{i18next.t("editphones")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                        <PhoneForm homephone={customerSelector.homephone} mobilephone={customerSelector.mobilephone} whatsapp={customerSelector.whatsapp} />
@@ -488,13 +543,13 @@ export default function SeeCustomerComponent(props) {
                     
                 </DialogContent>
                 <DialogActions>
-                    <Button>{t("accept")}</Button>
-                    <Button onClick={closeDialogs}>{t("cancel")}</Button>
+                    <Button onClick={commitChanges}>{i18next.t("accept")}</Button>
+                    <Button onClick={closeDialogs}>{i18next.t("cancel")}</Button>
                     
                 </DialogActions>
         </Dialog>
         <Dialog open={editAddressDialog} onClose={closeDialogs}>
-            <DialogTitle>{t("editaddress")}</DialogTitle>
+            <DialogTitle>{i18next.t("editaddress")}</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                        <AddressForm streetaddress={customerSelector.streetaddress} city={customerSelector.city} state={customerSelector.state} postalCode={customerSelector.postalCode} country={customerSelector.country} />
@@ -502,18 +557,24 @@ export default function SeeCustomerComponent(props) {
                     
                 </DialogContent>
                 <DialogActions>
-                    <Button>{t("accept")}</Button>
-                    <Button onClick={closeDialogs}>{t("cancel")}</Button>
+                    <Button onClick={commitChanges}>{i18next.t("accept")}</Button>
+                    <Button onClick={closeDialogs}>{i18next.t("cancel")}</Button>
                     
                 </DialogActions>
         </Dialog>
+
+        <Snackbar open={openSnackbar} autoHideDuration={6000} onClose={handleCloseSnackBar}>
+            <Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>
+            {i18next.t("customeupdated")}
+            </Alert>
+        </Snackbar>
      
         
     </React.Fragment>
   )
   }else{return(
     <p>
-       {t("anerrorocurred")}
+       {i18next.t("anerrorocurred")}
     </p>
   )}
 }

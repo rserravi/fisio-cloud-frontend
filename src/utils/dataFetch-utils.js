@@ -299,11 +299,11 @@ export const getNewCabinId = ()=>{
   return lastId+1;
 }
 
-export const getPriceForService = (service)=>{
+export const getPriceForService = (serviceId, serviceList)=>{
  var result = "0";
- for (let key in configData[0].services){
-    if (configData[0].services[key].serviceName === service){
-      result = configData[0].services[key].priceXHour;
+ for (let key in serviceList){
+    if (serviceList[key]._id === serviceId){
+      result = serviceList[key].priceXHour;
       return result
     }
  }

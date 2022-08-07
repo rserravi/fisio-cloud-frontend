@@ -47,9 +47,8 @@ export const getAllCustomers= ()=>{
 }
 
 export const GetCustomer = (id) =>{
-   
     const url = customerUrl + "/"+id;
-    //console.log("ID en GETCUSTOMER API", id, "URL:"+url)
+    console.log("ID en GETCUSTOMER API", id, "URL:"+url)
     return new Promise( async(resolve, reject)=>{
         try {
             const accessJWT = sessionStorage.getItem("accessJWT");
@@ -60,7 +59,35 @@ export const GetCustomer = (id) =>{
             const res = await axios.get(url, {
                 headers: {
                     Authorization :accessJWT,
-                }
+                },
+            });
+            resolve(res.data);
+        } catch (error) {
+            console.log("ERROR EN GET CUSTOMER", error, "ID en GETCUSTOMER API", id, "URL:"+url)
+            reject(error);
+        }
+    })
+}
+
+
+// | 5     | '/v1/customer/{_custoId}'        | PUT    | TODO     |Yes         | Update customer data 
+
+export const UpdateCustomer = (id, data) =>{
+   
+    const url = customerUrl + "/"+id;
+    //console.log("ID en UPDATECUSTOMER API", id, "URL:"+url)
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const accessJWT = sessionStorage.getItem("accessJWT");
+            if (!accessJWT){
+                reject("Token not found!");
+            }
+            
+            const res = await axios.patch(url, {
+                headers: {
+                    Authorization :accessJWT,
+                },
+                body: data 
             });
             resolve(res.data);
         } catch (error) {
