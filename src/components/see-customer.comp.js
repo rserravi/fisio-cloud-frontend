@@ -39,6 +39,7 @@ import { SocialForm } from './form-components/social-comp';
 import { PhoneForm } from './form-components/phones-comp';
 import { AddressForm } from './form-components/address-comp';
 import { GetCustomer, UpdateCustomer } from '../api/customer.api';
+import { ImageComponent } from './form-components/image-comp';
 
 export default function SeeCustomerComponent(props) {
     const locale = props.locale;
@@ -361,12 +362,7 @@ export default function SeeCustomerComponent(props) {
             
             {/* Columna 1*/}
             <Grid item xs={12} md={2} sm={2}>
-            <CardMedia
-                    component="img"
-                    sx={{ width: 172, align:'center' }}
-                    image={customer.image?"/images/" + customer.image:"/images/Portrait_Placeholder.png"}
-                    alt="Foto"
-                />
+                <ImageComponent image={customer.image}/>
                     <Paper
                         sx={{bgcolor:colorPaperInbound.back, color:colorPaperInbound.front, marginY:1}}                  
                     >

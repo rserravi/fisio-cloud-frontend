@@ -63,3 +63,18 @@ export const updateAppointment = (frmData)=>{
         }
     })
 }
+
+export const deleteAppointment = (_id)=>{
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.delete(appoUrl, {
+                params:{_id:_id}
+            })
+            resolve(res.data);
+            
+        } catch (error) {
+            console.log("ERROR EN DELETE APPO",error);
+            reject(error.message);
+        }
+    })
+}

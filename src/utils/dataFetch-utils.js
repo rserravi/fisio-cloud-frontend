@@ -7,6 +7,19 @@ import { nameInitial } from "./name-utils";
 
 //UTILS
 
+export const convertToBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    };
+    fileReader.onerror = (error) => {
+      reject(error);
+    };
+  });
+};
+
 export const GetAllData = () =>{
   return customerData;
 }
@@ -147,6 +160,20 @@ export const GetCustomerIdFromName = (name) =>{
     if (customerData[userKey].firstname.includes(separated[0])){
       if (customerData[userKey].lastname.includes(separated[separated.length-1])){
         found = customerData[userKey].id;
+        return found
+      }
+    }
+  }
+  return found;
+}
+
+export const GetCustomerIdFromNameInList = (name, list) =>{
+  var found = 0
+  const separated = name.split(" ")
+  for (let userKey in list){
+    if (list[userKey].customerName.includes(separated[0])){
+      if (list[userKey].customerName.includes(separated[separated.length-1])){
+        found = list[userKey]._id;
         return found
       }
     }

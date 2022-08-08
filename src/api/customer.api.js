@@ -95,3 +95,25 @@ export const UpdateCustomer = (id, data) =>{
         }
     })
 }
+
+export const GetCustomerList = () =>{
+    const url = customerUrl + "/list";
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const accessJWT = sessionStorage.getItem("accessJWT");
+            if (!accessJWT){
+                reject("Token not found!");
+            }
+            
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization :accessJWT,
+                },
+            });
+            resolve(res.data);
+        } catch (error) {
+            console.log("ERROR EN GET CUSTOMER LIST", error)
+            reject(error);
+        }
+    })
+}

@@ -231,7 +231,7 @@
     "addingdateto":"Afegint cita a",
     "deposits":"Dipòsits",
     "seecalendar":"Veure calendari",
-    "editingdateof":"Editant la cita de",
+    "editingdateof":"Editant la cita del",
     "closeappointment": "Arxivar Cita",
     "doyouwanttofiletheappointmentorkeepediting":"Vols arxivar la cita a l'historial o continuar editant?",
     "fileit":"Arxivar",
@@ -443,5 +443,7 @@
     "sendcard":"Enviar felicitació",
     "of":"de",
     "aniversary":"Aniversari",
-    "loadingData":"Carregant Dades"
+    "loadingData":"Carregant Dades",
+    "appointmentupdated":"Cita actualitzada a base de dades",
+    "Areyousureyouwanttodeletetheappointment":"Estás segur/a que vols esborrar la cita?"
 }

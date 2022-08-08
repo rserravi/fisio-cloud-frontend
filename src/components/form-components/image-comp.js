@@ -12,6 +12,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_image_Commit } from '../../slices/newCustomer-slice';
+import { convertToBase64 } from '../../utils/dataFetch-utils';
 
 
 export const ImageComponent = (props) =>{
@@ -27,6 +28,10 @@ export const ImageComponent = (props) =>{
           const image2 = newUserSelector.image
           setImage(image2)
       }
+
+      if (props.image){
+        setImage(props.image)
+      }
     
     },[props, newUserSelector.image])
     
@@ -40,9 +45,11 @@ export const ImageComponent = (props) =>{
      
     const webcamRef = React.useRef(null);
     
-    function handleFileChange(e) {
-        setImage(URL.createObjectURL(e.target.files[0])); 
-        dispatch(nc_image_Commit(URL.createObjectURL(e.target.files[0])))
+    const  handleFileChange = async (e) =>{
+        const file = e.target.files[0];
+        const base64 = await convertToBase64(file)
+        setImage(base64); 
+        dispatch(nc_image_Commit(base64))
         }
 
     const getWebcamShot = ()=>{

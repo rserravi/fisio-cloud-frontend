@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, TextField, Typography } from '@mui/material';
+import { Alert, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, Snackbar, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomerSearchBar from './form-components/customer-search-form-comp';
@@ -16,6 +16,9 @@ import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Loading } from './Loading-comp';
 import { getPriceForService } from '../utils/dataFetch-utils';
 import { addAppointment, updateAppointment } from '../api/appointments.api';
+import { getDateFromISOTime } from '../utils/date-utils';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 var initAddService={
   service:"",
@@ -37,10 +40,17 @@ export default function AddAppointmentForm(props) {
   const [closeAppoDialogOpen, setCloseAppoDialogOpen] = React.useState(false);
   const [newService, setNewService] = React.useState(initAddService);
   const [firstLoad, setFirstLoad]= React.useState(true);
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [error, setError] = React.useState("")
+  const userSelector = useSelector(state => state.user);
+  const userId = userSelector.id;
 
   
   var initData={
     id:"1",
+    userId: userId,
+    customerName:"",
+    customerId:"",
     date: new Date(Date.now()),
     duration: "60", 
     service:"1",
@@ -55,70 +65,81 @@ export default function AddAppointmentForm(props) {
   
   React.useEffect (()=>{
     //SELECCION DE MODOS
-    if(firstLoad){
-      if (customerData._id && !appo._id){
-        //MODO AÑADIR CITA A ID
-        console.log("MODO ADDTOID")
-        setMode("addToId")
-      }
+      if(firstLoad){
+        if (customerData._id && !appo.customerId){
+          //MODO AÑADIR CITA A ID
+          console.log("MODO ADDTOID")
+          setAppo({...appo, "customerId": customerData._id, "customerName": customerData.firstname + " " + customerData.lastname})
+          setMode("addToId")
+        }
 
-      if (customerData._id && appo._id){
-        //MODO EDITAR
-        console.log("MODO EDIT")
-        setMode("edit")
-      }
+        if (appo.customerId){
+          //MODO EDITAR EXISTENTE
+          console.log("MODO EDIT EXISTENT APPO")
+          setMode("edit")
+        }
 
-      if (!customerData._id && !appo._id){
-        //MODO EDITAR
-        console.log("MODO EDIT")
-        setMode("add")
-        setAppo(initData)
+        if (!customerData._id && !appo.customerId){
+          //MODO AÑADIR
+          console.log("MODO EDIT")
+          setMode("add")
+          setAppo(initData)
+        }
+
         setFirstLoad(false)
-
       }
-
-      console.log("DARA EN USEEFFECT COMP", appo,"SERVICES", servicesData, "CABINS", cabinsData)
-      setFirstLoad(false)
-    }
+      console.log("DATA EN USEEFFECT COMP: APPO", appo, "CUSTOMER,",customerData,"SERVICES", servicesData, "CABINS", cabinsData)
     },[customerData, appo, servicesData, cabinsData, firstLoad])
    
   const HandleSubmit = (event)=>{
-  
+
     event.preventDefault();
     console.log(appo)
     //CALL API TO PUT IN DATABASE
-    if (mode==="add"){
+    if (mode==="addToId"){
       addAppointment(appo).then((data)=>{
         if(data.status ==="error"){
           console.log("ERROR EN APP_APPO", data.result)
+          setError(error)
+          setOpenSnackBar(true)
         }
         else {
-          const actualScreen = "/appointments"
-          dispatch(navigationLoading());
-          navigate(actualScreen,{replace: true});
-          dispatch(navigationSuccess(actualScreen))
+          setError("")
+          setOpenSnackBar(true)
         }
       })
 
     }else{
         updateAppointment(appo).then((data)=>{
           if(data.status ==="error"){
-            console.log("ERROR EN APP_APPO", data.result)
+            console.log("ERROR EN APP_APPO", data)
+            setError(data.message)
+            setOpenSnackBar(true)     
           }
           else {
-            const actualScreen = "/appointments"
-            dispatch(navigationLoading());
-            navigate(actualScreen,{replace: true});
-            dispatch(navigationSuccess(actualScreen))
+            setError("")
+            setOpenSnackBar(true)
           }
         })
     }
-
-    
-
    }
+
+   const handleCloseSnackBar = (event, reason) =>{
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackBar(false);
+    if (error===""){
+      const actualScreen = "/appointments"
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    }
+   }
+   
    const closeAppointment = (event)=>{
-    event.preventDefauli18next.t();
+    event.preventDefault();
     setCloseAppoDialogOpen(true);
 
   }
@@ -138,10 +159,10 @@ export default function AddAppointmentForm(props) {
     setCloseAppoDialogOpen(false);
   }
 
-   const SetCustomer = (data) =>{
-
-    // setCustomerName(data);
-    // setCustomerID(GetCustomerIdFromName(data));
+   const SetCustomer = (id, name) =>{
+    console.log ("SET CUSTOMER", id, name);
+    setAppo({...appo, "customerName": name, "customerId":id}); 
+    setMode("addToId")
    }
  
 
@@ -170,7 +191,7 @@ export default function AddAppointmentForm(props) {
   }
 
   const handlePaidChange = (event)=>{
-    setAppo({...appo, "price": event.target.value})
+    setAppo({...appo, "paid": event.target.value})
   }
 
   const handleServicesChange= (event)=>{
@@ -229,6 +250,22 @@ export default function AddAppointmentForm(props) {
 
     setAppo({...appo, "attachment": attached}); 
   }
+  
+  const SnackBarAction = (
+    <React.Fragment>
+    <Button color="secondary" size="small" onClick={handleCloseSnackBar}>
+      ACEPTAR
+    </Button>
+    <IconButton
+      size="small"
+      aria-label="close"
+      color="inherit"
+      onClick={handleCloseSnackBar}
+    >
+      <CloseIcon fontSize="small" />
+    </IconButton>
+    </React.Fragment>
+  )
 
   const MainTitle = () =>{
     // Modes "add", "addToId", "edit"
@@ -237,11 +274,14 @@ export default function AddAppointmentForm(props) {
           return(<><CustomerSearchBar customerFunc={SetCustomer}/></>);
       case "addToId":
         return (
-            <h2>{i18next.t("addingdateto")} {customerData.firstname} {customerData.lastname} </h2>
+          <>
+          <Button size="small" onClick={()=>{setAppo(initData); setMode("add")}}>{i18next.t("finddifferentcustomer")}</Button>
+            <h2>{i18next.t("addingdateto")} </h2>
+          </>
           )  
       case "edit":
           return (
-            <h2>{i18next.t("editingdateof")}{appo.customerName} , el {new Date(appo.date).toLocaleDateString()} a las {new Date(appo.date).toLocaleTimeString()}</h2>
+            <h2>{i18next.t("editingdateof")} {getDateFromISOTime(appo.date, locale)} , {new Date(appo.date).toLocaleTimeString()}</h2>
           )
         
       default:
@@ -262,19 +302,16 @@ export default function AddAppointmentForm(props) {
           onClick={closeAppointment}
           sx={{ m:3 }}
         >
-        {i18next.t("closeappointment")}
-    </Button>
-      )
-
+          {i18next.t("closeappointment")}
+        </Button>
+        )
       }
     }
 
     const ShowAttachments = ()=>{
-
       const attached = appo.attachment;
       if (attached){
-    
-      return (
+        return (
           <React.Fragment>
           <p>{attached.map((item)=>{ 
             return (
@@ -297,10 +334,7 @@ export default function AddAppointmentForm(props) {
 
    return (
     <React.Fragment>
-       
         <Box component="form" noValidate onSubmit={HandleSubmit} >
-          
-         
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="center">
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
@@ -312,8 +346,6 @@ export default function AddAppointmentForm(props) {
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
                 {i18next.t("appointment")}
               </Typography>
-
-              
 
               {/* DATE AND TIME CARD */}
 
@@ -459,7 +491,7 @@ export default function AddAppointmentForm(props) {
                           label={i18next.t("paid")}
                           value={appo.paid}
                           variant="standard"
-                          sx = {{mr:2}}
+                          sx = {{mr:2, input: appo.paid<appo.price? {color:'red'}: {color:'green'}}}
                           fullWidth
                           onChange={handlePaidChange}
                           helperText= {i18next.t("amountpaid")}
@@ -517,8 +549,9 @@ export default function AddAppointmentForm(props) {
                 variant="contained"
                 onClick={HandleSubmit}
                 sx={{ m:3}}
+                disabled={mode==="add"}
             >
-               {mode==="add"? i18next.t("createappointment"): i18next.t("editappointment")}
+               {mode==="addToId"? i18next.t("createappointment"): mode==="edit"?i18next.t("editappointment"):<></>}
             </Button>
             <AdditionalButton />
             <Dialog open={closeAppoDialogOpen} onClose={closeAppoDialog}>
@@ -543,10 +576,20 @@ export default function AddAppointmentForm(props) {
             >
                {i18next.t("cancel")}
             </Button>
+
           </Box>
         
               
         </Box>
+        <Snackbar
+            open={openSnackBar}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackBar}
+            message="Note archived"
+            action={SnackBarAction}
+          >
+          {error===""?<Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>{i18next.t("appointmentupdated")} </Alert>:<Alert onClose={handleCloseSnackBar} severity="error" sx={{ width: '100%' }}>{error} </Alert>}
+        </Snackbar>
     </React.Fragment>
   )
 }

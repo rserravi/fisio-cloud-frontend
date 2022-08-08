@@ -70,10 +70,10 @@ function ApplicationBar(boardState) {
  const [width, setWidth] = React.useState(Number(window.innerWidth));
  const [firstLoad, setFirstLoad]= React.useState(true);
  const userSelector = useSelector(state => state.user);
+ const userId = userSelector.id;
 
  const {drawerOpen} = boardState.boardState;
  const title = boardState.title;
- const userId = userSelector.id;
  const [badgeAlerts, setBadgeAlerts] =React.useState(initBadgeData);
  let open = drawerOpen;
  let showMenu =  boardState.boardState.showMenu;

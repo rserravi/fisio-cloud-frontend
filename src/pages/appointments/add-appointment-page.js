@@ -47,8 +47,12 @@ function AddAppointmentContent() {
             getCabins().then ((data)=>{
               setCabinsList(data.result);
               setFirstLoad(false);
+            }).catch((error)=>{
+              console.log(error)
+              })
+          }).catch((error)=>{
+            console.log(error)
             })
-          })
         }
         ).catch((error)=>{
           console.log(error)
@@ -61,8 +65,12 @@ function AddAppointmentContent() {
             getCabins().then ((data)=>{
               setCabinsList(data.result);
               setFirstLoad(false);
+            }).catch((error)=>{
+              console.log(error)
+              })
+          }).catch((error)=>{
+            console.log(error)
             })
-          })
         }
         ).catch((error)=>{
           console.log(error)
@@ -70,7 +78,17 @@ function AddAppointmentContent() {
       }
 
       if (!_customerId && !_appoId){
-        setFirstLoad(false)
+        getServices().then((data)=>{
+          setServicesList(data.result);
+          getCabins().then ((data)=>{
+            setCabinsList(data.result);
+            setFirstLoad(false);
+          }).catch((error)=>{
+            console.log(error)
+            })
+        }).catch((error)=>{
+          console.log(error)
+          })
       }
 
     }

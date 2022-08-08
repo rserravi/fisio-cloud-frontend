@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 //MUI IMPORTS
-import { Button, Grid, IconButton } from '@mui/material';
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import Tooltip from '@mui/material/Tooltip';
 import Menu from '@mui/material/Menu';
@@ -32,14 +32,12 @@ import SendIcon from '@mui/icons-material/Send';
 import PersonIcon from '@mui/icons-material/Person';
 import ScheduleIcon from '@mui/icons-material/Schedule';
 import EventBusyIcon from '@mui/icons-material/EventBusy';
+import { deleteAppointment } from '../api/appointments.api';
 
 var compact = false;
 
 // FUNCTIONS FOR EXTERNAL ACTIONS
 
-const deleteAppointment = (customerId) => {
-  console.log("DELETE Appointment " + customerId);
-}
 
 const duplicateAppointment = (customerId) => {
   console.log("DUPLICATE Appointment " + customerId);
@@ -114,6 +112,9 @@ export const AppointmentsComponent = (props)=> {
   const [anchorElNextButtonEL, setAnchorNextButtonEL] = React.useState(null);
   const openNextMenu = Boolean(anchorElNextButtonEL);
 
+  const [deleteDialogOpen, setDeleteDialogOpen]= React.useState(false);
+  const [selectedAppoForAction, setSelectedAppoForAction]= React.useState("");
+
   //RENDER CELLS
 
   const RenderDateCell = (props) =>{
@@ -176,15 +177,7 @@ export const AppointmentsComponent = (props)=> {
           >
             {i18next.t("makereport")}
           </MenuItem>
-         
-          <MenuItem 
-            onClick={(event) => {
-              modifyAppointment(props.row);
-              event.stopPropagation();
-          }} 
-          >
-            {i18next.t("modifyAppointment")}
-          </MenuItem>
+        
           
           <MenuItem
             onClick={(event) => {
@@ -192,7 +185,7 @@ export const AppointmentsComponent = (props)=> {
               event.stopPropagation();
         }} 
           >
-            {i18next.t("cancelAppointment")}
+            {i18next.t("closeappointment")}
           </MenuItem>
           
           <MenuItem 
@@ -382,7 +375,7 @@ export const AppointmentsComponent = (props)=> {
             label={i18next.t("duplicateappointment")}
             showInMenu
             onClick={(event) => {
-            duplicateAppointment(params.id);
+            duplicateAppointment(params.row.appoid);
             event.stopPropagation();
           }}
           />,
@@ -391,7 +384,8 @@ export const AppointmentsComponent = (props)=> {
               label={i18next.t("deleteappointment")}
               showInMenu
               onClick={(event) => {
-                deleteAppointment(params.id);
+                setSelectedAppoForAction(params.row.appoid)
+                setDeleteDialogOpen(true)
                 event.stopPropagation();
             }}
             />,
@@ -400,7 +394,7 @@ export const AppointmentsComponent = (props)=> {
               label={i18next.t("printappointment")}
               showInMenu
               onClick={(event) => {
-              printAppointment(params.id);
+              printAppointment(params.row.appoid);
               event.stopPropagation();
           }}
           />,
@@ -512,18 +506,39 @@ export const AppointmentsComponent = (props)=> {
   }
 
   const doReport = (props) =>{
-    console.log("Hacer informe de cita " + props.id);
+    console.log("Hacer informe de cita " + props.appoid);
     setAnchorPastButtonEL(null);
-    seeAppointment(props.customerId, props.id);
+    seeAppointment(props.customerId, props.appoid);
 
   }
 
   const modifyAppointment = (props) =>{
-    console.log("Modificar cita " + props.id);
+    console.log("Modificar cita " + props.appoid);
     setAnchorPastButtonEL(null);
-    seeAppointment(props.customerId, props.id);
+    seeAppointment(props.customerId, props.appoid);
   }
 
+  const deleteAppo = () => {
+    const appoId = selectedAppoForAction;
+    deleteAppointment(appoId).then((data)=>{
+      console.log(data.message)
+      setSelectedAppoForAction("");
+      setDeleteDialogOpen(false);
+      window.location.reload();
+
+    })
+    
+    console.log("DELETE Appointment " + appoId);
+  }
+  
+  const handleDeleteDialogClick = (event)=>{
+    setDeleteDialogOpen(true);
+  }
+  
+  const handleDeleteDialogClose = (event)=>{
+    setDeleteDialogOpen(false)
+  }
+  
    // Set if Toolbar is visible depending on var compact
   const CustomerToolBar = () =>{
     if(compact) {
@@ -573,7 +588,25 @@ export const AppointmentsComponent = (props)=> {
 
         localeText={LocalTextForDataGrid()}
       />
-      
+       <Dialog
+        open={deleteDialogOpen}
+        onClose={handleDeleteDialogClose}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+        >
+          <DialogTitle id="delete-dialog-title">
+            {i18next.t("deleteappointment")}
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="delete-dialog-description">
+             {i18next.t("Areyousureyouwanttodeletetheappointment")}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDeleteDialogClose}>Disagree</Button>
+            <Button onClick={deleteAppo} autoFocus>Agree</Button>
+        </DialogActions>
+      </Dialog>
     </React.Fragment>
   );
 }

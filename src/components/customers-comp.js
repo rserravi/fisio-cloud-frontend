@@ -441,7 +441,7 @@ export const CustomersComponent = (props)=> {
             {
               return(
                 <>
-                  <Avatar src={"./images/" + params.value} />
+                  <Avatar src={params.value.includes("data:image/jpeg;base64")?params.value:"./images/" + params.value} />
                 </>
               )
             }
