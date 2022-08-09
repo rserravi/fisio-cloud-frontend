@@ -60,10 +60,12 @@ export const AddressForm = (props) =>{
     };
 
     const handleChangeCountry= (event) => {
-        console.log(event.target.childNodes[1].data)
-        setAddressFrmData({...addressFrmDta, "country": event.target.childNodes[1].data})
-        dispatch(nc_country_Commit(event.target.childNodes[1].data))
-        dispatch(nc_countryPhoneCode_Commit(event.target.childNodes[5].data))
+        console.log(event.target.childNodes)
+        if (event.target.childNodes[1]){
+            setAddressFrmData({...addressFrmDta, "country": event.target.childNodes[1].data})
+            dispatch(nc_country_Commit(event.target.childNodes[1].data))
+        }
+         // dispatch(nc_countryPhoneCode_Commit(event.target.childNodes[5].data))
 
     };
 

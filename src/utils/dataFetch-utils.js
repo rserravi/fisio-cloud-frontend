@@ -1292,6 +1292,26 @@ export const GetLeadsByDate = (locale)=>{
   return jsonObj;
 }
 
+export const GetCustomerRecords= (customer)=>{
+  const item = {
+      appo: 0,
+      comm: 0,
+      hist: 0
+    }
+  console.log(customer)
+  if (customer.appointments){
+    item.hist = customer.appointments.past
+  }
+  if (customer.communications){
+    item.comm = customer.communications
+  }
+  if (customer.appointments){
+    item.appo = customer.appointments.next
+  }
+  console.log("CUSTOMER RECORDS", item)
+  return item;
+}
+
 // UTILITY LISTS!
 
 

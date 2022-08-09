@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Alert, Button, Typography } from '@mui/material';
+import { Alert, Button, Snackbar, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { ImageComponent } from './form-components/image-comp';
 import { NameForm } from './form-components/name-comp';
@@ -17,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { addCustomer } from '../api/customer.api';
 import i18next from 'i18next';
+import { Loading } from './Loading-comp';
 
 
 var initValidation={
@@ -24,7 +25,6 @@ var initValidation={
   lastname: true,
   email: true,
   phone: true,
-  dni: true
 }
 
 export default function CustomerForm(props) {
@@ -34,6 +34,9 @@ export default function CustomerForm(props) {
   const locale = props.locale
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [firstLoad, setFirstLoad]= React.useState(true)
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [error, setError] = React.useState("")
   const HandleSubmit = (event)=>{
     event.preventDefault();
 
@@ -77,11 +80,12 @@ export default function CustomerForm(props) {
 
     /// API PARA ENVIAR EL FORMULARIO AL BACKEND
 
-    if (validation.firstname && validation.lastname && validation.email && validation.phone && validation.dni){
+    if (validation.firstname && validation.lastname && validation.email){
       addCustomer(frm).then((data)=>{
         if (data.message==="New Customer Created"){
           console.log("DONE")
            // NAVIGATE TO SEECUSTOMER(_id);
+           setOpenSnackBar(true);
         }
         else {
           console.log("ERROR CHUNGO", data.message);
@@ -95,8 +99,11 @@ export default function CustomerForm(props) {
   }
 
   React.useEffect (()=>{
-    dispatch(nc_reset_slice())
-    dispatch(nc_editingStart());
+    if (firstLoad){
+      dispatch(nc_reset_slice())
+      dispatch(nc_editingStart());
+      setFirstLoad(false);
+    }
 
   },[dispatch])
  
@@ -107,6 +114,26 @@ export default function CustomerForm(props) {
     dispatch(navigationLoading());
     navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen)) 
+  }
+
+  const handleCloseSnackBar = (event, reason) =>{
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackBar(false);
+    if (error===""){
+      const actualScreen = "/customers/"
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    }
+   }
+
+  if (firstLoad){
+    return(
+      <Loading />
+    )
   }
 
   return (
@@ -128,7 +155,6 @@ export default function CustomerForm(props) {
               </Grid>
               <Grid item xs={12} md={5} sm={5} marginTop={3}>
                 <DniForm locale={locale} />
-                {!validation.dni ? <Alert severity="error">{i18next.t("youmustintroduceavalidId")}</Alert>: <></>}
                 <EmailForm  />
                 {!validation.email ? <Alert severity="error">{i18next.t("youmustintroduceatleastonevalidemail")}</Alert>: <></>}
                
@@ -177,9 +203,18 @@ export default function CustomerForm(props) {
                {i18next.t("cancel")}
               </Button>
               </Box>
-              {!validation.lastame || !validation.firstname || !validation.email || !validation.phone ? <Alert severity="error">{i18next.t("errorin")} {!validation.firstname ? i18next.t("name") + ",":""} {!validation.lastname ? i18next.t("lastname") + ",":""} {!validation.phone ? i18next.t("phone") + ",":""} {!validation.email ? i18next.t("emails") + ".":""}</Alert>:""}
+              {!validation.lastname || !validation.firstname || !validation.email || !validation.phone ? <Alert severity="error">{i18next.t("errorin")} {!validation.firstname ? i18next.t("name") + ",":""} {!validation.lastname ? i18next.t("lastname") + ",":""} {!validation.phone ? i18next.t("phone") + ",":""} {!validation.email ? i18next.t("emails") + ".":""}</Alert>:""}
               
         </Box>
+
+        <Snackbar
+            open={openSnackBar}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackBar}
+            message="Customer Created"
+          >
+          {error===""?<Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>{i18next.t("customercreated")} </Alert>:<Alert onClose={handleCloseSnackBar} severity="error" sx={{ width: '100%' }}>{error} </Alert>}
+        </Snackbar>
         
     </React.Fragment>
   )

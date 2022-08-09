@@ -58,14 +58,12 @@ export const CustomerValidation = (frmData) =>{
         lastname : false,
         email: false,
         phone: false,
-        dni: false
     }
 
     required.firstname = frmData.firstname !=="";
     required.lastname = frmData.lastname !=="";
     required.email = (validator.isEmail(frmData.emailhome) || validator.isEmail(frmData.emailwork));
     required.phone = (frmData.phonehome || frmData.workphone || frmData.whatsapp);
-    required.dni = validateDNI(frmData.dni)
     return required;
 }
 

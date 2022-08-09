@@ -117,3 +117,26 @@ export const GetCustomerList = () =>{
         }
     })
 }
+
+export const DeleteCustomer = (id) =>{
+   
+    const url = customerUrl + "/"+id;
+    //console.log("ID en UPDATECUSTOMER API", id, "URL:"+url)
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const accessJWT = sessionStorage.getItem("accessJWT");
+            if (!accessJWT){
+                reject("Token not found!");
+            }
+            
+            const res = await axios.delete(url, {
+                headers: {
+                    Authorization :accessJWT,
+                },
+            });
+            resolve(res.data);
+        } catch (error) {
+            reject(error);
+        }
+    })
+}

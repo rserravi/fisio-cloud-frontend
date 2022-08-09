@@ -197,7 +197,7 @@ export const ReportsComponent = (props)=> {
 
   function CustomerToolTip({ payload, label, active }) {
     if (active) {
-      console.log(payload)
+      //console.log(payload)
       return (
         <div className="custom-tooltip" style={{backgrouncolor:"white"}}>
           <p className="label"  margin="0">{label}</p>

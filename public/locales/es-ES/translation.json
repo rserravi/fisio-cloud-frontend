@@ -443,5 +443,10 @@
     "sendcard":"Enviar felicitación",
     "of":"de",
     "aniversary":"Cumpleaños",
-    "loadingData":"Cargando Datos"
+    "loadingData":"Cargando Datos",
+    "appointmentupdated":"Cita actualizada en la base de datos",
+    "Agree":"De acuerdo",
+    "Disagree":"Cancelar",
+    "Areyousureyouwanttodeletetheappointment":"¿Estás seguro que quieres borrar la cita?",
+    "Areyousureyouwanttodeletecustomer":"¿Estás seguro que quieres borrar al cliente"
 }

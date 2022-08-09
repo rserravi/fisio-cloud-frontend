@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 
 //MUI IMPORTS
-import { Button, Grid, IconButton, } from '@mui/material';
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, IconButton, Snackbar, } from '@mui/material';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import { Box } from '@mui/system';
 import Avatar from '@mui/material/Avatar';
@@ -14,6 +14,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Title from './Title';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import { LocalTextForDataGrid } from '../utils/mui-custom-utils';
+import { DeleteCustomer } from '../api/customer.api';
+
 
 //ICONS
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -29,38 +31,14 @@ import PersonAddAlt1Icon from '@mui/icons-material/PersonAddAlt1';
 import SendIcon from '@mui/icons-material/Send';
 import PersonSearchIcon from '@mui/icons-material/PersonSearch';
 import i18next from 'i18next';
+import CloseIcon from '@mui/icons-material/Close';
+import { GetCustomerRecords } from '../utils/dataFetch-utils';
+
 
 var info = "";
 var compact = false;
 
-
-// FUNCTIONS FOR EXTERNAL ACTIONS
-
-const deleteCustomer = (customerId) => {
-  console.log("DELETE CUSTOMER " + customerId);
-}
-
-const duplicateCustomer = (customerId) => {
-  console.log("DUPLICATE CUSTOMER " + customerId);
-}
-
-const printCustomer = (customerId) => {
-  console.log("PRINT CUSTOMER " + customerId);
-}
-
-const osint = (customerId) => {
-  console.log ("BUSCANDO POR INTERNET AL NUMERO", customerId)
-}
-
-
-//RENDER CELLS
-
-
-
-
-// FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
-
-
+// FUNCTIONS FOR SIZE
 
 const appointmentsWidth = () =>{
   if(compact){
@@ -68,6 +46,12 @@ const appointmentsWidth = () =>{
   }else{
     return 130
   }
+}
+
+const initCustomerRecords = {
+  appo: 0,
+  comm: 0,
+  hist: 0
 }
 
 /////////////////////////////////
@@ -84,6 +68,11 @@ export const CustomersComponent = (props)=> {
   const dispatch = useDispatch();
  
   const customerList = props.customerData
+  const [custForAction, setCustForAction]= React.useState({});
+  const [deleteCustomerDialog, setDeleteCustomerDialog] = React.useState(false);
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [error, setError] = React.useState("")
+  const [customerHasRecords, setCustomerHasRecords]= React.useState(initCustomerRecords)
 
 
   info= props.info;
@@ -91,6 +80,90 @@ export const CustomersComponent = (props)=> {
   var boxHeight = 600;
   if(compact){
     boxHeight = 330;
+  }
+
+  // FUNCTIONS FOR EXTERNAL ACTIONS
+
+  const deleteCustomer = (params) => {
+
+    setCustForAction(params.id);
+    console.log("DELETE CUSTOMER " + params.id);
+    setCustomerHasRecords(GetCustomerRecords(params.row))
+    setDeleteCustomerDialog(true);
+  }
+
+  const commitDeleteCustomer =()=>{
+    DeleteCustomer(custForAction).then((data)=>{
+      if (data.status==="error"){
+        setError(data.message)
+      }
+      else{
+        setError("")
+      }
+      setDeleteCustomerDialog(false);
+      setOpenSnackBar(true)
+    
+    })
+  }
+
+  const handleCloseDeleteDialog = (event)=>{
+    event.stopPropagation();
+    setDeleteCustomerDialog(false);
+
+  }
+
+  const handleCloseSnackBar = (event, reason) =>{
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackBar(false);
+    if (error===""){
+      window.location.reload(false)
+    }
+   }
+
+  
+  const SnackBarAction = (
+    <React.Fragment>
+      <Button color="secondary" size="small" onClick={handleCloseSnackBar}>
+        ACEPTAR
+      </Button>
+      <IconButton
+        size="small"
+        aria-label="close"
+        color="inherit"
+        onClick={handleCloseSnackBar}
+      >
+        <CloseIcon fontSize="small" />
+      </IconButton>
+    </React.Fragment>
+  )
+
+
+  const duplicateCustomer = (params) => {
+    console.log("DUPLICATE CUSTOMER " + params.id);
+  }
+
+  const printCustomer = (params) => {
+    console.log("PRINT CUSTOMER " + params.id);
+  }
+
+  const osint = (params) => {
+    console.log ("BUSCANDO POR INTERNET AL NUMERO", params.id)
+  }
+
+  const GetDebts = (row) =>{
+    if (row.history){
+      const count = row.history.reduce((accumulatos, obj)=>{
+        if (obj.price !== obj.paid){
+            return accumulatos + (Number(obj.price) - Number(obj.paid));
+        }
+        return accumulatos;      
+       }, 0);
+       return count *-1;
+    }
+    return 0;    
   }
 
   const RenderAppointmentCell = (props) => {
@@ -321,11 +394,11 @@ export const CustomersComponent = (props)=> {
   const getMail= (row)=>{
     var result=""
     if(row.emailwork){
-        result = row.email?row.emailwork: row.emailwork + " (w)"
+        result = row.email?row.emailwork: "(w) " + row.emailwork
         return result
     }
     if(row.emailhome){
-        result = row.email?row.emailhome: row.emailhome + " (h)"
+        result = row.email?row.emailhome: "(h) " + row.emailhome
         return result
     }
     return result;
@@ -384,6 +457,21 @@ export const CustomersComponent = (props)=> {
         </>
     );
   };
+
+  const RenderCustomerHasRecords = () =>{
+    console.log("RENDER CUSTOMER HAS RECORDS", customerHasRecords)
+    if (customerHasRecords.appo>0 || customerHasRecords.comm >0 || customerHasRecords.hist){
+      return (
+        <React.Fragment>
+          <p style={{ color: 'red' }}><b>{i18next.t("thiscustomerhasrecordsthatwillbedeleted")}</b></p>
+          {customerHasRecords.appo >0?<p>{i18next.t("appointments")+ ": " + customerHasRecords.appo + ". "}</p>:<></> }
+          {customerHasRecords.hist >0?<p>{i18next.t("history") + ": " + customerHasRecords.hist + ". "}</p>:<></>}
+          {customerHasRecords.comm >0?<p>{i18next.t("communications") + ": " + customerHasRecords.comm + "."}</p>:<></>}
+        </React.Fragment>
+      )
+    }
+    return (<></>)
+  }
   
   const emailUser = (id, mail) =>{
     dispatch(navigationLoading());
@@ -414,19 +502,21 @@ export const CustomersComponent = (props)=> {
   const rows = customerList.map((row) => 
     (
       {
-      id: row._id, 
-      inbound: row.inbound,
-      image: row.image, 
-      firstName: row.firstname, 
-      lastName: row.lastname,
-      email: getMail(row),
-      emailwork: row.emailwork,
-      emailhome: row.emailhome,
-      phoneNumber: getPhone(row),
-      phonework: row.phonework,
-      phonehome: row.phonehome,
-      whatsapp: row.whatsapp,
-      appointments: {"next": row.appointments?row.appointments.length:0, "past": row.history.length}, 
+        id: row._id, 
+        inbound: row.inbound,
+        image: row.image, 
+        firstName: row.firstname, 
+        lastName: row.lastname,
+        email: getMail(row),
+        emailwork: row.emailwork,
+        emailhome: row.emailhome,
+        phoneNumber: getPhone(row),
+        phonework: row.phonework,
+        phonehome: row.phonehome,
+        whatsapp: row.whatsapp,
+        debts : GetDebts(row) + " €",
+        appointments: {"next": row.appointments?row.appointments.length:0, "past": row.history.length}, 
+        communications: row.communications.length,
       }
     )
   );
@@ -448,7 +538,7 @@ export const CustomersComponent = (props)=> {
         },
         { field: 'firstName', headerName: i18next.t("name"), width: 100, align: "right",headerAlign:"right" },
         { field: 'lastName', headerName: i18next.t("lastname"), width: 150},
-        { field: 'email', headerName: i18next.t("email"), width: 190,renderCell: RenderEmailCell},
+        { field: 'email', headerName: i18next.t("email"), width: 183,renderCell: RenderEmailCell},
         
         {
           field: 'phoneNumber',
@@ -461,6 +551,11 @@ export const CustomersComponent = (props)=> {
           headerName: i18next.t("calendar"),
           width: appointmentsWidth(),
           renderCell: RenderAppointmentCell,
+        },
+        {
+          field: 'debts',
+          headerName: i18next.t("debts"),
+          width: 55,
         },
         {
           field: 'actions',
@@ -484,7 +579,7 @@ export const CustomersComponent = (props)=> {
             label={i18next.t("osint")}
             showInMenu
             onClick={(event) => {
-              osint(params.id);
+              osint(params);
               event.stopPropagation();
           }}
           />,
@@ -493,7 +588,7 @@ export const CustomersComponent = (props)=> {
             label={i18next.t("duplicatecustomer")}
             showInMenu
             onClick={(event) => {
-              duplicateCustomer(params.id);
+              duplicateCustomer(params);
               event.stopPropagation();
           }}
           />,
@@ -502,7 +597,7 @@ export const CustomersComponent = (props)=> {
               label={i18next.t("deletecustomer")}
               showInMenu
               onClick={(event) => {
-                deleteCustomer(params.id);
+                deleteCustomer(params);
                 event.stopPropagation();
             }}
             />,
@@ -511,7 +606,7 @@ export const CustomersComponent = (props)=> {
             label={i18next.t("printcustomer")}
             showInMenu
             onClick={(event) => {
-              printCustomer(params.id);
+              printCustomer(params);
               event.stopPropagation();
           }}
           />,
@@ -644,6 +739,11 @@ export const CustomersComponent = (props)=> {
             '& .name-bold': {
               fontWeight: '600',
             },
+            '& .debt': {
+              fontWeight: '600',
+              backgroundColor: 'red',
+              color: 'white'
+            },
             
           }}>
       <DataGrid
@@ -673,17 +773,51 @@ export const CustomersComponent = (props)=> {
               default:
                 return 'inbound-unknown';
             }
-          }else{
-            if (params.field === 'firstName' || params.field ==='lastName'){
+          }
+          if (params.field === 'firstName' || params.field ==='lastName'){
               return 'name-bold'
             }
-            else{
-            return '';
+          if(params.field === 'debts'){
+            const paramNum = params.value.split("€")
+            if (Number(paramNum[0]) !==0)
+              return 'debt'
             }
-          }
+          return "";
+          
         }}
       />
   </Box>
+      <Dialog
+        open={deleteCustomerDialog}
+        onClose={handleCloseDeleteDialog}
+        aria-labelledby="delete-dialog-title"
+        aria-describedby="delete-dialog-description"
+      >
+        <DialogTitle id="delete-dialog-title">
+          {i18next.t("deletecustomer")}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="delete-dialog-description">
+            {i18next.t("Areyousureyouwanttodeletecustomer")}
+            <RenderCustomerHasRecords />
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDeleteDialog}>{i18next.t("Disagree")}</Button>
+          <Button onClick={commitDeleteCustomer} autoFocus>
+            {i18next.t("Agree")}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Snackbar
+            open={openSnackBar}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackBar}
+            message="Note archived"
+            
+          >
+          {error===""?<Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>{i18next.t("customerdeleted")} </Alert>:<Alert onClose={handleCloseSnackBar} severity="error" sx={{ width: '100%' }}>{error} </Alert>}
+        </Snackbar>
     </React.Fragment>
   );
 }

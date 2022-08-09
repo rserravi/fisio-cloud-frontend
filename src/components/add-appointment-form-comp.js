@@ -15,7 +15,7 @@ import i18next from 'i18next';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import { Loading } from './Loading-comp';
 import { getPriceForService } from '../utils/dataFetch-utils';
-import { addAppointment, updateAppointment } from '../api/appointments.api';
+import { addAppointment, closeAppointment, updateAppointment } from '../api/appointments.api';
 import { getDateFromISOTime } from '../utils/date-utils';
 import CloseIcon from '@mui/icons-material/Close';
 
@@ -88,7 +88,7 @@ export default function AddAppointmentForm(props) {
 
         setFirstLoad(false)
       }
-      console.log("DATA EN USEEFFECT COMP: APPO", appo, "CUSTOMER,",customerData,"SERVICES", servicesData, "CABINS", cabinsData)
+      //console.log("DATA EN USEEFFECT COMP: APPO", appo, "CUSTOMER,",customerData,"SERVICES", servicesData, "CABINS", cabinsData)
     },[customerData, appo, servicesData, cabinsData, firstLoad])
    
   const HandleSubmit = (event)=>{
@@ -138,21 +138,30 @@ export default function AddAppointmentForm(props) {
     }
    }
    
-   const closeAppointment = (event)=>{
+   const closeAppointmentClick = (event)=>{
     event.preventDefault();
     setCloseAppoDialogOpen(true);
 
   }
 
   const closeAppo = (event) =>{
-    event.preventDefauli18next.t();
+    event.preventDefault();
     console.log(appo)
-    setAppo({...appo, "closed": new Date().now})
+    //setAppo({...appo, "closed": new Date().now})
     //CALL API TO PUT IN DATABASE
-    const actualScreen = "/appointments"
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    closeAppointment(appo._id).then((data)=>{
+      if(data.status ==="error"){
+        console.log("ERROR EN CLOSE APPO", data)
+        setError(data.message)
+        setOpenSnackBar(true)     
+      }
+      else {
+        setError("")
+        setOpenSnackBar(true)
+      }
+    })
+
+    
   }
 
   const closeAppoDialog = () =>{
@@ -299,7 +308,7 @@ export default function AddAppointmentForm(props) {
           fullWidth
           variant="contained"
           color = "warning"
-          onClick={closeAppointment}
+          onClick={closeAppointmentClick}
           sx={{ m:3 }}
         >
           {i18next.t("closeappointment")}

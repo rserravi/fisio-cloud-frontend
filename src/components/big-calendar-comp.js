@@ -152,7 +152,6 @@ export default function BigCalendarComp(props) {
   
   const handleSelectEvent = useCallback(
     (event) => {
-      //console.log(event)
       setSelectedvent(event);
       setCustomerID(event.customerId);
       if(event.kind==="appo"){
@@ -212,7 +211,15 @@ export default function BigCalendarComp(props) {
    // console.log(event.target)
     console.log("SEE APPOINTMENT", appo.id, " OF CUSTOMER", customerID );
     dispatch(navigationLoading())
-    const actualScreen = "/addappointment/"+ Number(customerID) +"/"+ Number(appo.id);
+    const actualScreen = "/addappointment/"+ customerID +"/"+ appo.id;
+    navigate(actualScreen, {replace: true});
+    dispatch(navigationSuccess(actualScreen))
+  }
+
+  const handleEditAppointment = (event)=>{
+    console.log("SEE APPOINTMENT", appo.id, " OF CUSTOMER", customerID );
+    dispatch(navigationLoading())
+    const actualScreen = "/addappointment/"+ customerID +"/"+ appo.id;
     navigate(actualScreen, {replace: true});
     dispatch(navigationSuccess(actualScreen))
   }
@@ -347,7 +354,7 @@ export default function BigCalendarComp(props) {
         resourceTitleAccessor="resourceTitle"
         endAccessor="end"
         popup
-        style={{ height: 200 }}
+        style={{ minHeight: 200 }}
         eventPropGetter={
           (event) => {
             let newStyle = {
@@ -376,7 +383,7 @@ export default function BigCalendarComp(props) {
       showMultiDayTimes
       resources={resourceMap}
       endAccessor="end"
-      style={{ height: 500 }}
+      style={{ minHeight: 500 }}
       selectable
       popup
       messages={{
@@ -430,7 +437,7 @@ export default function BigCalendarComp(props) {
       </DialogContent>
       <DialogActions>
         {selectedEvent && selectedEvent.ispast ? <Button onClick={handleWriteReport}>{i18next.t("writereport")}</Button> :  <Button onClick={handleDialogClose}>{i18next.t("sendRequest")}</Button>}
-        <Button onClick={handleDialogClose}>{i18next.t("duplicateappointment")}</Button>
+        <Button onClick={handleEditAppointment}>{i18next.t("editappointment")}</Button>
         <Button onClick={handleDialogClose}>{i18next.t("deleteappointment")}</Button>
         <Button onClick={handleDialogClose} autoFocus>
           {i18next.t("exit")}

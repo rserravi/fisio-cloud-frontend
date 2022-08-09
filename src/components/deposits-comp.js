@@ -34,7 +34,7 @@ export default function Deposits(props) {
   React.useEffect(() => {
     if (!props.income && !props.debts){
       getDeposits(startDate, new Date(), userId).then((data)=>{
-        console.log("DATA RESULT",data);
+        //console.log("DATA RESULT",data);
         setDebts(data.result.debts)
         setIncome(data.result.income);
         setLoading(false);

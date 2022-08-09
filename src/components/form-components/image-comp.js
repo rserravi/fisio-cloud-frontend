@@ -4,6 +4,7 @@ import { ButtonBase, Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Webcam from "react-webcam";
 import { styled } from '@mui/material/styles';
+import FileResizer from 'react-image-file-resizer';
 
 
 //ICONS
@@ -12,7 +13,7 @@ import UploadIcon from '@mui/icons-material/Upload';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useDispatch, useSelector } from 'react-redux';
 import { nc_image_Commit } from '../../slices/newCustomer-slice';
-import { convertToBase64 } from '../../utils/dataFetch-utils';
+//import { convertToBase64 } from '../../utils/dataFetch-utils';
 
 
 export const ImageComponent = (props) =>{
@@ -20,20 +21,27 @@ export const ImageComponent = (props) =>{
 
   const newUserSelector =  useSelector(state => state.newCustomer);
   const imageInit= "/images/Portrait_Placeholder.png";
-  const [image, setImage] = React.useState(imageInit);
+  const [image, setImage] = React.useState(newUserSelector.image);
+  const [firstLoad, setFirstLoad] = React.useState(true)
+
+  const resizeFile = (file) => new Promise(resolve => {
+    FileResizer.imageFileResizer(file, 160, 160, 'JPEG', 100, 0,
+    uri => {
+      resolve(uri);
+    }, 'base64' );
+});
+
     
   React.useEffect (()=>{
-      //console.log(props)
-      if (props.editUser){
-          const image2 = newUserSelector.image
-          setImage(image2)
-      }
-
-      if (props.image){
-        setImage(props.image)
+      if (firstLoad){ 
+        if (props.image){
+          setImage(props.image)
+        }
+       // console.log(image)
+        setFirstLoad(false);
       }
     
-    },[props, newUserSelector.image])
+    },[props, newUserSelector.image, image, firstLoad])
     
     const [webcamShow, setWebcamShow] = React.useState(false); 
     
@@ -47,7 +55,7 @@ export const ImageComponent = (props) =>{
     
     const  handleFileChange = async (e) =>{
         const file = e.target.files[0];
-        const base64 = await convertToBase64(file)
+        const base64 = await resizeFile(file)
         setImage(base64); 
         dispatch(nc_image_Commit(base64))
         }

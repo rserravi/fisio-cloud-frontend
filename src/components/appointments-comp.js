@@ -603,8 +603,8 @@ export const AppointmentsComponent = (props)=> {
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleDeleteDialogClose}>Disagree</Button>
-            <Button onClick={deleteAppo} autoFocus>Agree</Button>
+            <Button onClick={handleDeleteDialogClose}>{i18next.t("Disagree")}</Button>
+            <Button onClick={deleteAppo} autoFocus>{i18next.t("Agree")}</Button>
         </DialogActions>
       </Dialog>
     </React.Fragment>

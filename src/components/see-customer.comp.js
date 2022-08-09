@@ -7,7 +7,6 @@ import i18next from 'i18next';
 
 // MUI
 
-import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
@@ -40,6 +39,7 @@ import { PhoneForm } from './form-components/phones-comp';
 import { AddressForm } from './form-components/address-comp';
 import { GetCustomer, UpdateCustomer } from '../api/customer.api';
 import { ImageComponent } from './form-components/image-comp';
+import { Loading } from './Loading-comp';
 
 export default function SeeCustomerComponent(props) {
     const locale = props.locale;
@@ -55,13 +55,13 @@ export default function SeeCustomerComponent(props) {
     const [editAddressDialog, setAddressDialogOpen]= React.useState(false);
     const [openSnackbar, setOpenSnackBar] = React.useState(false);
     const customerSelector = useSelector((state)=>state.newCustomer);
-
     
     React.useEffect(()=>{
-        console.log("CUSTOMER AT USE EFFECT SEE-CUSTOMER", customer)
-        dispatch(nc_loadFromBackend(customer));
+       // console.log("USE EFFECT DE SEE-CUSTOMER", customer)
+        if (customerSelector._id!=="0"){
+            dispatch(nc_loadFromBackend(customer))
+        }
        
-
     },[customer, dispatch])
 
     if (!customer){
@@ -281,7 +281,7 @@ export default function SeeCustomerComponent(props) {
 
     const CheckPendingNotes=()=>{
         const count = history.reduce((accumulatos, obj)=>{
-         if (obj.status === "pending"){
+         if (obj.price !== obj.paid){
              return accumulatos + (Number(obj.price) - Number(obj.paid));
          }
          return accumulatos;      
@@ -332,8 +332,12 @@ export default function SeeCustomerComponent(props) {
     };
   
   //MAIN DOM RETURN
+
+  if (customerSelector===0){
+    <Loading />
+  }
   
-  if (customer){
+  if (customer && customerSelector.id!=="0"){
   return (
     <React.Fragment>
         <AppBar position='static' color="transparent" >

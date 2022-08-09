@@ -78,3 +78,18 @@ export const deleteAppointment = (_id)=>{
         }
     })
 }
+
+export const closeAppointment = (_id)=>{
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.delete(appoUrl+"/close", {
+                params:{_id:_id}
+            })
+            resolve(res.data);
+            
+        } catch (error) {
+            console.log("ERROR EN CLOSE APPO",error);
+            reject(error.message);
+        }
+    })
+}
