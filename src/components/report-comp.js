@@ -71,7 +71,7 @@ export const ReportsComponent = (props)=> {
 
 
   React.useEffect(()=>{
-    console.log("EN USE EFFECT REPORT-COMP")
+    //console.log("EN USE EFFECT REPORT-COMP")
     if (firstLoad){
     GetReports(locale).then((data)=>{
       setDepositsForChart(data.depo);
@@ -80,7 +80,7 @@ export const ReportsComponent = (props)=> {
       setUserServicesForChart(data.userServ);
       setLeadsAndCustomers(data.leadsAndCust);
       setFirstLoad(false);
-      console.log(data);
+      //console.log(data);
     }
   ).catch((error)=>{
     console.log(error)

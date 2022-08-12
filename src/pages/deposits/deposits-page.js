@@ -46,7 +46,7 @@ function DepositContent() {
   React.useEffect(() => {
         if (firstLoad){
           getDeposits(startDate, endDate, userId).then((data)=>{
-            console.log("DATA RESULT",data);
+            //console.log("DATA RESULT",data);
             setDeposits(data.result.deposits);
             setDebts(data.result.debts)
             setIncome(data.result.income);

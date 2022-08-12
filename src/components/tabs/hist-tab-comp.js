@@ -1,11 +1,12 @@
 // REACT
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
+
 
 // MUI
 import Typography from '@mui/material/Typography';
 import { LocalTextForDataGrid} from '../../utils/mui-custom-utils';
-import { Dialog, IconButton, Paper, Tooltip} from '@mui/material';
+import { IconButton, Paper, Tooltip} from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { DataGrid, GridActionsCellItem, GridToolbar } from '@mui/x-data-grid';
 import { Box } from '@mui/system';
@@ -29,15 +30,15 @@ import { HistSingleComponent } from './hist-single-tab-comp';
 // FUNCTIONS FOR EXTERNAL ACTIONS
 
 const deleteAppointment = (customerId) => {
-    console.log("DELETE Appointment " + customerId);
+    console.log("DELETE Histo " + customerId);
 }
   
 const duplicateAppointment = (customerId) => {
-    console.log("DUPLICATE Appointment " + customerId);
+    console.log("DUPLICATE Histo " + customerId);
 }
   
 const printAppointment = (customerId) => {
-    console.log("PRINT Appointment " + customerId);
+    console.log("PRINT Histo " + customerId);
 }
   
 // FUNCTIONS FOR DATAGRID COLUMNS AND ROWS
@@ -48,9 +49,6 @@ export const HistTab = (props) =>{
     const tableHeight = props.customer?280:600;
     const navigate = useNavigate();
     const dispatch = useDispatch();
-
-
-    const { t } = useTranslation();
     
     // Select has an array of selected rows
     const [select, setSelection] = React.useState([]);
@@ -112,20 +110,19 @@ export const HistTab = (props) =>{
       }
 
     const Columns = () => {
-        const { t } = useTranslation();
         return(
             [
                 {
                     field: 'actions',
                     type: 'actions',
-                    headerName: t("actions"),
+                    headerName: i18next.t("actions"),
                     width: 80,
                     sortable: false,
                     getActions: (params) => [
                         params.row.pastappo?             
                         <GridActionsCellItem
                             icon={<FlagIcon />}
-                            label={t("makereport")}
+                            label={i18next.t("makereport")}
                             onClick={(event) => {
                                 doReport(params);
                                 event.stopPropagation();
@@ -133,7 +130,7 @@ export const HistTab = (props) =>{
                         />:<></>,
                         <GridActionsCellItem
                             icon={<ContentCopyIcon />}
-                            label={t("duplicateappointment")}
+                            label={i18next.t("duplicateappointment")}
                             showInMenu
                             onClick={(event) => {
                                 duplicateAppointment(params.id);
@@ -142,7 +139,7 @@ export const HistTab = (props) =>{
                         />,
                         <GridActionsCellItem
                             icon={<DeleteIcon />}
-                            label={t("deleteappointment")}
+                            label={i18next.t("deleteappointment")}
                             showInMenu
                             onClick={(event) => {
                                 deleteAppointment(params.id);
@@ -151,7 +148,7 @@ export const HistTab = (props) =>{
                         />,
                         <GridActionsCellItem
                             icon={<LocalPrintshopIcon />}
-                            label={t("printappointment")}
+                            label={i18next.t("printappointment")}
                             showInMenu
                             onClick={(event) => {
                                 printAppointment(params.id);
@@ -160,16 +157,16 @@ export const HistTab = (props) =>{
                         />,
                     ]
                 },
-                { field: 'id', hide: true, headerName: t("Id"), width: 20 },
-                { field: 'date', headerName: t("date"), width: 220, renderCell:RenderDateCell},
-                { field: 'time', headerName: t("Time"), width:100},
-                { field: 'duration', headerName: t("Duration"), width: 80},
-                { field: 'service', headerName: t("Service"), width: 80},
-                { field: 'price', headerName: t("Price"), width: 80 },
-                { field: 'paid', headerName: t("Paid"), width: 80 },
-                { field: 'debt', headerName: t("debt"), width: 80, renderCell:RenderDebt},
-                { field: 'cabin', headerName: t("cabin"), width: 75 },  
-                { field: 'attachments', headerName: t("attachments"), width:270, renderCell:RenderAttachments }
+                { field: 'id', hide: true, headerName: i18next.t("Id"), width: 20 },
+                { field: 'date', headerName:i18next.t("date"), width: 220, renderCell:RenderDateCell},
+                { field: 'time', headerName: i18next.t("Time"), width:100},
+                { field: 'duration', headerName: i18next.t("Duration"), width: 80},
+                { field: 'service', headerName: i18next.t("Service"), width: 80},
+                { field: 'price', headerName: i18next.t("Price"), width: 80 },
+                { field: 'paid', headerName: i18next.t("Paid"), width: 80 },
+                { field: 'debt', headerName: i18next.t("debt"), width: 80, renderCell:RenderDebt},
+                { field: 'cabin', headerName: i18next.t("cabin"), width: 75 },  
+                { field: 'attachments', headerName: i18next.t("attachments"), width:270, renderCell:RenderAttachments }
             ]
         )
     } 
@@ -227,7 +224,7 @@ export const HistTab = (props) =>{
                 },              
              
               }}>
-                <Typography variant="h5" component="h1" align='left' sx={{ flexGrow: 1, mb:1 }}>{t("history")}</Typography>
+                <Typography variant="h5" component="h1" align='left' sx={{ flexGrow: 1, mb:1 }}>{i18next.t("history")}</Typography>
               
                 <DataGrid
                     rows={rows}
@@ -241,9 +238,7 @@ export const HistTab = (props) =>{
                     onSelectionModelChange={handleRowSelection}
                 />
               </Box>
-              <Dialog>
 
-              </Dialog>
               </Grid>
               <Paper sx={{mt:5}}>
                 {select.length>0?<HistSingleComponent locale={locale} select={GetRowById(rows,select[select.length-1])} />:<></>}

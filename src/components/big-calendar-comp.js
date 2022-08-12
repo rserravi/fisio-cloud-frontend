@@ -73,8 +73,7 @@ export default function BigCalendarComp(props) {
   const [data, setData]=React.useState(initData)
   const [mode, setMode]=React.useState("seeall");
   const [firstLoad, setFirstLoad]=React.useState(true);
-  const userId = userSelector.id
-
+  //const userId = userSelector.id
 
 
   const mutateData = (data)=> {
@@ -92,6 +91,7 @@ export default function BigCalendarComp(props) {
       datos2[key].start = new Date(datos2[key].start);
       datos2[key].end = new Date(datos2[key].end);
     }
+    //console.log(datos2)
     return datos2
   }
 
@@ -152,7 +152,8 @@ export default function BigCalendarComp(props) {
   
   const handleSelectEvent = useCallback(
     (event) => {
-      setSelectedvent(event);
+
+            setSelectedvent(event);
       setCustomerID(event.customerId);
       if(event.kind==="appo"){
         setAppo({...appo, "id": event.resourceId})
@@ -354,7 +355,7 @@ export default function BigCalendarComp(props) {
         resourceTitleAccessor="resourceTitle"
         endAccessor="end"
         popup
-        style={{ minHeight: 200 }}
+        style={{height: 200 }}
         eventPropGetter={
           (event) => {
             let newStyle = {
@@ -383,7 +384,7 @@ export default function BigCalendarComp(props) {
       showMultiDayTimes
       resources={resourceMap}
       endAccessor="end"
-      style={{ minHeight: 500 }}
+      style={{ minHeight: 600 }}
       selectable
       popup
       messages={{

@@ -38,3 +38,37 @@ export const getHistoriesByCustomerId = (customerId)=>{
         }
     })
 }
+
+export const getHistoryById = (histoId)=>{
+   // console.log("HISTO EN getHistoryById", histoId)
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.get(historyUrl, {
+                params:{
+                    "_id": histoId
+                }
+            });
+            //console.log("GET HISTORYBYID RESULT",res.data.result);
+            resolve(res.data.result[0]);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}
+
+export const updateHistory= (frmData)=>{
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.put(historyUrl, {
+                body:frmData
+            })
+            resolve(res.data);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}

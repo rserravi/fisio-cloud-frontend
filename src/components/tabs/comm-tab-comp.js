@@ -1,6 +1,5 @@
 // REACT
 import * as React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { navigationLoading, navigationSuccess } from '../../slices/navigation-slice';
@@ -36,8 +35,8 @@ export const CommTab = (props) =>{
     const locale = props.locale;
     
     const customer = props.customer?props.customer:{};
-    console.log("COMM TAB PROPS", props)
-    const communications=props.commData?props.commData:{};
+    //console.log("COMM TAB PROPS", props)
+    const communications=props.customer?props.customer.communications:props.commData
     const tableHeight = props.customer?280:600;
     const mode=props.customer?"custoPage":"commPage";
     const dispatch = useDispatch();
@@ -93,44 +92,44 @@ export const CommTab = (props) =>{
     }
 
     const handleRowSelection = (ids) =>{
-        console.log("PASAMOS EN ID DE LA COMM PULSADA",ids)
+        console.log("PASAMOS EN ID DE LA COMM PULSADA",ids, "customer", customer)
         setSelection(ids);
+        
       }
 
     const addCommClick = (event)=>{
         event.stopPropagation();
         console.log("ADD COMM")
-        const actualScreen = "/addcommunication/"+ Number(customer.id);
+        const actualScreen = "/addcommunication/"+ customer._id;
         dispatch(navigationLoading())
         navigate(actualScreen,{replace: true});
         dispatch(navigationSuccess(actualScreen))
     }
 
     const Columns = () => {
-        const { t } = useTranslation();
         return(
             [
-                { field: 'id', hide: true, headerName: t("Id"), width: 20 },
-                { field: 'readed', type:"boolean", headerName: t("readed"), width:10},
-                { field: 'answered', type:"boolean", headerName: t("answered"), width:10},
+                { field: 'id', hide: true, headerName: i18next.t("Id"), width: 20 },
+                { field: 'readed', type:"boolean", headerName: i18next.t("readed"), width:10},
+                { field: 'answered', type:"boolean", headerName: i18next.t("answered"), width:10},
                 { field: 'direction', headerName: "", width:10, renderCell: RenderDirection},
-                { field: 'date', headerName: t("date"), width: 250},
-                { field: 'type', headerName: t("Type"), width: 80 },
-                { field: 'duration', headerName: t("Duration"), width: 80 },
-                { field: 'subject', headerName: t("Subject"), width: 120},
-                { field: 'notes', headerName: t("Notes"), width: 275},
-                { field: 'follow', headerName: t("Follow"), hide: true,  width: 110},
+                { field: 'date', headerName: i18next.t("date"), width: 250},
+                { field: 'type', headerName: i18next.t("Type"), width: 80 },
+                { field: 'duration', headerName: i18next.t("Duration"), width: 80 },
+                { field: 'subject', headerName: i18next.t("Subject"), width: 120},
+                { field: 'notes', headerName: i18next.t("Notes"), width: 275},
+                { field: 'follow', headerName: i18next.t("Follow"), hide: true,  width: 110},
                 {
                     field: 'actions',
                     type: 'actions',
-                    headerName: t("actions"),
+                    headerName: i18next.t("actions"),
                     width: 80,
                     sortable: false,
                     getActions: (params) => [
                     
                         <GridActionsCellItem
                             icon={<EditIcon />}
-                            label={t("editcontact")}
+                            label={i18next.t("editcontact")}
                             showInMenu
                             onClick={(event) => {
                             //EditComunications(params.id);
@@ -298,7 +297,7 @@ export const CommTab = (props) =>{
               </Box>
               </Grid>
               <Paper sx={{mt:5}}>               
-                    {select.length>0?<ConversationComponent locale={locale} select={select[0]} />:<></>}
+                    {select.length>0?<ConversationComponent locale={locale} select={select[0]} customer={customer} />:<></>}
               </Paper>
             </Grid>
         </React.Fragment>

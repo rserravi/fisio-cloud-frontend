@@ -28,10 +28,10 @@ function DashboardContent() {
   const [firstLoad, setFirstLoad]= React.useState(true);
 
   React.useEffect(()=>{
-    console.log("EN USE EFFECT DASH")
+    //console.log("EN USE EFFECT DASH")
     if (firstLoad){
     getAllCustomers().then((data)=>{
-      console.log("DATA RESULT",data.result);
+      //console.log("DATA RESULT",data.result);
       setCustomerData(data.result);
       setFirstLoad(false);
       

@@ -10,10 +10,12 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
-
-import { useTranslation } from 'react-i18next';
+import i18next from 'i18next';
 import AddCommunicationsComponent from '../../components/add-communicaciont-comp';
 import { useParams } from 'react-router-dom';
+import { GetCustomer } from '../../api/customer.api';
+import { Loading } from '../../components/Loading-comp';
+import { GetThread } from '../../utils/dataFetch-utils';
 
 
 
@@ -24,18 +26,42 @@ function AddCommunicationContent() {
   const boardState = useSelector((state)=> state.navigator);
   const userSelector = useSelector(state => state.user);
   const localization = userSelector.locale;
-  const _customerId = Number(useParams().customerid);
-  const _thread = Number(useParams().thread);
+  const _customerId = useParams().customerid;
+  const _thread = useParams().thread;
   const _action = useParams().action;
   const _phonemail =useParams().phonemail;
-  const { t } = useTranslation();
+  const [firstLoad, setFirstLoad]= React.useState(true);
+  const [customerData, setCustomerData] = React.useState([])
+  const [threadData, setThreadData]= React.useState([]);
 
+  React.useEffect(()=>{
+    if (firstLoad){
+      if (_customerId){
+        GetCustomer(_customerId).then((data)=>{
+          setCustomerData(data.result)
+          if (_thread){
+            setThreadData(GetThread(data.result, _thread));
+            }
+          setFirstLoad(false);
+        })
+      }
+    }
+  },[firstLoad])
+
+  if(firstLoad){
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <Loading /> 
+      </Box>
+    );
+  }
+  
   
   return (
     <ThemeProvider theme={mdTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
-        <ApplicationBar boardState={boardState} title={t("addcomunication")} />
+        <ApplicationBar boardState={boardState} title={i18next.t("addcomunication")} />
         <SideMenu boardState={boardState} />
 
         <Box
@@ -57,7 +83,7 @@ function AddCommunicationContent() {
             <Grid container spacing={1}>
              <Grid item xs={12}>
                 <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <AddCommunicationsComponent customerId={_customerId} threadId={_thread} action={_action} phonemail={_phonemail} locale={localization} />
+                  <AddCommunicationsComponent customerData={customerData} threadData={threadData} action={_action} phonemail={_phonemail} locale={localization} />
                 </Paper>
               </Grid>
             </Grid>

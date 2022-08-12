@@ -243,6 +243,7 @@ export const AppoTab = (props) =>{
         duration: row.duration,
         service:row.serviceName,
         price: row.price,
+        paid: row.paid,
         cabin: row.cabinName,
         status: row.status,
         closed: row.closed,

@@ -1132,39 +1132,29 @@ export const notAnsweredMessages = (customerData)=>{
   }
 }
 
-
-export const GetThread = (data)=>{
-  const customerID = data.customerId;
-  const thread = data.thread;
-  var jsonObj = [];
-  for (let key in customerData){
-    if (Number(customerData[key].id) === Number(customerID)){
-      for (let commKey in customerData[key].contacthistory){
-        if (Number(customerData[key].contacthistory[commKey].thread) === Number(thread)){
-          var item = {};
-          item["id"]= customerData[key].contacthistory[commKey].id
-          item["senderName"] = GetSenderName(customerData[key].id,  customerData[key].contacthistory[commKey].user, customerData[key].contacthistory[commKey].direction);
-          item["receiverName"] =  GetReceiverName( customerData[key].id,  customerData[key].contacthistory[commKey].user,  customerData[key].contacthistory[commKey].direction);
-          item["customerId"] = customerData[key].id
-          item["userId"] =  customerData[key].contacthistory[commKey].user
-          item["communicationId"] =customerData[key].contacthistory[commKey].id
-          item["direction"] =customerData[key].contacthistory[commKey].direction;
-          item["date"] = customerData[key].contacthistory[commKey].date;
-          item["type"] = customerData[key].contacthistory[commKey].type;
-          item["duration"] = customerData[key].contacthistory[commKey].duration;
-          item["subject"] =customerData[key].contacthistory[commKey].subject;
-          item["notes"] = customerData[key].contacthistory[commKey].notes;
-          item["follow"] = customerData[key].contacthistory[commKey].follow;
-          item["alertfollow"]= customerData[key].contacthistory[commKey].alertfollow;
-          item["thread"] =  customerData[key].contacthistory[commKey].thread;
-          item["readed"] = customerData[key].contacthistory[commKey].readed;
-          item["answered"] = customerData[key].contacthistory[commKey].answered;
-          
-          jsonObj.push(item)
-        }
-      }
-    }
+export const extractThreadId = (customerDat, messageId) => {
+  //console.log("DATOS EN EXTRACTTHREADID", customerDat, messageId)
+  for (let key in customerDat.communications){
+    if (customerDat.communications[key]._id === messageId);
+    return customerDat.communications[key].thread;
   }
+
+}
+
+
+export const GetThread = (customerDat, thread)=>{
+
+  //console.log("GET THREAD", customerDat, thread)
+
+  var jsonObj = [];
+
+   for (let convKey in customerDat.communications){
+    if (customerDat.communications[convKey].thread === thread){
+      jsonObj.push(customerDat.communications[convKey])
+    }
+   }
+
+  //console.log("GETTHEAD RETURN", jsonObj)
   return jsonObj.reverse();
 }
 

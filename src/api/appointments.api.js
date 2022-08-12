@@ -64,6 +64,39 @@ export const updateAppointment = (frmData)=>{
     })
 }
 
+export const updateAppointmentDate = (appoId, newAppoDate)=>{
+    console.log("update appointment date", appoId, newAppoDate)
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.put(appoUrl + "/date", {
+                appoId: appoId,
+                newDate: newAppoDate
+            })
+            resolve(res.data);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}
+
+export const updateAppointmentPaid = (appoId, amountPaid)=>{
+    return new Promise( async(resolve, reject)=>{
+        try {
+            const res = await axios.put(appoUrl + "/paid", {
+                appoId: appoId,
+                amountPaid: amountPaid
+            })
+            resolve(res.data);
+            
+        } catch (error) {
+            console.log(error);
+            reject(error.message);
+        }
+    })
+}
+
 export const deleteAppointment = (_id)=>{
     return new Promise( async(resolve, reject)=>{
         try {

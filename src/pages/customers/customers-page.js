@@ -25,10 +25,10 @@ function CustomersContent() {
   const [firstLoad, setFirstLoad]= React.useState(true);
 
   React.useEffect(()=>{
-    console.log("EN USE EFFECT CUSTOMER CONENTE")
+   // console.log("EN USE EFFECT CUSTOMER CONENTE")
     if (firstLoad){
     getAllCustomers().then((data)=>{
-      console.log("DATA RESULT",data.result);
+     //console.log("DATA RESULT",data.result);
       setCustomerData(data.result);
       setFirstLoad(false);
   }

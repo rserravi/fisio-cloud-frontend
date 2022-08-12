@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import { GetThreadByCommId } from '../api/communications.api';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
-import { GetCommunicationActions, GetReceiverName, GetSenderName  } from '../utils/dataFetch-utils';
+import { extractThreadId, GetCommunicationActions, GetReceiverName, GetSenderName, GetThread  } from '../utils/dataFetch-utils';
 import i18next from 'i18next';
 
 
@@ -64,22 +64,31 @@ const initData = [
 
 export const ConversationComponent = (props) => {
 
-   console.log ("PROPS EN CONVERSATION COMPONENT", props)
+   //console.log ("PROPS EN CONVERSATION COMPONENT", props)
    const [threadData, setThreadData]= React.useState(initData)
    const locale = props.locale;
+   const customer = props.customer;
    const commId = props.select;
    const [newActionDialogOpen, setNewActionDialogOpen] = React.useState(false);
    const [firstLoad, setFirstLoad] = React.useState(true)
-   console.log("THREAD EN INICIO", threadData)
+   //console.log("THREAD EN INICIO; Customer;", customer,"commid:", commId)
 
    React.useEffect(() => {
-    console.log("ESTAMOS EN USE EFFECT")
+    //console.log("ESTAMOS EN USE EFFECT")
     if(firstLoad){
-        console.log("PRIMERA CARGA")
-        GetThreadByCommId(commId).then(data =>{
-            setThreadData(data.result);
-            setFirstLoad(false);
+        //console.log("PRIMERA CARGA", customer, commId)
+        if(customer._id){
+            //console.log("HAY CUSTOMER")
+            const threadId = extractThreadId(customer, commId);
+            setThreadData(GetThread(customer, threadId))
+        }else{
+            //console.log("NO HAY CUSTOMER")
+            GetThreadByCommId(commId).then((data)=>{
+                console.log("DATOS EN USE EFFECT", data)
+                setThreadData(data.result)
             })
+        }
+        
         }
     },[firstLoad,props.select.thread, commId])   
 
@@ -94,7 +103,7 @@ export const ConversationComponent = (props) => {
    const Message = (props)=>{
         const msg = props.msg;
         const key = props.keyN;
-        console.log("EN MESSAGE", msg, key)
+        //console.log("EN MESSAGE", msg, key)
         const dispatch = useDispatch();
         const navigate = useNavigate();
         const [msgCopy, setMsgCopy] = React.useState(threadData[key]);
@@ -145,7 +154,7 @@ export const ConversationComponent = (props) => {
                       id="type"
                       name='type'
                       label={i18next.t("type")}
-                      value={threadData[key].type}
+                      value={i18next.t(threadData[key].type)}
                       variant="standard"
                       sx={{mr:1}}
                       />
@@ -161,7 +170,7 @@ export const ConversationComponent = (props) => {
                       id="action"
                       name='action'
                       label={i18next.t("nextaction")}
-                      value={threadData[key].follow + " " + new Date(threadData[key].alertfollow).toLocaleDateString(locale)}
+                      value={i18next.t(threadData[key].follow) + " " + new Date(threadData[key].alertfollow).toLocaleDateString(locale)}
                       variant="standard"
                       sx={{mr:1}}
                       />:<></>}
@@ -233,7 +242,7 @@ export const ConversationComponent = (props) => {
    return(
         <React.Fragment>
         {threadData.map((msg,i)=>{
-            console.log("ESTAMOS EN MAP", msg, i);
+            //console.log("ESTAMOS EN MAP", msg, i);
             return(
                 <Message msg={msg} keyN={i} />
             )

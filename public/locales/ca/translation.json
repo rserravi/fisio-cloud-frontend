@@ -451,5 +451,7 @@
     "Areyousureyouwanttodeletecustomer":"Estás segur/a que vols esborrar el client?",
     "thiscustomerhasrecordsthatwillbedeleted":"Aques client te registres que serán esborrats",
     "customerdeleted":"Client esborrat",
-    "customercreated":"Client creat"
+    "customercreated":"Client creat",
+    "historyupdated":"Historial de client actualitzat",
+    "stilldebtspendant":"Encara hi han deutes pendents!!!"
 }

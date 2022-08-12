@@ -12,8 +12,6 @@ import SideMenu from '../../components/sideMenu-component';
 import { useSelector } from 'react-redux';
 import i18next from 'i18next';
 import { CommTab } from '../../components/tabs/comm-tab-comp';
-import { getAllCustomers } from '../../api/customer.api';
-import { CircularProgress } from '@mui/material';
 import { GetAllComm } from '../../api/communications.api';
 import { Loading } from '../../components/Loading-comp';
 
@@ -29,10 +27,10 @@ function CommunicactionsContent() {
   const [firstLoad, setFirstLoad]= React.useState(true);
 
   React.useEffect(()=>{
-    console.log("EN USE EFFECT COMM")
+   // console.log("EN USE EFFECT COMM")
     if (firstLoad){
     GetAllComm().then((data)=>{
-      console.log("DATA RESULT",data.result);
+      //console.log("DATA RESULT",data.result);
       setCommData(data.result);
       setFirstLoad(false);
       

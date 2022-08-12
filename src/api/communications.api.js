@@ -73,7 +73,7 @@ export const GetAllComm = ()=>{
                     Authorization :accessJWT,
                 }           
             });
-            console.log("DATA EN ALLCOMM", res.data)
+            //console.log("DATA EN ALLCOMM", res.data)
             resolve(res.data);
             
         } catch (error) {

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, TextField, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { Alert, Button, Card, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, InputAdornment, MenuItem, Paper, Snackbar, TextField, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetAllData, GetCabins, getCustomer, GetCustomerIdFromName, GetHistoryById, getPriceForService, getServices } from '../utils/dataFetch-utils';
+import { getPriceForService } from '../utils/dataFetch-utils';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -12,7 +11,11 @@ import { TimePicker } from '@mui/x-date-pickers';
 import { useNavigate } from 'react-router-dom';
 import { navigationLoading, navigationSuccess } from '../slices/navigation-slice';
 import styled from '@emotion/styled';
+import i18next from 'i18next';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import { Loading } from './Loading-comp';
+import { getDateFromISOTime } from '../utils/date-utils';
+import { updateHistory } from '../api/history.api';
 
 var initAddService={
   service:"",
@@ -25,88 +28,67 @@ export default function EditHistoryForm(props) {
   const navigate = useNavigate();
   const navigationState= useSelector((state)=> state.navigator);
   const locale = props.locale;
-  const [customerID, setCustomerID] = React.useState(props.customerId)
-  
-  const cabinsData = GetCabins();
-    
-  var initValidation={
-    id:"1",
-    date: new Date(Date.now()),
-    duration: "60", 
-    service:"1",
-    cabin:"3",
-    price: "50",
-    paid:"0",
-    status: "pending",
-    closed: "",
-    notes: "",
-    attachment:[]
-  }
-  const [appo, setAppo] = React.useState(initValidation);
-
-  React.useEffect(() => {   
-    
-        //MODO EDITAR
-        const newData = GetHistoryById({appoId: props.appoId, userId: props.customerId })
-        console.log("useEFFECT ", newData[0])
-        setAppo(newData[0])
-    },[props.appoId, props.customerId, setAppo ]);
+  const [cabinsList, setCabinsList] = React.useState(props.cabinsData);
+  const [servicesList, setServicesList] = React.useState(props.servicesData);  
+  const [histo, setHisto] = React.useState(props.histoData);
 
   const [customerName, setCustomerName] = React.useState("")
   const [dialogOpen, setDialogOpen] = React.useState(false);
-  const [closeAppoDialogOpen, setCloseAppoDialogOpen] = React.useState(false);
+  const [closehistoDialogOpen, setClosehistoDialogOpen] = React.useState(false);
   const [newService, setNewService] = React.useState(initAddService);
-  const services = getServices();
+  const [firstLoad, setFirstLoad] = React.useState(true);
+  const [openSnackBar, setOpenSnackBar] = React.useState(false);
+  const [error, setError] = React.useState("")
   
-  const { t } = useTranslation();
-  
-  const data = () => {
-    if (customerID){
-      return getCustomer(customerID);
+  React.useEffect(() => {   
+    if(firstLoad){
+      if (cabinsList && servicesList && histo){
+        setFirstLoad(false);
+      }
     }
-    else
-      return (GetAllData)
-  }   
+
+  },[cabinsList, servicesList, histo]);
 
 
+    
   const HandleSubmit = (event)=>{
   
     event.preventDefault();
-    console.log(appo)
+    console.log(histo)
     //CALL API TO PUT IN DATABASE
-    const actualScreen = "/appointments"
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
+    updateHistory(histo).then((data)=>{
+
+      console.log("DATA EN HANDLE SUBMIT AFTER UPDATE",data)
+      if(data.status ==="error" || !data.result){
+        console.log("ERROR EN UPDATE HIST", data)
+        setError(data.message)
+        if (!data.result){
+          setError("NO DATA");
+        }
+        setOpenSnackBar(true)     
+      }
+      else {
+        setError("")
+        setOpenSnackBar(true)
+      }
+    })
 
    }
-   const closeAppointment = (event)=>{
-    event.preventDefault();
-    setCloseAppoDialogOpen(true);
 
-  }
+   const handleCloseSnackBar = (event, reason) =>{
+    if (reason === 'clickaway') {
+      return;
+    }
 
-  const closeAppo = (event) =>{
-    event.preventDefault();
-    console.log(appo)
-    setAppo({...appo, "closed": new Date().now})
-    //CALL API TO PUT IN DATABASE
-    const actualScreen = "/appointments"
-    dispatch(navigationLoading());
-    navigate(actualScreen,{replace: true});
-    dispatch(navigationSuccess(actualScreen))
-  }
-
-  const closeAppoDialog = () =>{
-    setCloseAppoDialogOpen(false);
-  }
-
-   const SetCustomer = (data) =>{
-
-    setCustomerName(data);
-    setCustomerID(GetCustomerIdFromName(data));
+    setOpenSnackBar(false);
+    if (error===""){
+      const actualScreen = navigationState.previousScreen;
+      dispatch(navigationLoading());
+      navigate(actualScreen,{replace: true});
+      dispatch(navigationSuccess(actualScreen))
+    }
    }
- 
+    
 
    const resetData= (event)=>{
     event.preventDefault();
@@ -117,32 +99,32 @@ export default function EditHistoryForm(props) {
   }
 
   const handleDate= (value)=>{
-    setAppo({...appo, "date": value})
+    setHisto({...histo, "date": value})
   }
   
   const handleDurationChange= (event)=>{
-    setAppo({...appo, "duration": event.target.value})
+    setHisto({...histo, "duration": event.target.value})
   }
 
   const handleCabinChange = (event)=>{
-    setAppo({...appo, "cabin": event.target.value})
+    setHisto({...histo, "cabin": event.target.value})
   }
 
   const handlePriceChange = (event)=>{
-    setAppo({...appo, "price": event.target.value})
+    setHisto({...histo, "price": event.target.value})
   }
 
   const handlePaidChange = (event)=>{
-    setAppo({...appo, "price": event.target.value})
+    setHisto({...histo, "price": event.target.value})
   }
 
   const handleServicesChange= (event)=>{
-    setAppo({...appo, "service": event.target.value,"price": getPriceForService(event.target.value) })
+    setHisto({...histo, "service": event.target.value,"price": getPriceForService(event.target.value, servicesList) })
   }
 
   const handleNotesChange= (event)=>{
-    console.log(appo);
-    setAppo({...appo, "notes": event.target.value})
+    console.log(histo);
+    setHisto({...histo, "notes": event.target.value})
   }
 
   const addService= () =>{
@@ -167,8 +149,8 @@ export default function EditHistoryForm(props) {
     setNewService({...newService, "price": event.target.value})
   }
 
-  const seeAppointment = (event)=>{
-    const actualScreen = "/appointments"
+  const seehistory = (event)=>{
+    const actualScreen = "/historys"
     dispatch(navigationLoading());
     navigate(actualScreen,{replace: true});
     dispatch(navigationSuccess(actualScreen))
@@ -179,8 +161,8 @@ export default function EditHistoryForm(props) {
   });
 
   const handleAttachmentChange = (e)=>{
-    var attached = appo.attachment;
-    console.log ("Copia de Appo", attached)
+    var attached = histo.attachment;
+    console.log ("Copia de histo", attached)
     var item = {}
     item["id"] = attached.length;
     item["file"] = URL.createObjectURL(e.target.files[0]);
@@ -190,35 +172,20 @@ export default function EditHistoryForm(props) {
 
     console.log("Objeto modificado",attached);
 
-    setAppo({...appo, "attachment": attached}); 
+    setHisto({...histo, "attachment": attached}); 
   }
 
   const MainTitle = () =>{
     // Modes "add", "addToId", "edit"
-    console.log("DATA EN MAIN TITLE",appo.date)
+    console.log("DATA EN MAIN TITLE",cabinsList, servicesList)
     return (
-    <h2>{t("edithistoryof")} {data().firstname} {data().lastname}, el {new Date(appo.date).toLocaleDateString(locale)} a las {new Date(appo.date).toLocaleTimeString(locale)}</h2>
+    <h2>{i18next.t("edithistoryof")} {histo.customerName}, {getDateFromISOTime(histo.date, locale)}, {new Date(histo.date).toLocaleTimeString()}</h2>
     )
   }
 
-  const AdditionalButton = ()=>{
-   
-      return (
-        <Button       
-          fullWidth
-          variant="contained"
-          color = "warning"
-          onClick={closeAppointment}
-          sx={{ m:3 }}
-        >
-        {t("closeappointment")}
-        </Button>
-      )
-    }
+  const ShowAttachments = ()=>{
 
-    const ShowAttachments = ()=>{
-
-      const attached = appo.attachment;
+      const attached = histo.attachment;
       if(attached){
     
       return (
@@ -233,8 +200,16 @@ export default function EditHistoryForm(props) {
         }
     }
 
+  if(firstLoad){
+      return (
+        <Box sx={{ display: 'flex' }}>
+          <Loading /> 
+        </Box>
+      );
+  }
 
-   return (
+
+  return (
     <React.Fragment>
         <Box component="form" noValidate onSubmit={HandleSubmit} >
             <Grid container spacing={2} rowSpacing={2} justifyContent="flex-start" alignItems="center">
@@ -245,7 +220,7 @@ export default function EditHistoryForm(props) {
             </Grid>
               
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("appointment")}
+                {i18next.t("history")}
               </Typography>
 
               
@@ -255,13 +230,13 @@ export default function EditHistoryForm(props) {
              <Paper sx={{p:1, mb:2}}>
               <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                   <Grid item xs={12} sm={1} md={1} sx={{mt:2, mr:1}}>
-                    <Button fullWidth onClick={seeAppointment} variant="outlined" sx={{mr:2}}>{t("calendar")}</Button>
+                    <Button fullWidth onClick={seehistory} variant="outlined" sx={{mr:2}}>{i18next.t("calendar")}</Button>
                   </Grid>
                   <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
                         <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <DatePicker
-                            label={t("date")}
-                            value={appo.date}
+                            label={i18next.t("date")}
+                            value={histo.date}
                             variant="standard"
                             sx = {{mr:2}}
                             onChange={handleDate}
@@ -273,8 +248,8 @@ export default function EditHistoryForm(props) {
                   <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                          <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <TimePicker
-                          label={t("Time")}
-                          value={appo.date}
+                          label={i18next.t("Time")}
+                          value={histo.date}
                           variant="standard"
                           
                           onChange={handleDate}
@@ -285,8 +260,8 @@ export default function EditHistoryForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                         <TextField
-                            label={t("duration")}
-                            value={appo.duration}
+                            label={i18next.t("duration")}
+                            value={histo.duration}
                             variant="standard"
                             fullWidth
                             sx = {{mr:2}}
@@ -295,17 +270,17 @@ export default function EditHistoryForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={3} md={3} sx={{mt:2}}>
                         <TextField
-                            label={t("cabin")}
-                            value={appo.cabin}
+                            label={i18next.t("cabin")}
+                            value={histo.cabin}
                             variant="standard"
                             fullWidth
                             sx = {{mr:2, textAlign:'left'}}
                             select
                             onChange={handleCabinChange}
                         >
-                           {cabinsData.map((option) => (
-                                    <MenuItem key={option.id} value={option.id}>
-                                    {option.localization}
+                           {cabinsList.map((option) => (
+                                    <MenuItem key={option._id} value={option._id}>
+                                    {option.cabinName}
                                     </MenuItem>
                                 ))}
 
@@ -319,19 +294,19 @@ export default function EditHistoryForm(props) {
                  <Paper sx={{p:1}}>
                  <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>   
-                       <Button fullWidth onClick={addService} variant="outlined" sx={{mr:2}}>{t("addservice")}</Button>
+                       <Button fullWidth onClick={addService} variant="outlined" sx={{mr:2}}>{i18next.t("addservice")}</Button>
                     </Grid>
                       <Dialog open={dialogOpen} onClose={closeAddServiceDialog}>
-                        <DialogTitle>{t("addservice")}</DialogTitle>
+                        <DialogTitle>{i18next.t("addservice")}</DialogTitle>
                         <DialogContent>
                           <DialogContentText>
-                          {t("addaservicetothelistandusualprice")}
+                          {i18next.t("addaservicetothelistandusualprice")}
                           </DialogContentText>
                           <TextField
                             autoFocus
                             margin="dense"
                             id="service"
-                            label={t("service")}
+                            label={i18next.t("service")}
                             type="email"
                             fullWidth
                             variant="standard"
@@ -342,7 +317,7 @@ export default function EditHistoryForm(props) {
                             autoFocus
                             margin="dense"
                             id="price"
-                            label={t("price")}
+                            label={i18next.t("price")}
                             type="number"
                             fullWidth
                             variant="standard"
@@ -351,23 +326,23 @@ export default function EditHistoryForm(props) {
                           />
                         </DialogContent>
                         <DialogActions>
-                          <Button onClick={newServiceFormCommit}>{t("add")}</Button>
-                          <Button onClick={closeAddServiceDialog}>{t("cancel")}</Button>
+                          <Button onClick={newServiceFormCommit}>{i18next.t("add")}</Button>
+                          <Button onClick={closeAddServiceDialog}>{i18next.t("cancel")}</Button>
                         </DialogActions>
                       </Dialog>
                     <Grid item xs={12} sm={3} md={3} sx={{mr:1}}>
                         <TextField
-                            label={t("service")}
-                            value={appo.service}
+                            label={i18next.t("service")}
+                            value={histo.service}
                             variant="standard"
                             sx = {{mr:2, textAlign:'left'}}
                             fullWidth
                             select
-                            helperText= {t("pleaseselectaserviceoraddnew")}
+                            helperText= {i18next.t("pleaseselectaserviceoraddnew")}
                             onChange={handleServicesChange}
                         >
-                          {services.map((option) =>{ return (
-                            <MenuItem key={option.id} value={option.id}>
+                          {servicesList.map((option) =>{ return (
+                            <MenuItem key={option._id} value={option._id}>
                               {option.serviceName}
                             </MenuItem>
                             )
@@ -377,13 +352,13 @@ export default function EditHistoryForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={2} md={2} sx={{mr:1}}>  
                         <TextField
-                          label={t("price")}
-                          value={appo.price}
+                          label={i18next.t("price")}
+                          value={histo.price}
                           variant="standard"
                           sx = {{mr:2}}
                           fullWidth
                           onChange={handlePriceChange}
-                          helperText= {t("selectaprice")}
+                          helperText= {i18next.t("selectaprice")}
                           InputProps={{
                             startAdornment: <InputAdornment position="start">€</InputAdornment>,
                           }}
@@ -391,16 +366,16 @@ export default function EditHistoryForm(props) {
                     </Grid>
                     <Grid item xs={12} sm={4} md={4} >
                         <TextField
-                          label={t("paid")}
-                          value={appo.paid}
+                          label={i18next.t("paid")}
+                          value={histo.paid}
                           variant="standard"
-                          sx = {{mr:2}}
+                          sx = {{mr:2, input: histo.paid<histo.price? {color:'red'}: {color:'green'}}}
                           fullWidth
                           onChange={handlePaidChange}
-                          helperText= {t("amountpaid")}
+                          helperText= {i18next.t("amountpaid")}
                           InputProps={{
                             startAdornment: <InputAdornment position="start">€</InputAdornment>,
-                            endAdornment: <InputAdornment position="end"><Button size="small">{t("printrecipe")}</Button></InputAdornment>
+                            endAdornment: <InputAdornment position="end"><Button size="small">{i18next.t("printrecipe")}</Button></InputAdornment>
                           }}
                         />
                     </Grid>
@@ -411,7 +386,7 @@ export default function EditHistoryForm(props) {
                 {/* NOTAS */}
 
               <Typography variant="h6" color="text.secondary" align="center" sx={{mt:2}}>
-                {t("notes")}
+                {i18next.t("notes")}
               </Typography>
               
               <Grid item xs={12} md={12} sm={12} marginTop={3}>
@@ -428,12 +403,12 @@ export default function EditHistoryForm(props) {
 
                   <TextField
                     id="outlined-multiline-flexible"
-                    label={t("notes")}
+                    label={i18next.t("notes")}
                     multiline
                     sx = {{m:2}}
                     rows={6}
                     fullWidth
-                    value={appo.notes}
+                    value={histo.notes}
                     onChange={handleNotesChange}
                   />
                 </Box>
@@ -453,21 +428,9 @@ export default function EditHistoryForm(props) {
                 onClick={HandleSubmit}
                 sx={{ m:3}}
             >
-               {t("editappointment")}
+               {i18next.t("edithistory")}
             </Button>
-            <AdditionalButton />
-            <Dialog open={closeAppoDialogOpen} onClose={closeAppoDialog}>
-                          <DialogTitle>{t("closeappointment")}</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                            {t("doyouwanttofiletheappointmentorkeepediting")}
-                            </DialogContentText>
-                          </DialogContent>
-                          <DialogActions>
-                            <Button onClick={closeAppo}>{t("fileit")}</Button>
-                            <Button onClick={closeAppoDialog}>{t("keepediting")}</Button>
-                          </DialogActions>
-                        </Dialog>
+            
             <Button
                 fullWidth
                 variant="contained"
@@ -475,12 +438,19 @@ export default function EditHistoryForm(props) {
                 onClick={resetData}
                 sx={{ m:3 }}
             >
-               {t("cancel")}
+               {i18next.t("cancel")}
             </Button>
           </Box>
-        
-              
         </Box>
+        <Snackbar
+            open={openSnackBar}
+            autoHideDuration={6000}
+            onClose={handleCloseSnackBar}
+            message="Note archived"
+            
+          >
+          {error===""?<Alert onClose={handleCloseSnackBar} severity="success" sx={{ width: '100%' }}>{i18next.t("historyupdated")} </Alert>:<Alert onClose={handleCloseSnackBar} severity="error" sx={{ width: '100%' }}>{error} </Alert>}
+        </Snackbar>
     </React.Fragment>
   )
 }

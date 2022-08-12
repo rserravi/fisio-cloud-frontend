@@ -53,7 +53,7 @@ function App() {
           <PrivateRoute path='/addcommunication/:customerid/:thread' element={<AddCommunication />} />
           <PrivateRoute path='/addcommunication/:customerid/:thread/:action' element={<AddCommunication />} />
           <PrivateRoute path='/addcommunication/:customerid/:thread/:action/:phonemail' element={<AddCommunication />} />
-          <PrivateRoute path='/edithistory/:customerId/:appoId' element={<EditHistory />} />
+          <PrivateRoute path='/edithistory/:customerId/:histoId' element={<EditHistory />} />
           <PrivateRoute path="/reports/:period" element={<Reports />} />
           <PrivateRoute path='/usersetup/' element={<UserSetup/>} /> 
           <PrivateRoute path='/usersetup/:tid' element={<UserSetup/>} /> 

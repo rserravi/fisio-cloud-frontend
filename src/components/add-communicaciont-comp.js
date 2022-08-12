@@ -1,6 +1,5 @@
 import * as React from 'react';
 import Grid from '@mui/material/Grid';
-import { useTranslation } from 'react-i18next';
 import { Box } from '@mui/system';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetAllData, GetCommunicationActions, getCustomer, GetCustomerIdFromName, getCustomerMailFromId, getCustomerPhoneFromId, getCustomerWhatsappFromId, GetNextCommunicationId, GetNextThreadId} from '../utils/dataFetch-utils';
@@ -10,22 +9,26 @@ import { navigationLoading, navigationSuccess } from '../slices/navigation-slice
 import { DatePicker, LocalizationProvider, TimePicker } from '@mui/x-date-pickers';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { Button, MenuItem, Paper, TextField } from '@mui/material';
+import i18next from 'i18next';
+import { Loading } from './Loading-comp';
+
   
 export default function AddCommunicationsComponent(props) {
-  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const userState = useSelector((state)=> state.user);
   const navigationState =  useSelector((state)=> state.navigator);
-  const [customerID, setCustomerID] = React.useState(props.customerId)
   const locale = props.locale;
   const commActions = GetCommunicationActions();
   const [mode,setMode] = React.useState("add") // Modes "add", "addToId", "addToIdAndThread", "addToIdAndAction"
   const [showStart, setShowStart] = React.useState(true);
   const [showEnd, setShowEnd] = React.useState(false);
   const [showSend, setShowSend] = React.useState(false);
-  const [firstTimeRenderCheck, setFirstTimeRenderCheck] = React.useState(false);
+  const [firstLoad, setFirstLoad] = React.useState(false);
+  const [customerData, setCustomerData] = React.useState(props.customerData);
+  const [threadData, setThreadData] = React.useState(props.threadData);
   const [phonemail] = React.useState(props.phonemail);
+  const [customerId, setCustomerId] = React.useState(props.customerData._id);
     
   var initValidation={
     id: 0,
@@ -71,42 +74,39 @@ export default function AddCommunicationsComponent(props) {
   },[Comm.type, showEnd])
 
   React.useEffect(() => {   
-    setCommButtons();
-    if(!firstTimeRenderCheck){ //PARA EVITAR REFRESCOS! SE EJECUTA SOLO LA PRIMERA VEZ
+   
+    if(!firstLoad){ //PARA EVITAR REFRESCOS! SE EJECUTA SOLO LA PRIMERA VEZ
+      setCommButtons();
     //SELECCION DE MODOS
-      setFirstTimeRenderCheck(true);
-      if (props.customerId && !props.threadId && !props.action){
+    console.log ("USE EFFECT CUSTOMER DATA", customerData, "THREAD", threadData)
+      
+      if (customerData && threadData.length===0 && !props.action){
             //MODO AÑADIR CITA A ID
+            console.log("MODO 'ADD TO ID'")
             setMode("addToId")
-            setComm({...Comm, "customerId": props.customerId, "thread": GetNextThreadId(props.customerId), "id": GetNextCommunicationId(props.customerId)})
+            setComm({...Comm, "customerId": props.customerData._id, "thread": GetNextThreadId(props.customerData._id)})
           }
 
-      if (props.customerId && props.threadId &&!props.action){
+      if (customerData && threadData.length!==0 &&!props.action){
             //MODO AÑADIR CITA A ID Y THREAD
+            console.log("MODO 'ADD TO ID AND THREAD'")
             setMode("addToIdAndThread")
-            setComm({...Comm, "customerId": props.customerId, "thread":props.threadId, "id": GetNextCommunicationId(props.customerId)})
+            setComm({...Comm, "customerId":  props.customerData._id, "thread":props.threadId, "id": GetNextCommunicationId(props.customerId)})
           }
-      if (props.customerId && !props.threadId &&props.action){
-          //MODO AÑADIR CITA A ID Y THREAD
-          setMode("addToIdAndAction")
-          setComm({...Comm, "customerId": props.customerId, "thread":GetNextThreadId(props.customerId), "id": GetNextCommunicationId(props.customerId), "type": props.action})
+      if (props.action){
+            //MODO AÑADIR CITA A ID Y THREAD Y ACCION
+            console.log("MODO 'ADD TO ID AND ACTION'")
+            setMode("addToIdAndAction")
+            setComm({...Comm, "customerId":  props.customerData._id, "thread":GetNextThreadId(props.customerId), "type": props.action})
         }
+      setFirstLoad(false);
     }
+
     
-    },[props.threadId, props.customerId, props.action, setMode, setComm, Comm, firstTimeRenderCheck, setCommButtons]);
+    },[props, firstLoad, Comm, customerData, setCommButtons, threadData]);
 
   const [customerName, setCustomerName] = React.useState("")
    
-  const data = () => {
-    if (customerID){
-      return getCustomer(customerID);
-    }
-    else
-      return (GetAllData)
-  }   
-
-  const datos =data();
-
   const HandleSubmit = (event)=>{
     event.preventDefault();
     
@@ -123,7 +123,7 @@ export default function AddCommunicationsComponent(props) {
     setCustomerName(data);
     const custId = GetCustomerIdFromName(data); 
     console.log("ESTAMOS EN SETCUSTOMER", custId)
-    setCustomerID(custId);
+    setCustomerId(custId);
     setComm({...Comm, "customerId": custId, "thread": GetNextThreadId(custId), "id":GetNextCommunicationId(custId)}, )
   }
  
@@ -180,30 +180,30 @@ export default function AddCommunicationsComponent(props) {
           return(<><CustomerSearchBar customerFunc={SetCustomer}/></>);
       case "addToId":
         return (
-            <h2>{t("addingcommunicationto")} {datos.firstname} {datos.lastname} </h2>
+            <h2>{i18next.t("addingcommunicationto")} {customerData.firstname} {customerData.lastname} </h2>
           )  
       case "addToIdAndThread":
           return (
-            <h2>{t("responsetocommunicationwith")} {datos.firstname} {datos.lastname}</h2>
+            <h2>{i18next.t("responsetocommunicationwith")} {customerData.firstname} {customerData.lastname}</h2>
           )
       case "addToIdAndAction":
           if (props.action==="1"){
             return(
               <>
-            <h2>{t("makingcallto")} {datos.firstname} {datos.lastname} {t("to")} {!props.phonemail?getCustomerPhoneFromId(datos.id):phonemail} </h2>
-            <h4>{t("pressthecallbuttontocallandrecordtime")}</h4>
+            <h2>{i18next.t("makingcallto")} {customerData.firstname} {customerData.lastname} {i18next.t("to")} {!props.phonemail?getCustomerPhoneFromId(customerData.id):phonemail} </h2>
+            <h4>{i18next.t("pressthecallbuttontocallandrecordtime")}</h4>
             </>
             )
           }
           if (props.action==="2"){
             
             return(
-            <h2>{t("sendingmailto")} {datos.firstname} {datos.lastname} {t("to")} {!props.phonemail?getCustomerMailFromId(datos.id):phonemail} </h2>
+            <h2>{i18next.t("sendingmailto")} {customerData.firstname} {customerData.lastname} {i18next.t("to")} {!props.phonemail?getCustomerMailFromId(customerData.id):phonemail} </h2>
             )
           }
           if (props.action==="3"){
             return(
-            <h2>{t("sendingwhatsappto")} {datos.firstname} {datos.lastname} {t("to")} {!props.phonemail?getCustomerWhatsappFromId(datos.id):phonemail} </h2>
+            <h2>{i18next.t("sendingwhatsappto")} {customerData.firstname} {customerData.lastname} {i18next.t("to")} {!props.phonemail?getCustomerWhatsappFromId(customerData.id):phonemail} </h2>
             )
           }
           break;
@@ -223,8 +223,8 @@ export default function AddCommunicationsComponent(props) {
       setShowEnd(true);
       setComm({...Comm, "date":new Date(), "duration":"0:00:00"})
       startTime = new Date();
-      if(customerID){  
-        const tel = getCustomerPhoneFromId(customerID)
+      if(customerId){  
+        const tel = getCustomerPhoneFromId(customerId)
       
           let url = 'tel:'+tel
            // Open our newly created URL in a new tab to send the message
@@ -242,7 +242,7 @@ export default function AddCommunicationsComponent(props) {
     }
     return (
       <React.Fragment>
-        {showStart?<Button onClick={startCall} variant='contained'>{t("initcall")}</Button>:<Button onClick={endCall} color="error" variant='contained'>{t("endcall")}</Button>}
+        {showStart?<Button onClick={startCall} variant='contained'>{i18next.t("initcall")}</Button>:<Button onClick={endCall} color="error" variant='contained'>{i18next.t("endcall")}</Button>}
       </React.Fragment>
     )
   }
@@ -252,8 +252,8 @@ export default function AddCommunicationsComponent(props) {
       console.log("ENVIANDO MENSAJE", Comm.type)
       switch (Comm.type) {
         case "2": // EMAIL
-          if(customerID){  
-            const email = getCustomerMailFromId(customerID)
+          if(customerId){  
+            const email = getCustomerMailFromId(customerId)
             if(Comm.notes && Comm.subject){
               let url = 'mailto:'+email+'?subject='+Comm.subject+'&body='+Comm.notes
                // Open our newly created URL in a new tab to send the message
@@ -264,9 +264,9 @@ export default function AddCommunicationsComponent(props) {
           
           break;
         case "3": // WHATSAPP
-          console.log("ENVIALDO WHATS a ", customerID)
-          if(customerID){  
-            const whatsapp = getCustomerWhatsappFromId(customerID)
+          console.log("ENVIALDO WHATS a ", customerId)
+          if(customerId){  
+            const whatsapp = getCustomerWhatsappFromId(customerId)
             if(Comm.notes || Comm.subject){
               var message = Comm.subject + ". " + Comm.notes
             // Regex expression to remove all characters which are NOT alphanumeric 
@@ -293,9 +293,17 @@ export default function AddCommunicationsComponent(props) {
     }
     return (
       <React.Fragment>
-        <Button sx={{mt:2}} onClick={sendMessage} variant='contained'>{t("sendmessage")}</Button>
+        <Button sx={{mt:2}} onClick={sendMessage} variant='contained'>{i18next.t("sendmessage")}</Button>
       </React.Fragment>
     )
+  }
+
+  if(firstLoad){
+    return (
+      <Box sx={{ display: 'flex' }}>
+        <Loading /> 
+      </Box>
+    );
   }
 
    return (
@@ -315,7 +323,7 @@ export default function AddCommunicationsComponent(props) {
                   <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
                         <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <DatePicker
-                            label={t("date")}
+                            label={i18next.t("date")}
                             value={Comm.date}
                             variant="standard"
                             sx = {{mr:2}}
@@ -328,7 +336,7 @@ export default function AddCommunicationsComponent(props) {
                   <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                          <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         <TimePicker
-                          label={t("Time")}
+                          label={i18next.t("Time")}
                           value={Comm.date}
                           variant="standard"
                           
@@ -343,7 +351,7 @@ export default function AddCommunicationsComponent(props) {
                         
                         id="action"
                         name='action'
-                        label={t("action")}
+                        label={i18next.t("action")}
                         value={Comm.type || ''}
                         variant="standard"
                         disabled={mode==="addToIdAndAction"}
@@ -353,7 +361,7 @@ export default function AddCommunicationsComponent(props) {
                         sx={{mr:1, textAlign:'left'}}
                         >
                           {commActions.map((option) => (
-                            <MenuItem key={option.id} value={option.id}>{t(option.type)}</MenuItem>
+                            <MenuItem key={option.id} value={option.id}>{i18next.t(option.type)}</MenuItem>
                           ))}  
                       
                         </TextField>
@@ -365,7 +373,7 @@ export default function AddCommunicationsComponent(props) {
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                       {!showSend?
                         <TextField
-                            label={t("duration")}
+                            label={i18next.t("duration")}
                             value={Comm.duration}
                             variant="standard"
                             fullWidth
@@ -378,7 +386,7 @@ export default function AddCommunicationsComponent(props) {
                  <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                     <Grid item xs={12} sm={12} md={12} sx={{mt:2}}>
                         <TextField 
-                        label={t("Subject")}
+                        label={i18next.t("Subject")}
                         value={Comm.subject}
                         variant="outlined"
                         fullWidth
@@ -390,7 +398,7 @@ export default function AddCommunicationsComponent(props) {
                 <Grid container direction="row" justifyContent="flex-start" alignItems="flex-end">
                     <Grid item xs={12} sm={12} md={12} sx={{mt:2}}>
                         <TextField 
-                        label={t("notes")}
+                        label={i18next.t("notes")}
                         value={Comm.notes}
                         variant="outlined"
                         fullWidth
@@ -409,7 +417,7 @@ export default function AddCommunicationsComponent(props) {
                     <TextField
                         id="nextction"
                         name='nextaction'
-                        label={t("nextaction")}
+                        label={i18next.t("nextaction")}
                         value={Comm.follow || ''}
                         variant="standard"
                         onChange={handleNewActionChange}
@@ -418,15 +426,15 @@ export default function AddCommunicationsComponent(props) {
                         sx={{mr:2, textAlign:'left'}}
                         >
                           {commActions.map((option) => (
-                            <MenuItem key={option.id} value={option.type}>{t(option.type)}</MenuItem>
+                            <MenuItem key={option.id} value={option.type}>{i18next.t(option.type)}</MenuItem>
                           ))}
-                          <MenuItem key={15} value={"NONE"}>{t("nothing")}</MenuItem>               
+                          <MenuItem key={15} value={"NONE"}>{i18next.t("nothing")}</MenuItem>               
                         </TextField>
                     </Grid>
                     <Grid item xs={12} sm={3} md={3} sx={{mt:2, mr:1}}>
                         <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                         {Comm.follow !=="" && Comm.follow!=="NONE"? <DatePicker
-                            label={t("date")+ " "+t("newaction") }
+                            label={i18next.t("date")+ " "+i18next.t("newaction") }
                             value={Comm.alertfollow}
                             variant="standard"
                             sx = {{mr:2}}
@@ -439,7 +447,7 @@ export default function AddCommunicationsComponent(props) {
                     <Grid item xs={12} sm={2} md={2} sx={{mt:2, mr:1}}>
                          <LocalizationProvider dateAdapter={AdapterMoment} locale={locale}>
                          {Comm.follow !=="" && Comm.follow!=="NONE"? <TimePicker
-                          label={t("Time")}
+                          label={i18next.t("Time")}
                           value={Comm.alertfollow}
                           variant="standard"
                           
@@ -458,7 +466,7 @@ export default function AddCommunicationsComponent(props) {
                             variant="contained"
                             onClick={HandleSubmit}
                           >
-                          {t("createcommunication")}
+                          {i18next.t("createcommunication")}
                           </Button>
                         </Grid>
                         <Grid item xs={12} sm={5.5} md={5.5} sx={{ mt:1}}>
@@ -468,7 +476,7 @@ export default function AddCommunicationsComponent(props) {
                             color = "error"
                             onClick={resetData}
                           >
-                          {t("cancel")}
+                          {i18next.t("cancel")}
                           </Button>
                         </Grid>
                       </Grid>
