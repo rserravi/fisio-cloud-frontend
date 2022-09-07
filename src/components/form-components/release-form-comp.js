@@ -39,7 +39,7 @@ export default function ReleaseFormComp(props) {
     //OBTENER EL RELEASE FORM DEL API, Y RELLENAR CON DATOS
     //EL NOMBRE DEL ARCHIVO FINAL DEBE PROVENIR DE LA API
     setGeneratedFile("/releases/1_rf.pdf")
-    //FALLLO
+    //FALLO
     setReleaseFrm({...releaseFrm, "blueprint":event.target.value, "file":"/releases/1_rf.pdf"})
     dispatch(nc_releaseformFile("/releases/1_rf.pdf"));
     dispatch(nc_releaseformGenerated(true));

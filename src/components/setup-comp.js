@@ -6,6 +6,7 @@ import AlertsForm from './form-components/alerts-comp';
 import ServicesForm from './form-components/services-comp';
 import UsersForm from './form-components/users-comp';
 import { useTranslation } from 'react-i18next';
+import BlueprintForm from './form-components/blueprint-comp';
 
 
 const initValue = {
@@ -38,6 +39,7 @@ export default function SetupForm() {
                   <Button color={showTabs === "alerts"?"secondary":"primary"} name='alerts' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("alerts")}</Button>
                   <Button color={showTabs === "cabins"?"secondary":"primary"} name='cabins' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("physicalspace")}</Button>
                   <Button color={showTabs === "services"?"secondary":"primary"} name='services' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("services")}</Button>
+                  <Button color={showTabs === "blueprint"?"secondary":"primary"} name='blueprint' onClick={buttonClick} variant='outlined'  sx={{mr:2, mt:2}}>{t("blueprint")}</Button>
                   </Grid>  
              </Grid>    
              </Paper>
@@ -48,6 +50,7 @@ export default function SetupForm() {
            {selected.services? <ServicesForm />:<></>}
            {selected.cabins? <CabinsForm />:<></>}
            {selected.alerts? <AlertsForm />:<></>}
+           {selected.blueprint? <BlueprintForm />:<></>}
         </React.Fragment>
     )
 }

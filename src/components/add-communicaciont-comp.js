@@ -11,6 +11,8 @@ import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { Button, MenuItem, Paper, TextField } from '@mui/material';
 import i18next from 'i18next';
 import { Loading } from './Loading-comp';
+import { GetCustomer } from '../api/customer.api';
+import { GetThread } from '../api/communications.api';
 
   
 export default function AddCommunicationsComponent(props) {
@@ -24,7 +26,7 @@ export default function AddCommunicationsComponent(props) {
   const [showStart, setShowStart] = React.useState(true);
   const [showEnd, setShowEnd] = React.useState(false);
   const [showSend, setShowSend] = React.useState(false);
-  const [firstLoad, setFirstLoad] = React.useState(false);
+  const [firstLoad, setFirstLoad] = React.useState(true);
   const [customerData, setCustomerData] = React.useState(props.customerData);
   const [threadData, setThreadData] = React.useState(props.threadData);
   const [phonemail] = React.useState(props.phonemail);
@@ -75,19 +77,20 @@ export default function AddCommunicationsComponent(props) {
 
   React.useEffect(() => {   
    
-    if(!firstLoad){ //PARA EVITAR REFRESCOS! SE EJECUTA SOLO LA PRIMERA VEZ
+    if(firstLoad){ //PARA EVITAR REFRESCOS! SE EJECUTA SOLO LA PRIMERA VEZ
       setCommButtons();
     //SELECCION DE MODOS
     console.log ("USE EFFECT CUSTOMER DATA", customerData, "THREAD", threadData)
+    console.log (firstLoad)
       
-      if (customerData && threadData.length===0 && !props.action){
+      if (customerData._id && threadData.length===0 && !props.action){
             //MODO AÑADIR CITA A ID
             console.log("MODO 'ADD TO ID'")
             setMode("addToId")
             setComm({...Comm, "customerId": props.customerData._id, "thread": GetNextThreadId(props.customerData._id)})
           }
 
-      if (customerData && threadData.length!==0 &&!props.action){
+      if (customerData._id && threadData.length!==0 &&!props.action){
             //MODO AÑADIR CITA A ID Y THREAD
             console.log("MODO 'ADD TO ID AND THREAD'")
             setMode("addToIdAndThread")
@@ -119,12 +122,21 @@ export default function AddCommunicationsComponent(props) {
 
    }
   
-  const SetCustomer = (data) =>{
-    setCustomerName(data);
-    const custId = GetCustomerIdFromName(data); 
-    console.log("ESTAMOS EN SETCUSTOMER", custId)
-    setCustomerId(custId);
-    setComm({...Comm, "customerId": custId, "thread": GetNextThreadId(custId), "id":GetNextCommunicationId(custId)}, )
+  const SetCustomer = (_customerId) =>{
+    console.log("DATA EN SETCUSTOMER", _customerId);
+    GetCustomer(_customerId).then((data)=>{
+      //console.log("CUSTOMER DATA", data.result)
+      setCustomerData(data.result)
+      setCustomerName(data.result.firstname + " " +data.result.lastname);
+      setCustomerId(data.result._id);
+      setMode("addToId")
+      setFirstLoad(true)
+      //if (_thread){
+      //  setThreadData(GetThread(data.result, _thread));
+      //  }
+    })
+    
+    setComm({...Comm, "customerId": customerData._id, "thread": GetNextThreadId(customerData._id), "id":GetNextCommunicationId(customerData._id)}, )
   }
  
   const resetData= (event)=>{

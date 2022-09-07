@@ -25,14 +25,12 @@ if(!i18next.isInitialized){
         escapeValue: false, // not needed for react as it escapes by default
       }
     }).then(()=>{
-      console.log("DESPUÉS DE i18next.init")
+      console.log("DESPUÉS DE i18next.init, HEMOS QUIDADO REACT.STRICTMODE para que funcione el editor de Blueprints")
       
       root.render(
-        <React.StrictMode>
         <Provider store={store}>
           <App />
         </Provider>
-      </React.StrictMode>
       );
     }).catch((error)=>{
       root.render(

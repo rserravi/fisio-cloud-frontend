@@ -37,7 +37,9 @@ function AddCommunicationContent() {
   React.useEffect(()=>{
     if (firstLoad){
       if (_customerId){
+        //console.log("CUSTOMERID",_customerId)
         GetCustomer(_customerId).then((data)=>{
+          //console.log("CUSTOMER DATA", data.result)
           setCustomerData(data.result)
           if (_thread){
             setThreadData(GetThread(data.result, _thread));
@@ -45,8 +47,11 @@ function AddCommunicationContent() {
           setFirstLoad(false);
         })
       }
+      else {
+        setFirstLoad(false);
+      }
     }
-  },[firstLoad])
+  },[firstLoad, _customerId, _thread])
 
   if(firstLoad){
     return (

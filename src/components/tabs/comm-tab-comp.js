@@ -100,8 +100,8 @@ export const CommTab = (props) =>{
     const addCommClick = (event)=>{
         event.stopPropagation();
         console.log("ADD COMM")
-        const actualScreen = "/addcommunication/"+ customer._id;
-        dispatch(navigationLoading())
+        var actualScreen = "/addcommunication/"
+        if (customer._id) {actualScreen+= customer._id.toString()};
         navigate(actualScreen,{replace: true});
         dispatch(navigationSuccess(actualScreen))
     }
