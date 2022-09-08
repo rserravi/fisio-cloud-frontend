@@ -40,6 +40,7 @@ import { AddressForm } from './form-components/address-comp';
 import { GetCustomer, UpdateCustomer } from '../api/customer.api';
 import { ImageComponent } from './form-components/image-comp';
 import { Loading } from './Loading-comp';
+import { htmlToPdfConverter } from '../utils/pdf-utils';
 
 export default function SeeCustomerComponent(props) {
     const locale = props.locale;
@@ -330,6 +331,12 @@ export default function SeeCustomerComponent(props) {
 
         setOpenSnackBar(false);
     };
+
+    const consentOnClick = (event)=>{
+        event.stopPropagation();
+        htmlToPdfConverter(customer.releaseForm.file)
+
+    }
   
   //MAIN DOM RETURN
 
@@ -428,8 +435,9 @@ export default function SeeCustomerComponent(props) {
                                 
                                 <Typography component="div" variant="p" align='left' >
                                 {i18next.t("releaseform")}: 
-                                {customer.releaseForm.generated?<a href={"/docs/releaseforms/"+customer.releaseForm.file}> {customer.releaseForm.file} </a>:<> {i18next.t("none")}</>}
                                 </Typography>
+                                {customer.releaseForm.generated?<Button onClick={consentOnClick}>{i18next.t("consentGenerated")}</Button> :<> {i18next.t("none")}</>}
+                                
                                 <Typography component="div" variant="p" align='left' >
                                 {customer.releaseForm.signed?<div style={{color:"green"}}>{i18next.t("consentsigned")}</div>:<div style={{color:"red"}}> {i18next.t("consentnotsigned")}</div>}
                                 </Typography>

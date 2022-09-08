@@ -22,6 +22,7 @@
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.1",
     "immer": "^9.0.15",
+    "jspdf": "^2.5.1",
     "list-react-files": "^0.2.0",
     "markdown-to-jsx": "^7.1.7",
     "moment": "^2.29.4",

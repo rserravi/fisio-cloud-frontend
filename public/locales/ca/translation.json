@@ -453,5 +453,6 @@
     "customerdeleted":"Client esborrat",
     "customercreated":"Client creat",
     "historyupdated":"Historial de client actualitzat",
-    "stilldebtspendant":"Encara hi han deutes pendents!!!"
+    "stilldebtspendant":"Encara hi han deutes pendents!!!",
+    "consentGenerated":"Veure Consentiment Generat"
 }
